@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "status": "verified",
+  "repository": "github.com/alibaba/nacos",
+  "requested_version": "3.2.2",
+  "resolved_commit": "cdf4e1b6aa76d50839a0b8d3c8806430d14fef86",
+  "project": {
+    "repository": "github.com/alibaba/nacos",
+    "version": "3.2.2"
+  },
+  "targets": [
+    {
+      "target": "nacos:3.2.2-loong64",
+      "platform": "linux/loong64",
+      "image_digest": "sha256:bf6d69eb0974651e65e640ae50213fd5af2c67afa09e8e392937963fb0cf19e7"
+    }
+  ],
+  "applicability": {
+    "architectures": [
+      "loong64"
+    ],
+    "libc": "musl"
+  },
+  "environment": {
+    "architecture": "loong64",
+    "os": "linux",
+    "base_image": "lcr.loongnix.cn/library/alpine@sha256:409547fe91e3200310b558482055d111b01d50f89b13e4cb7769e8844c3aeb99"
+  },
+  "build": {
+    "target": "nacos:3.2.2-loong64",
+    "dockerfile": "Dockerfile",
+    "working_directory": "nacos-docker/build",
+    "command": [
+      "docker",
+      "build",
+      "--pull=false",
+      "--file",
+      "Dockerfile.Lite",
+      "--tag",
+      "nacos:3.2.2-loong64",
+      "."
+    ],
+    "source_repository": "github.com/nacos-group/nacos-docker",
+    "source_commit": "e7257840821a4b74128b2186635bdd226d35c7a1",
+    "source_file_path": "build/Dockerfile.Lite",
+    "source_sha256": "89d5cc88ba18fec4d643c062ffcde4b503ec07a11fac9368dab163317e748094"
+  },
+  "dependencies": [],
+  "adaptation": null,
+  "files": [
+    {
+      "path": "Dockerfile",
+      "sha256": "89d5cc88ba18fec4d643c062ffcde4b503ec07a11fac9368dab163317e748094",
+      "role": "final_dockerfile"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "nacos-server-3.2.2.tar.gz",
+      "version": "3.2.2",
+      "sha256": "fae7bc641429dd660084ff24226bdc92ae9a0f40e2713f46f6285e5bd9d024eb",
+      "source": "https://github.com/alibaba/nacos/releases/download/3.2.2/nacos-server-3.2.2.tar.gz",
+      "consumer": "official Dockerfile.Lite"
+    }
+  ],
+  "images": [
+    {
+      "target": "nacos:3.2.2-loong64",
+      "reference": "nacos:3.2.2-loong64",
+      "platform": "linux/loong64",
+      "digest": "sha256:bf6d69eb0974651e65e640ae50213fd5af2c67afa09e8e392937963fb0cf19e7"
+    }
+  ],
+  "tests": [
+    {
+      "name": "nacos:3.2.2-loong64-smoke",
+      "entrypoint": "sh",
+      "command": [
+        "-c",
+        "test -r /home/nacos/target/nacos-server.jar && java -version"
+      ],
+      "network_policy": "none",
+      "passed": true,
+      "validation_id": "image-validation-5cdad28b02587b23ca6f"
+    }
+  ],
+  "verification": {
+    "native_architecture": "linux/loong64",
+    "proxy_leak_checked": true
+  },
+  "provenance": {
+    "task_id": "bcla-74bddde4cc3b45aa999b5c00da19eae8",
+    "snapshot_id": "snapshot-b9c670e2fc7b5a4051c2d416"
+  }
+}

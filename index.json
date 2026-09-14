@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "projects": [
+    {
+      "project": "nacos",
+      "repository": "github.com/alibaba/nacos",
+      "path": "github.com/alibaba/nacos/index.json"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "project": "nacos",
+  "repository": "github.com/alibaba/nacos",
+  "experiences": [
+    {
+      "version": "3.2.2",
+      "resolved_commit": "cdf4e1b6aa76d50839a0b8d3c8806430d14fef86",
+      "path": "3.2.2",
+      "status": "verified",
+      "targets": [
+        {
+          "target": "nacos:3.2.2-loong64",
+          "platform": "linux/loong64",
+          "image_digest": "sha256:bf6d69eb0974651e65e640ae50213fd5af2c67afa09e8e392937963fb0cf19e7"
+        }
+      ]
+    }
+  ]
+}
