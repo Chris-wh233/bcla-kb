@@ -1,0 +1,15 @@
+{
+  "experiences": [
+    {
+      "path": "v1.8.0",
+      "status": "verified",
+      "targets": [
+        "alpine"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "v1.8.0"
+    }
+  ],
+  "repository": "https://github.com/influxdata/kapacitor",
+  "schema_version": 2
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "producer": "bcla-2.0",
+  "kind": "dependency",
+  "status": "verified",
+  "repository": "https://github.com/influxdata/flux",
+  "requested_version": "v0.191.0",
+  "resolved_commit": "b9d6eb68390c18de9f4e33f176337656babfc8cf",
+  "targets": ["loong64"],
+  "build": [
+    {
+      "cwd": "$GOMODCACHE/github.com/influxdata/flux@v0.191.0/libflux",
+      "command": "RUSTFLAGS='--cap-lints allow' cargo build --release",
+      "environment": {
+        "host": "loongarch64-alpine-linux-musl",
+        "rust": "1.96.1",
+        "libc": "0.2.172",
+        "network": "helper module access configured outside this recipe"
+      },
+      "execution_id": "exec-1856ab078db64e0f836857a3c66df526"
+    }
+  ],
+  "tests": [
+    {
+      "command": "ls -lh target/release/libflux.a target/release/libflux.so",
+      "execution_id": "exec-1856ab078db64e0f836857a3c66df526",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "10188d1d7b6d2407bf9e1d154382abd30a82a2f1a2963cefb4ca5e5a56a2cde8"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "libflux.a",
+      "version": "v0.191.0",
+      "source": "https://github.com/influxdata/flux.git@b9d6eb68390c18de9f4e33f176337656babfc8cf/libflux",
+      "content_identity": "65.9 MiB; produced by exec-1856ab078db64e0f836857a3c66df526",
+      "architecture": "loong64",
+      "abi": "musl",
+      "consumer": "Kapacitor v1.8.0 cgo static_build"
+    },
+    {
+      "name": "libflux.so",
+      "version": "v0.191.0",
+      "source": "https://github.com/influxdata/flux.git@b9d6eb68390c18de9f4e33f176337656babfc8cf/libflux",
+      "content_identity": "10.4 MiB; produced by exec-1856ab078db64e0f836857a3c66df526",
+      "architecture": "loong64",
+      "abi": "musl",
+      "consumer": "Available to the helper pkg-config bridge; not copied to final image"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "libc",
+      "version": "0.2.172",
+      "source": "Cargo lock update in helper cache",
+      "consumer": "Flux libflux native build"
+    }
+  ],
+  "applicability": {
+    "architectures": ["loong64"],
+    "libc": "musl",
+    "consumer": "Kapacitor v1.8.0 cgo static_build"
+  },
+  "provenance": {
+    "task_id": "bcla-0565c87d0e2a422eab5ab5d1d30a8f55",
+    "checkpoint_revision": 9,
+    "execution_id": "exec-1856ab078db64e0f836857a3c66df526"
+  }
+}

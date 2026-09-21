@@ -1,0 +1,19 @@
+FROM lcr.loongnix.cn/library/alpine@sha256:27cd2f3391166f399fa38eba6fe63a662114d99c1ccc62838471e03b9f4a0394
+
+RUN echo 'hosts: files dns' >> /etc/nsswitch.conf && \
+    apk add --no-cache ca-certificates setpriv && \
+    update-ca-certificates && \
+    addgroup -S kapacitor && \
+    adduser -S kapacitor -G kapacitor && \
+    mkdir -m 0750 -p /var/lib/kapacitor && \
+    chown kapacitor:kapacitor /var/lib/kapacitor
+
+COPY out/kapacitord /usr/bin/kapacitord
+COPY out/kapacitor /usr/bin/kapacitor
+COPY influxdata-docker/kapacitor/1.8/alpine/kapacitor.conf /etc/kapacitor/kapacitor.conf
+COPY influxdata-docker/kapacitor/1.8/alpine/entrypoint.sh /entrypoint.sh
+
+EXPOSE 9092
+VOLUME /var/lib/kapacitor
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["kapacitord"]

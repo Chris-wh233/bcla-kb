@@ -1,0 +1,9 @@
+{
+  "projects": [
+    {
+      "path": "influxdata/kapacitor",
+      "repository": "https://github.com/influxdata/kapacitor"
+    }
+  ],
+  "schema_version": 2
+}

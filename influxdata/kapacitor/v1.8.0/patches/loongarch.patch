@@ -1,0 +1,5 @@
+# BCLA LoongArch64 source-patch manifest
+#
+# No tracked Kapacitor source file was modified for the accepted build.
+# The adaptation is helper-side Flux/libflux generation, cgo static-link
+# flags, and the separately stored final Alpine Dockerfile.

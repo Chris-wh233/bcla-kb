@@ -1,0 +1,162 @@
+{
+  "schema_version": 2,
+  "producer": "bcla-2.0",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/influxdata/kapacitor",
+  "requested_version": "v1.8.0",
+  "resolved_commit": "c5848b64d04a1dc4039611491891dd06872ef348",
+  "targets": ["alpine"],
+  "build": [
+    {
+      "cwd": "$GOMODCACHE/github.com/influxdata/flux@v0.191.0/libflux",
+      "command": "RUSTFLAGS='--cap-lints allow' cargo build --release",
+      "environment": {
+        "host": "loongarch64-alpine-linux-musl",
+        "rust": "1.96.1",
+        "libc": "0.2.172",
+        "network": "helper module access configured outside this recipe"
+      },
+      "execution_id": "exec-1856ab078db64e0f836857a3c66df526"
+    },
+    {
+      "cwd": "$WORKSPACE/kapacitor",
+      "command": "go mod download && CGO_ENABLED=1 GOOS=linux GOARCH=loong64 CC=gcc go build -trimpath -tags 'netgo osusergo static_build' -ldflags '-s -linkmode external -extldflags \"-static\" -X main.version=1.8.0 -X main.branch=v1.8.0 -X main.commit=c5848b64d04a1dc4039611491891dd06872ef348 -X main.platform=OSS' -o ../out/kapacitord ./cmd/kapacitord && CGO_ENABLED=1 GOOS=linux GOARCH=loong64 CC=gcc go build -trimpath -tags 'netgo osusergo static_build' -ldflags '-s -linkmode external -extldflags \"-static\" -X main.version=1.8.0 -X main.branch=v1.8.0 -X main.commit=c5848b64d04a1dc4039611491891dd06872ef348 -X main.platform=OSS' -o ../out/kapacitor ./cmd/kapacitor",
+      "environment": {
+        "go": "1.26.8",
+        "architecture": "loong64",
+        "cgo": "enabled",
+        "pkg_config": "temporary flux.pc for native libflux",
+        "network": "helper module access configured outside this recipe"
+      },
+      "execution_id": "exec-32fbee93b4fa4e7c8af450398b9f7054"
+    },
+    {
+      "cwd": "$WORKSPACE",
+      "command": "docker build --pull=false -f Dockerfile.loong64-alpine -t kapacitor:1.8.0-alpine-loong64 .",
+      "environment": {
+        "base_image": "lcr.loongnix.cn/library/alpine@sha256:27cd2f3391166f399fa38eba6fe63a662114d99c1ccc62838471e03b9f4a0394",
+        "runtime": "Alpine 3.24.2"
+      },
+      "execution_id": "exec-ce2c17578c6745f08e5f5ca672af215e"
+    }
+  ],
+  "tests": [
+    {
+      "command": "docker image inspect kapacitor:1.8.0-alpine-loong64 --format 'id={{.Id}} os={{.Os}} arch={{.Architecture}} entrypoint={{json .Config.Entrypoint}} cmd={{json .Config.Cmd}} env={{json .Config.Env}}'",
+      "execution_id": "exec-baf2ebbf4e784fcd80ac13aa82f41039",
+      "result": "passed"
+    },
+    {
+      "command": "docker run --rm --entrypoint /bin/sh kapacitor:1.8.0-alpine-loong64 -c 'cat /etc/alpine-release; id kapacitor; test -x /usr/bin/kapacitord; test -s /etc/kapacitor/kapacitor.conf; test -x /entrypoint.sh; if env | grep -Eiq \"(^|_)(http|https|all|no)_proxy=|GOPROXY\"; then exit 1; fi' && docker run --rm --entrypoint /usr/bin/kapacitor kapacitor:1.8.0-alpine-loong64 version && docker run --rm kapacitor:1.8.0-alpine-loong64 kapacitord version",
+      "execution_id": "exec-baf2ebbf4e784fcd80ac13aa82f41039",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "Dockerfile.loong64-alpine",
+      "sha256": "3f815f009775446f7ffcb5f655d753bf5036abfcf036d9f46ffa601c242f3eff"
+    },
+    {
+      "path": "README.md",
+      "sha256": "b30f7758f02533c4988744e768990ce4c7921431fb8792d650b6e49d531958d1"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "5eb9431a9728055f119dc6cda5380fb19436027147c1d2b97da59f476b9d6a2f"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "2efba78158b135758b3ba3fba062304718fd544fc93f3992116b8c62f89a3be7"
+    }
+  ],
+  "images": [
+    {
+      "target": "alpine",
+      "id": "sha256:c9fd0584e116cc659ce0925bc58f848f186b96ac399567279f363d4fdd014e03",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile.loong64-alpine",
+      "source": {
+        "kind": "adapted_official_runtime",
+        "repository": "https://github.com/influxdata/influxdata-docker",
+        "commit": "919cb35e19cfc9f48239b21455a5852f0ab4bd55",
+        "path": "kapacitor/1.8/alpine/Dockerfile",
+        "base": "lcr.loongnix.cn/library/alpine@sha256:27cd2f3391166f399fa38eba6fe63a662114d99c1ccc62838471e03b9f4a0394"
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "kapacitord",
+      "version": "1.8.0",
+      "source": "https://github.com/influxdata/kapacitor@c5848b64d04a1dc4039611491891dd06872ef348/cmd/kapacitord",
+      "content_identity": "sha256:e756a2ae3b4e577b75296e299fb06d0f1564389dd5bb9931072574baa5b6c399",
+      "architecture": "loong64",
+      "abi": "musl static ELF",
+      "consumer": "final image /usr/bin/kapacitord"
+    },
+    {
+      "name": "kapacitor",
+      "version": "1.8.0",
+      "source": "https://github.com/influxdata/kapacitor@c5848b64d04a1dc4039611491891dd06872ef348/cmd/kapacitor",
+      "content_identity": "sha256:8cea1d4c9d46592b71b7c9d23eae5426cf08125180a2c9788890cea097f9588a",
+      "architecture": "loong64",
+      "abi": "musl static ELF",
+      "consumer": "final image /usr/bin/kapacitor"
+    },
+    {
+      "name": "libflux",
+      "version": "v0.191.0",
+      "source": "https://github.com/influxdata/flux@b9d6eb68390c18de9f4e33f176337656babfc8cf/libflux",
+      "content_identity": "libflux.a 65.9 MiB and libflux.so 10.4 MiB from exec-1856ab078db64e0f836857a3c66df526",
+      "architecture": "loong64",
+      "abi": "musl",
+      "consumer": "Kapacitor cgo static_build; library not copied to final image"
+    }
+  ],
+  "dependencies": [
+    "dependencies/flux-0.191.0",
+    {
+      "name": "Alpine base",
+      "version": "3.24.2",
+      "source": "lcr.loongnix.cn/library/alpine@sha256:27cd2f3391166f399fa38eba6fe63a662114d99c1ccc62838471e03b9f4a0394",
+      "consumer": "final runtime image"
+    },
+    {
+      "name": "Go helper",
+      "version": "1.26.8",
+      "source": "LoongArch64 Alpine helper",
+      "consumer": "Kapacitor binary build"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Dockerfile.loong64-alpine",
+      "out/kapacitord",
+      "out/kapacitor",
+      "influxdata-docker/kapacitor/1.8/alpine/entrypoint.sh",
+      "influxdata-docker/kapacitor/1.8/alpine/kapacitor.conf"
+    ],
+    "build_entrypoints": [
+      "Flux libflux cargo build",
+      "go build ./cmd/kapacitord",
+      "go build ./cmd/kapacitor",
+      "docker build -f Dockerfile.loong64-alpine"
+    ],
+    "compatible_targets": ["linux/loong64", "Alpine 3.24/musl"],
+    "environment_assumptions": [
+      "LoongArch64 Alpine helper with Go 1.26.8, Rust/Cargo 1.96.1, GCC/Clang, and pkg-config",
+      "Docker daemon can build and run linux/loong64 images",
+      "Go and Cargo module access is configured outside the recipe"
+    ],
+    "runtime": "Official entrypoint, non-root kapacitor user, port 9092, and /var/lib/kapacitor volume"
+  },
+  "provenance": {
+    "task_id": "bcla-0565c87d0e2a422eab5ab5d1d30a8f55",
+    "checkpoint_revision": 9,
+    "accepted_dockerfile_sha256": "3f815f009775446f7ffcb5f655d753bf5036abfcf036d9f46ffa601c242f3eff",
+    "official_runtime_repository": "https://github.com/influxdata/influxdata-docker",
+    "official_runtime_commit": "919cb35e19cfc9f48239b21455a5852f0ab4bd55"
+  }
+}
