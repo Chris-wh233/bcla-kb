@@ -5,6 +5,10 @@
       "repository": "https://github.com/emqx/emqx"
     },
     {
+      "path": "henrygd/beszel",
+      "repository": "https://github.com/henrygd/beszel"
+    },
+    {
       "path": "influxdata/kapacitor",
       "repository": "https://github.com/influxdata/kapacitor"
     }

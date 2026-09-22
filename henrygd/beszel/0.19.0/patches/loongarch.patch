@@ -1,0 +1,8 @@
+--- a/internal/dockerfile_hub
++++ b/internal/dockerfile_hub
+@@ -1 +1 @@
+-FROM --platform=$BUILDPLATFORM golang:alpine AS builder
++FROM lcr.loongnix.cn/library/golang:1.27.1-alpine AS builder
+@@ -6 +6 @@
+-COPY ../go.mod ../go.sum ./
++COPY go.mod go.sum ./

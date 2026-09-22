@@ -1,0 +1,128 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/henrygd/beszel",
+  "requested_version": "v0.19.0",
+  "resolved_commit": "ffcdb041670a501611727848649d28d886beb231",
+  "targets": [
+    "hub"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE/beszel",
+      "command": "docker build --build-arg TARGETOS=linux --build-arg TARGETARCH=loong64 -f internal/dockerfile_hub -t beszel:0.19.0-loong64 .",
+      "environment": {
+        "architecture": "loong64",
+        "helper": "Native LoongArch64 Debian forky helper with Docker socket; unzip 6.0-31 used to extract the supplied frontend ZIP.",
+        "docker_cli": "28.5.2 using the legacy builder",
+        "docker_server": "25.0.3, linux/loongarch64",
+        "builder_image": "lcr.loongnix.cn/library/golang:1.27.1-alpine",
+        "builder_manifest_digest": "sha256:b1fdf1c4395bc47cc2e5be5398822742b92128ac2f4acde206912f6b5979a677",
+        "go": "1.27.1 linux/loong64",
+        "alpine": "3.24.2",
+        "cgo": "disabled",
+        "build_args": {
+          "TARGETOS": "linux",
+          "TARGETARCH": "loong64"
+        }
+      },
+      "execution_id": "exec-987db1150aa042a3bc2d735bdd738057"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\nimage_meta=$(docker image inspect --format '{{.Id}}|{{.Os}}/{{.Architecture}}|{{.Size}}|{{json .Config.Entrypoint}}|{{json .Config.Cmd}}' beszel:0.19.0-loong64)\nprintf 'IMAGE=%s\\n' \"$image_meta\"\ncase \"$image_meta\" in *'|linux/loong64|'*) ;; *) echo 'unexpected image platform' >&2; exit 1 ;; esac\ndocker run -d --rm --name beszel-hub-smoke --tmpfs /beszel_data beszel:0.19.0-loong64\ntrap 'docker rm -f beszel-hub-smoke >/dev/null 2>&1 || true' EXIT\ndocker run --rm --network container:beszel-hub-smoke --entrypoint /bin/sh lcr.loongnix.cn/library/golang:1.27.1-alpine -c 'i=0; until wget -q -T 2 -O /tmp/beszel-index.html http://127.0.0.1:8090/; do i=$((i+1)); if [ \"$i\" -ge 30 ]; then echo \"Hub did not return HTTP 200\" >&2; exit 1; fi; sleep 1; done; test -s /tmp/beszel-index.html; grep -qi \"<!doctype html\" /tmp/beszel-index.html; echo \"HTTP 200; HTML bytes=$(wc -c </tmp/beszel-index.html)\"; head -c 240 /tmp/beszel-index.html; echo'\ndocker logs beszel-hub-smoke",
+      "execution_id": "exec-5644b67e74f64d09a517961c3fc0f036",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "Dockerfile.hub",
+      "sha256": "7bc7fc553755fe550f03eb8542430cb9500efa76cc7698f2f366474e2e0472cb"
+    },
+    {
+      "path": "README.md",
+      "sha256": "ed3dcf71a4e35b464e4efa4deb981d7ebb16099d4bcc72a5386fe04827175447"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "2aa1caa84289399ce1f0dc9131b52c512dc326e69750abdea7c3f2291b871983"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "2b366232d20feef85c0af3fe5fc4059d82d6dbb193b4ab7b9d85965a92fa6038"
+    }
+  ],
+  "images": [
+    {
+      "target": "hub",
+      "id": "sha256:6415166519f88f83a9e5f3e97d6eefd61b1e01f5745305e2f640968fc857a32c",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile.hub",
+      "source": {
+        "kind": "adapted_official_dockerfile",
+        "repository": "https://github.com/henrygd/beszel",
+        "commit": "ffcdb041670a501611727848649d28d886beb231",
+        "path": "internal/dockerfile_hub",
+        "builder_image": "lcr.loongnix.cn/library/golang:1.27.1-alpine",
+        "builder_manifest_digest": "sha256:b1fdf1c4395bc47cc2e5be5398822742b92128ac2f4acde206912f6b5979a677"
+      }
+    }
+  ],
+  "artifacts": [],
+  "dependencies": [
+    {
+      "name": "Beszel Hub frontend static output",
+      "version": "v0.19.0",
+      "source": "User-supplied x86_64-generated archive beszel-hub-static-assets-v0.19.0.zip; no public archive URL was supplied",
+      "content_identity": "sha256:ba7ba509678667091d0e07a84d2f14c0061eccf40abb200a4fbe1526a22260a4",
+      "architecture": "architecture-independent HTML/CSS/JS",
+      "consumer": "Extracted under internal/site/dist/ and embedded via internal/site/embed.go"
+    },
+    {
+      "name": "Go builder base image",
+      "version": "1.27.1-alpine",
+      "source": "lcr.loongnix.cn/library/golang:1.27.1-alpine",
+      "content_identity": "registry manifest sha256:b1fdf1c4395bc47cc2e5be5398822742b92128ac2f4acde206912f6b5979a677",
+      "architecture": "loong64",
+      "abi": "Alpine 3.24.2; native Go 1.27.1 linux/loong64",
+      "consumer": "Dockerfile.hub builder stage"
+    },
+    {
+      "name": "Go module graph",
+      "version": "Pinned by go.mod and go.sum at ffcdb041670a501611727848649d28d886beb231",
+      "source": "https://github.com/henrygd/beszel/tree/ffcdb041670a501611727848649d28d886beb231",
+      "content_identity": "Upstream source commit ffcdb041670a501611727848649d28d886beb231",
+      "consumer": "Dockerfile.hub go mod download and Hub compilation"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "internal/site/dist/ (validated v0.19.0 static output)",
+      "Dockerfile.hub copied to internal/dockerfile_hub"
+    ],
+    "build_entrypoints": [
+      "docker build --build-arg TARGETOS=linux --build-arg TARGETARCH=loong64 -f internal/dockerfile_hub -t beszel:0.19.0-loong64 ."
+    ],
+    "compatible_targets": [
+      "linux/loong64"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 Docker daemon; the builder image runs natively and no emulation is used.",
+      "Repository-root Docker build context; Dockerfile is at internal/dockerfile_hub.",
+      "lcr.loongnix.cn/library/golang:1.27.1-alpine tag must provide the verified Go 1.27.1 LoongArch64 image.",
+      "Go module downloads must be reachable during docker build.",
+      "The external frontend archive must match the requested Beszel v0.19.0 frontend output."
+    ],
+    "runtime": "Scratch image with /beszel entrypoint, default serve --http=0.0.0.0:8090, exposed port 8090 and persistent /beszel_data volume."
+  },
+  "provenance": {
+    "task_id": "bcla-b8fe1bffd2a6414aa44f0964b4a194c4",
+    "checkpoint_revision": 35,
+    "accepted_dockerfile_sha256": "7bc7fc553755fe550f03eb8542430cb9500efa76cc7698f2f366474e2e0472cb",
+    "accepted_patch_sha256": "2b366232d20feef85c0af3fe5fc4059d82d6dbb193b4ab7b9d85965a92fa6038"
+  }
+}

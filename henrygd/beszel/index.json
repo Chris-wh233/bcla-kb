@@ -1,0 +1,15 @@
+{
+  "experiences": [
+    {
+      "path": "0.19.0",
+      "status": "verified",
+      "targets": [
+        "hub"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "v0.19.0"
+    }
+  ],
+  "repository": "https://github.com/henrygd/beszel",
+  "schema_version": 2
+}
