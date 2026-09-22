@@ -1,0 +1,15 @@
+{
+  "experiences": [
+    {
+      "path": "6.3.0",
+      "status": "verified",
+      "targets": [
+        "debian-14-slim"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "v6.3.0"
+    }
+  ],
+  "repository": "https://github.com/emqx/emqx",
+  "schema_version": 2
+}

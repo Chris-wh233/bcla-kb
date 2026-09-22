@@ -1,0 +1,131 @@
+{
+  "schema_version": 2,
+  "producer": "bcla-2.0",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/emqx/emqx",
+  "requested_version": "v6.3.0",
+  "resolved_commit": "021c5ef13bf8c767058626ad9b760052c273736f",
+  "targets": [
+    "debian-14-slim"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE",
+      "command": "set -eu\nsrc=emqx-src\npkg=emqx630-candidate/emqx-enterprise-6.3.0-debian-loongarch64.tar.gz\nexpected=fbf1f7a2df89598fc21b0ad0ba63de0677d28cd54f62f3283221286e7b43d48d\nactual=$(sha256sum \"$pkg\" | cut -d ' ' -f1)\ntest \"$actual\" = \"$expected\"\ntest \"$(sha256sum \"$src/emqx-enterprise-6.3.0-debian13-loong64.tar.gz\" | cut -d ' ' -f1)\" = \"$expected\"\ndocker buildx build --load --progress=plain --platform linux/loong64 \\\n  --build-arg BUILD_FROM=lcr.loongnix.cn/library/debian:14-slim \\\n  --build-arg RUN_FROM=lcr.loongnix.cn/library/debian:14-slim \\\n  --build-arg SOURCE_TYPE=tgz \\\n  --build-arg PROFILE=emqx-enterprise \\\n  --build-arg PKG_VSN=6.3.0 \\\n  -t emqx-enterprise:6.3.0-loong64-debian14 \\\n  -f \"$src/deploy/docker/Dockerfile\" \"$src\"",
+      "environment": {
+        "architecture": "loong64",
+        "helper": "native LoongArch64 Debian helper based on the requested Debian 14 slim image",
+        "docker_buildx": "0.29.1",
+        "network": "BCLA direct=true; standard helper proxy overlay masked",
+        "build_args": {
+          "BUILD_FROM": "lcr.loongnix.cn/library/debian:14-slim",
+          "RUN_FROM": "lcr.loongnix.cn/library/debian:14-slim",
+          "SOURCE_TYPE": "tgz",
+          "PROFILE": "emqx-enterprise",
+          "PKG_VSN": "6.3.0"
+        }
+      },
+      "execution_id": "exec-e5736f1c860b4a50ab715fcc0414996a"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\nimg=emqx-enterprise:6.3.0-loong64-debian14\ndocker image inspect --format 'ID={{.Id}} OS={{.Os}} ARCH={{.Architecture}} USER={{.Config.User}} ENTRYPOINT={{json .Config.Entrypoint}} CMD={{json .Config.Cmd}} ENV={{json .Config.Env}}' \"$img\"\ndocker run --rm --platform linux/loong64 --entrypoint /opt/emqx/bin/emqx \"$img\" check_config",
+      "execution_id": "exec-e1bc2e9037be48b8b6b4fc85779bf5a2",
+      "result": "passed"
+    },
+    {
+      "command": "set -eu\nimg=emqx-enterprise:6.3.0-loong64-debian14\nname=\"bcla-emqx630-smoke-$$\"\ncleanup() { docker rm -f \"$name\" >/dev/null 2>&1 || true; }\ntrap cleanup EXIT\ndocker run -d --platform linux/loong64 --name \"$name\" \"$img\"\ni=0\nuntil [ \"$i\" -ge 45 ]; do\n  state=$(docker inspect --format '{{.State.Status}}' \"$name\")\n  if [ \"$state\" != running ]; then\n    docker logs \"$name\"\n    echo \"container stopped before ready: $state\" >&2\n    exit 1\n  fi\n  if docker exec \"$name\" /opt/emqx/bin/emqx ping; then\n    echo \"DEFAULT_ENTRYPOINT_STARTUP=PASS\"\n    docker logs \"$name\" 2>&1 | tail -n 30\n    exit 0\n  fi\n  i=$((i + 1))\n  sleep 2\ndone\ndocker logs \"$name\"\necho \"EMQX ping readiness timeout\" >&2\nexit 1",
+      "execution_id": "exec-e313de576a6149749d0e98d168f31260",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "Dockerfile.loong64-debian14",
+      "sha256": "2c58c09a98e8e7a62bf97f23eaf42f90662cd2c4ca640d69468c73e2282c758b"
+    },
+    {
+      "path": "README.md",
+      "sha256": "36af93edf7f015e603c94eee6bc67643fb09c5bd7aecf68fbfbf952ac39ff3bd"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "57990d00740bd21dfc0005e83bc4e2379b75284c8e92f6592e7c303f4f778d5b"
+    }
+  ],
+  "images": [
+    {
+      "target": "debian-14-slim",
+      "id": "sha256:04bb3a1f5e998827b4d8f18724b00bbf011f91314459a79f2d5a9e1547182b1b",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile.loong64-debian14",
+      "source": {
+        "kind": "adapted_official_runtime",
+        "repository": "https://github.com/emqx/emqx",
+        "commit": "021c5ef13bf8c767058626ad9b760052c273736f",
+        "path": "deploy/docker/Dockerfile",
+        "base": "lcr.loongnix.cn/library/debian:14-slim@sha256:b2ef0a3db09e1bb568ef1e5387fa71117cd202411fa6819c4a126bf9374bc72b"
+      }
+    }
+  ],
+  "artifacts": [],
+  "dependencies": [
+    {
+      "name": "EMQX Enterprise distribution",
+      "version": "6.3.0",
+      "source": "https://github.com/loongarch64-releases/emqx/releases/download/6.3.0/emqx-enterprise-6.3.0-debian-loongarch64.tar.gz",
+      "content_identity": "sha256:fbf1f7a2df89598fc21b0ad0ba63de0677d28cd54f62f3283221286e7b43d48d",
+      "architecture": "loong64",
+      "abi": "Debian-family glibc; native LoongArch64 EMQX/OTP runtime",
+      "consumer": "upstream Dockerfile builder_tgz stage, then final /opt/emqx"
+    },
+    {
+      "name": "stunnel static curl",
+      "version": "8.20.0",
+      "source": "https://github.com/stunnel/static-curl/releases/download/8.20.0/curl-linux-loongarch64-glibc-8.20.0.tar.xz",
+      "content_identity": "sha256:5fb7ee101c620556fa64faa1a72c2e000fb23108c8567ea1a1e297d4ce7c4c33",
+      "architecture": "loong64",
+      "abi": "glibc static executable",
+      "consumer": "temporary curl_static stage; verified curl binary copied to final /usr/bin/curl"
+    },
+    {
+      "name": "Debian base image",
+      "version": "14-slim",
+      "source": "lcr.loongnix.cn/library/debian:14-slim",
+      "content_identity": "sha256:b2ef0a3db09e1bb568ef1e5387fa71117cd202411fa6819c4a126bf9374bc72b",
+      "architecture": "loong64",
+      "consumer": "final runtime image"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Dockerfile.loong64-debian14",
+      "patches/loongarch.patch",
+      "EMQX Enterprise 6.3.0 LoongArch64 runtime tarball"
+    ],
+    "build_entrypoints": [
+      "docker buildx build --load --platform linux/loong64"
+    ],
+    "compatible_targets": [
+      "linux/loong64",
+      "Debian 14 slim"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 Docker daemon with Docker Buildx",
+      "Direct access to deb.debian.org and GitHub release assets",
+      "The requested Debian base tag/digest remains available",
+      "Debian package repositories are unpinned in the upstream Dockerfile; package layer contents can change over time"
+    ],
+    "runtime": "Official /usr/bin/docker-entrypoint.sh and /opt/emqx/bin/emqx foreground command; runtime user emqx."
+  },
+  "provenance": {
+    "task_id": "bcla-845320c7a3544eeb9417b52d8c31c41f",
+    "checkpoint_revision": 15,
+    "accepted_dockerfile_sha256": "2c58c09a98e8e7a62bf97f23eaf42f90662cd2c4ca640d69468c73e2282c758b",
+    "accepted_patch_sha256": "57990d00740bd21dfc0005e83bc4e2379b75284c8e92f6592e7c303f4f778d5b",
+    "base_image": "lcr.loongnix.cn/library/debian:14-slim",
+    "base_image_id": "sha256:b2ef0a3db09e1bb568ef1e5387fa71117cd202411fa6819c4a126bf9374bc72b"
+  }
+}

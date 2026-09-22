@@ -1,0 +1,43 @@
+diff --git a/deploy/docker/Dockerfile b/deploy/docker/Dockerfile
+index f230ab5..e5ffcbb 100644
+--- a/deploy/docker/Dockerfile
++++ b/deploy/docker/Dockerfile
+@@ -8,8 +8,9 @@ ARG SOURCE_TYPE=src # tgz
+ # itself never links GnuTLS. The static binary is built with OpenSSL and no
+ # RTMP, so we get `curl` back without re-introducing GnuTLS. This stage is
+ # discarded after the COPY in the runtime stage; only the verified binary
+-# ships in the final image. Based on BUILD_FROM (the emqx-builder image)
+-# because it already ships curl + xz + tar; no apt-install needed.
++# ships in the final image. BUILD_FROM normally is the emqx-builder image,
++# which already ships curl + xz + tar. For LoongArch, BUILD_FROM is the
++# requested Debian 14 base, so install those tools in this throwaway stage.
+ FROM ${BUILD_FROM} AS curl_static
+ ARG TARGETARCH
+ ARG CURL_STATIC_VERSION=8.20.0
+@@ -17,14 +18,25 @@ RUN set -eu; \
+     case "${TARGETARCH}" in \
+         amd64) curl_arch=x86_64; curl_sha=3cf20eb1bca2726d74a39fcda2b758a08a23a3dce73ad6f3f468d7e4d49d215b ;; \
+         arm64) curl_arch=aarch64; curl_sha=061b624119f128038bdfa96f975980d6c35ed502130c4825d59b3143efeafa0e ;; \
++        loong64) curl_arch=loongarch64; curl_sha=5fb7ee101c620556fa64faa1a72c2e000fb23108c8567ea1a1e297d4ce7c4c33 ;; \
+         *) echo "unsupported TARGETARCH=${TARGETARCH} for stunnel/static-curl" >&2; exit 1 ;; \
+     esac; \
++    if [ "${TARGETARCH}" = loong64 ]; then \
++        export DEBIAN_FRONTEND=noninteractive; \
++        apt-get update; \
++        apt-get install -y --no-install-recommends ca-certificates curl xz-utils; \
++    fi; \
+     f="curl-linux-${curl_arch}-glibc-${CURL_STATIC_VERSION}.tar.xz"; \
+     curl -fsSL -o "/tmp/${f}" "https://github.com/stunnel/static-curl/releases/download/${CURL_STATIC_VERSION}/${f}"; \
+     echo "${curl_sha}  /tmp/${f}" | sha256sum -c -; \
+     tar -xJf "/tmp/${f}" -C /tmp curl; \
+     install -m 0755 /tmp/curl /usr/local/bin/curl; \
+-    /usr/local/bin/curl --version
++    /usr/local/bin/curl --version; \
++    if [ "${TARGETARCH}" = loong64 ]; then \
++        apt-get clean; \
++        rm -rf /var/lib/apt/lists/*; \
++    fi; \
++    rm -f "/tmp/${f}"
+ 
+ FROM ${BUILD_FROM} AS builder_src
+ ONBUILD COPY . /emqx

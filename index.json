@@ -1,6 +1,10 @@
 {
   "projects": [
     {
+      "path": "emqx/emqx",
+      "repository": "https://github.com/emqx/emqx"
+    },
+    {
       "path": "influxdata/kapacitor",
       "repository": "https://github.com/influxdata/kapacitor"
     }
