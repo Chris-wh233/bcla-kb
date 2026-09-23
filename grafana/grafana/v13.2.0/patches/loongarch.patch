@@ -1,0 +1,307 @@
+diff --git a/Dockerfile b/Dockerfile
+index 0f0ebf44..63fd4015 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -1,4 +1,4 @@
+-# syntax=docker/dockerfile:1.7-labs
++# syntax=lcr.loongnix.cn/docker/dockerfile:1.17.1
+ 
+ # to maintain formatting of multiline commands in vscode, add the following to settings.json:
+ # "docker.languageserver.formatter.ignoreMultilineInstructions": true
+@@ -13,10 +13,10 @@ ARG JS_SRC=js-builder
+ 
+ # Dependabot cannot update dependencies listed in ARGs
+ # By using FROM instructions we can delegate dependency updates to dependabot
+-FROM alpine:3.24.1 AS alpine-base
++FROM lcr.loongnix.cn/library/alpine:3.24.1 AS alpine-base
+ FROM ubuntu:24.04 AS ubuntu-base
+-FROM golang:1.26.6-alpine AS go-builder-base
+-FROM --platform=${JS_PLATFORM} node:24-alpine AS js-builder-base
++FROM lcr.loongnix.cn/library/golang:1.26.7-alpine AS go-builder-base
++FROM --platform=${JS_PLATFORM} lcr.loongnix.cn/library/node:24-alpine AS js-builder-base
+ FROM gcr.io/distroless/static-debian13 AS distroless-base
+ # Javascript build stage
+ FROM --platform=${JS_PLATFORM} ${JS_IMAGE} AS js-builder
+@@ -79,8 +79,8 @@ COPY .citools .citools
+ 
+ # Copy go.mod/go.sum from each workspace module for dependency caching.
+ # Only dependency file changes invalidate the go mod download cache layer.
+-# Uses --parents to preserve directory structure with fewer COPY directives.
+-COPY --parents **/go.mod **/go.sum ./
++# Copy the workspace modules for dependency caching without relying on the unavailable --parents frontend feature.
++COPY . .
+ 
+ RUN --mount=type=cache,target=/go/pkg/mod \
+     go mod download
+diff --git a/package.json b/package.json
+index c757a192..16d336ed 100644
+--- a/package.json
++++ b/package.json
+@@ -109,7 +109,7 @@
+     "@rspack/core": "^2.1.7",
+     "@rtk-query/codegen-openapi": "^2.0.0",
+     "@stylistic/eslint-plugin-ts": "^4.0.0",
+-    "@swc/core": "1.13.3",
++    "@swc/core": "npm:@swc/wasm@1.13.3",
+     "@swc/helpers": "0.5.17",
+     "@testing-library/dom": "10.4.1",
+     "@testing-library/jest-dom": "6.6.4",
+diff --git a/packages/grafana-plugin-configs/package.json b/packages/grafana-plugin-configs/package.json
+index 11961092..25640485 100644
+--- a/packages/grafana-plugin-configs/package.json
++++ b/packages/grafana-plugin-configs/package.json
+@@ -10,7 +10,7 @@
+   "type": "module",
+   "devDependencies": {
+     "@grafana/tsconfig": "^2.0.0",
+-    "@swc/core": "1.13.3",
++    "@swc/core": "npm:@swc/wasm@1.13.3",
+     "@swc/helpers": "^0.5.0",
+     "@swc/jest": "^0.2.26",
+     "@types/eslint": "9.6.1",
+diff --git a/packages/grafana-test-utils/package.json b/packages/grafana-test-utils/package.json
+index 8762c722..4f995010 100644
+--- a/packages/grafana-test-utils/package.json
++++ b/packages/grafana-test-utils/package.json
+@@ -67,7 +67,7 @@
+   },
+   "devDependencies": {
+     "@grafana/runtime": "workspace:*",
+-    "@swc/core": "1.13.3",
++    "@swc/core": "npm:@swc/wasm@1.13.3",
+     "@swc/jest": "^0.2.26",
+     "@types/chance": "^1.1.7",
+     "@types/jest": "29.5.14",
+diff --git a/yarn.lock b/yarn.lock
+index 33d85a0b..adc10368 100644
+--- a/yarn.lock
++++ b/yarn.lock
+@@ -2708,7 +2708,7 @@ __metadata:
+   resolution: "@grafana/plugin-configs@workspace:packages/grafana-plugin-configs"
+   dependencies:
+     "@grafana/tsconfig": "npm:^2.0.0"
+-    "@swc/core": "npm:1.13.3"
++    "@swc/core": "npm:@swc/wasm@1.13.3"
+     "@swc/helpers": "npm:^0.5.0"
+     "@swc/jest": "npm:^0.2.26"
+     "@types/eslint": "npm:9.6.1"
+@@ -3120,7 +3120,7 @@ __metadata:
+     "@grafana/api-clients": "workspace:*"
+     "@grafana/runtime": "workspace:*"
+     "@openfeature/react-sdk": "npm:^1.3.0"
+-    "@swc/core": "npm:1.13.3"
++    "@swc/core": "npm:@swc/wasm@1.13.3"
+     "@swc/jest": "npm:^0.2.26"
+     "@types/chance": "npm:^1.1.7"
+     "@types/jest": "npm:29.5.14"
+@@ -9534,13 +9534,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-darwin-arm64@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-darwin-arm64@npm:1.13.3"
+-  conditions: os=darwin & cpu=arm64
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-darwin-arm64@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-darwin-arm64@npm:1.15.40"
+@@ -9548,13 +9541,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-darwin-x64@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-darwin-x64@npm:1.13.3"
+-  conditions: os=darwin & cpu=x64
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-darwin-x64@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-darwin-x64@npm:1.15.40"
+@@ -9562,13 +9548,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-linux-arm-gnueabihf@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.13.3"
+-  conditions: os=linux & cpu=arm
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-linux-arm-gnueabihf@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-linux-arm-gnueabihf@npm:1.15.40"
+@@ -9576,13 +9555,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-linux-arm64-gnu@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-linux-arm64-gnu@npm:1.13.3"
+-  conditions: os=linux & cpu=arm64 & libc=glibc
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-linux-arm64-gnu@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-linux-arm64-gnu@npm:1.15.40"
+@@ -9590,13 +9562,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-linux-arm64-musl@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-linux-arm64-musl@npm:1.13.3"
+-  conditions: os=linux & cpu=arm64 & libc=musl
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-linux-arm64-musl@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-linux-arm64-musl@npm:1.15.40"
+@@ -9618,13 +9583,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-linux-x64-gnu@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-linux-x64-gnu@npm:1.13.3"
+-  conditions: os=linux & cpu=x64 & libc=glibc
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-linux-x64-gnu@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-linux-x64-gnu@npm:1.15.40"
+@@ -9632,13 +9590,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-linux-x64-musl@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-linux-x64-musl@npm:1.13.3"
+-  conditions: os=linux & cpu=x64 & libc=musl
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-linux-x64-musl@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-linux-x64-musl@npm:1.15.40"
+@@ -9646,13 +9597,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-win32-arm64-msvc@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-win32-arm64-msvc@npm:1.13.3"
+-  conditions: os=win32 & cpu=arm64
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-win32-arm64-msvc@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-win32-arm64-msvc@npm:1.15.40"
+@@ -9660,13 +9604,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-win32-ia32-msvc@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-win32-ia32-msvc@npm:1.13.3"
+-  conditions: os=win32 & cpu=ia32
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-win32-ia32-msvc@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-win32-ia32-msvc@npm:1.15.40"
+@@ -9674,13 +9611,6 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core-win32-x64-msvc@npm:1.13.3":
+-  version: 1.13.3
+-  resolution: "@swc/core-win32-x64-msvc@npm:1.13.3"
+-  conditions: os=win32 & cpu=x64
+-  languageName: node
+-  linkType: hard
+-
+ "@swc/core-win32-x64-msvc@npm:1.15.40":
+   version: 1.15.40
+   resolution: "@swc/core-win32-x64-msvc@npm:1.15.40"
+@@ -9688,49 +9618,10 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/core@npm:1.13.3":
++"@swc/core@npm:@swc/wasm@1.13.3":
+   version: 1.13.3
+-  resolution: "@swc/core@npm:1.13.3"
+-  dependencies:
+-    "@swc/core-darwin-arm64": "npm:1.13.3"
+-    "@swc/core-darwin-x64": "npm:1.13.3"
+-    "@swc/core-linux-arm-gnueabihf": "npm:1.13.3"
+-    "@swc/core-linux-arm64-gnu": "npm:1.13.3"
+-    "@swc/core-linux-arm64-musl": "npm:1.13.3"
+-    "@swc/core-linux-x64-gnu": "npm:1.13.3"
+-    "@swc/core-linux-x64-musl": "npm:1.13.3"
+-    "@swc/core-win32-arm64-msvc": "npm:1.13.3"
+-    "@swc/core-win32-ia32-msvc": "npm:1.13.3"
+-    "@swc/core-win32-x64-msvc": "npm:1.13.3"
+-    "@swc/counter": "npm:^0.1.3"
+-    "@swc/types": "npm:^0.1.23"
+-  peerDependencies:
+-    "@swc/helpers": ">=0.5.17"
+-  dependenciesMeta:
+-    "@swc/core-darwin-arm64":
+-      optional: true
+-    "@swc/core-darwin-x64":
+-      optional: true
+-    "@swc/core-linux-arm-gnueabihf":
+-      optional: true
+-    "@swc/core-linux-arm64-gnu":
+-      optional: true
+-    "@swc/core-linux-arm64-musl":
+-      optional: true
+-    "@swc/core-linux-x64-gnu":
+-      optional: true
+-    "@swc/core-linux-x64-musl":
+-      optional: true
+-    "@swc/core-win32-arm64-msvc":
+-      optional: true
+-    "@swc/core-win32-ia32-msvc":
+-      optional: true
+-    "@swc/core-win32-x64-msvc":
+-      optional: true
+-  peerDependenciesMeta:
+-    "@swc/helpers":
+-      optional: true
+-  checksum: 10/d9f933b69b6872b69a40a926eafd98a6088e545027e031f32717f7112ce39c58ba6714a44cd894b31a619a2999b94756582735eb3ec69a35ff434da2b537e868
++  resolution: "@swc/wasm@npm:1.13.3"
++  checksum: 10/55b3bfbef0e1d08ed79e2d416b63a3069f82422dc53308d0d83eaa9c9c5dd696ecfc1d3268f8a0c69806eb702729e1146f8cfd3e11c63c9b1da891bd15dda53b
+   languageName: node
+   linkType: hard
+ 
+@@ -9815,7 +9706,7 @@ __metadata:
+   languageName: node
+   linkType: hard
+ 
+-"@swc/types@npm:^0.1.23, @swc/types@npm:^0.1.26":
++"@swc/types@npm:^0.1.26":
+   version: 0.1.26
+   resolution: "@swc/types@npm:0.1.26"
+   dependencies:
+@@ -19614,7 +19505,7 @@ __metadata:
+     "@rspack/core": "npm:^2.1.7"
+     "@rtk-query/codegen-openapi": "npm:^2.0.0"
+     "@stylistic/eslint-plugin-ts": "npm:^4.0.0"
+-    "@swc/core": "npm:1.13.3"
++    "@swc/core": "npm:@swc/wasm@1.13.3"
+     "@swc/helpers": "npm:0.5.17"
+     "@tanstack/react-virtual": "npm:^3.5.1"
+     "@testing-library/dom": "npm:10.4.1"

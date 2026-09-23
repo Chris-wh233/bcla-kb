@@ -1,0 +1,15 @@
+{
+  "experiences": [
+    {
+      "path": "v13.2.0",
+      "status": "verified",
+      "targets": [
+        "grafana image"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "v13.2.0"
+    }
+  ],
+  "repository": "https://github.com/grafana/grafana.git",
+  "schema_version": 2
+}

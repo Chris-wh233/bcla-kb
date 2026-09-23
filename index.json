@@ -5,6 +5,10 @@
       "repository": "https://github.com/emqx/emqx"
     },
     {
+      "path": "grafana/grafana",
+      "repository": "https://github.com/grafana/grafana.git"
+    },
+    {
       "path": "henrygd/beszel",
       "repository": "https://github.com/henrygd/beszel"
     },

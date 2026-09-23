@@ -1,0 +1,176 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/grafana/grafana.git",
+  "requested_version": "v13.2.0",
+  "resolved_commit": "f681b1359f6a0b8ecb9f2c49a88ac72b75bde73b",
+  "targets": [
+    "grafana image"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE/grafana",
+      "command": "docker buildx build --progress=plain --load --platform=linux/loong64 --target final-alpine --build-arg JS_PLATFORM=linux/loong64 -t grafana:13.2.0-loong64 .",
+      "environment": {
+        "architecture": "loong64",
+        "platform": "linux/loong64",
+        "emulation": false,
+        "dockerfile_target": "final-alpine",
+        "build_args": {
+          "JS_PLATFORM": "linux/loong64"
+        },
+        "frontend": "native Node.js 24 Alpine; Yarn 4.17.1; Nx Grafana frontend target",
+        "backend": "native Go 1.26.7 Alpine; GOOS=linux GOARCH=loong64",
+        "base_images": [
+          {
+            "image": "lcr.loongnix.cn/library/alpine:3.24.1",
+            "manifest_digest": "sha256:409547fe91e3200310b558482055d111b01d50f89b13e4cb7769e8844c3aeb99"
+          },
+          {
+            "image": "lcr.loongnix.cn/library/node:24-alpine",
+            "manifest_digest": "sha256:6800d7441c0ca15d2327df31a5a33c48ab2d4ac442f0ed3156f197f9b0f8efb3"
+          },
+          {
+            "image": "lcr.loongnix.cn/library/golang:1.26.7-alpine",
+            "manifest_digest": "sha256:74fb0c429745307ca7dd175f74ec1afcb4fd783d0bd9835d868858d9ec26d2a8"
+          },
+          {
+            "image": "lcr.loongnix.cn/docker/dockerfile:1.17.1"
+          }
+        ]
+      },
+      "execution_id": "exec-a6b5040c0df74cd3a1225ec68b7790d6"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\ndocker image inspect grafana:13.2.0-loong64 --format 'image={{.Id}} arch={{.Architecture}} os={{.Os}} user={{.Config.User}} ports={{json .Config.ExposedPorts}}'\ndocker run --rm --platform=linux/loong64 --entrypoint=/bin/sh grafana:13.2.0-loong64 -c 'uname -m; grafana server -v; od -An -tx1 -N20 /usr/share/grafana/bin/grafana'",
+      "execution_id": "exec-0049506f14d64ac88c3decc87f872b0e",
+      "result": "passed"
+    },
+    {
+      "command": "set -eu\ndocker rm -f bcla-grafana-13-2-0-smoke >/dev/null 2>&1 || true\ndocker run -d --name bcla-grafana-13-2-0-smoke -e GF_DATABASE_TYPE=sqlite3 -e GF_SECURITY_ADMIN_PASSWORD=admin grafana:13.2.0-loong64 >/tmp/grafana-container-id\nfor i in $(seq 1 60); do\n  if docker exec bcla-grafana-13-2-0-smoke wget -qO- http://127.0.0.1:3000/api/health; then\n    docker rm -f bcla-grafana-13-2-0-smoke >/dev/null\n    exit 0\n  fi\n  sleep 2\ndone\ndocker logs bcla-grafana-13-2-0-smoke\ndocker rm -f bcla-grafana-13-2-0-smoke >/dev/null\nexit 1",
+      "execution_id": "exec-ce1be4880b0040a6be10c6655e773e79",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "Dockerfile.grafana-v13.2.0-loong64",
+      "sha256": "dc3627a6ea03fa9768f8d656650af62d0ccbe7fcb61b9de89072a5380d70896c"
+    },
+    {
+      "path": "Dockerfile.upstream.v13.2.0",
+      "sha256": "1cef8504d638f04f375f60157835acf9e32b936c9d4f8da7dfd5ec3b821c78a6"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "672214d84e15c8875af328697a16ba1c3736f85e4412cf97b1e3344fbdd1b8c9"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "750f2fde600edb0a4e064eb3725c10933da473bf3eb905188e60952f089bf527"
+    },
+    {
+      "path": "README.md",
+      "sha256": "96f0025fa987c0a361ccf03f47ed8519a142004a2d7dc853b57f8ca5cd10ac81"
+    }
+  ],
+  "images": [
+    {
+      "target": "grafana image",
+      "id": "sha256:a428a37ecb55132c74a7ea36b4a5a7d55dac29a6b0ee85e5d368cac80777976d",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile.grafana-v13.2.0-loong64",
+      "source": {
+        "kind": "adapted_official_dockerfile",
+        "repository": "https://github.com/grafana/grafana.git",
+        "commit": "f681b1359f6a0b8ecb9f2c49a88ac72b75bde73b",
+        "path": "Dockerfile",
+        "target": "final-alpine"
+      }
+    }
+  ],
+  "artifacts": [],
+  "dependencies": [
+    {
+      "name": "Alpine runtime/build base",
+      "version": "3.24.1",
+      "source": "lcr.loongnix.cn/library/alpine:3.24.1",
+      "content_identity": "sha256:409547fe91e3200310b558482055d111b01d50f89b13e4cb7769e8844c3aeb99",
+      "architecture": "loong64",
+      "consumer": "final-alpine and intermediate Alpine stages"
+    },
+    {
+      "name": "Node.js frontend builder",
+      "version": "24-alpine",
+      "source": "lcr.loongnix.cn/library/node:24-alpine",
+      "content_identity": "sha256:6800d7441c0ca15d2327df31a5a33c48ab2d4ac442f0ed3156f197f9b0f8efb3",
+      "architecture": "loong64",
+      "consumer": "js-builder-base and js-builder"
+    },
+    {
+      "name": "Go backend builder",
+      "version": "1.26.7-alpine",
+      "source": "lcr.loongnix.cn/library/golang:1.26.7-alpine",
+      "content_identity": "sha256:74fb0c429745307ca7dd175f74ec1afcb4fd783d0bd9835d868858d9ec26d2a8",
+      "architecture": "loong64",
+      "consumer": "go-builder-base and go-builder"
+    },
+    {
+      "name": "Dockerfile frontend",
+      "version": "1.17.1",
+      "source": "lcr.loongnix.cn/docker/dockerfile:1.17.1",
+      "consumer": "Dockerfile frontend syntax"
+    },
+    {
+      "name": "@swc/wasm",
+      "version": "1.13.3",
+      "source": "npm:@swc/wasm@1.13.3",
+      "architecture": "architecture-independent WebAssembly",
+      "consumer": "Grafana frontend compiler API replacing native @swc/core 1.13.3"
+    },
+    {
+      "name": "docker-buildx",
+      "version": "0.29.1+ds1-4",
+      "source": "Debian unstable LoongArch system repository",
+      "architecture": "loong64",
+      "consumer": "host-side Docker image build with --load and --platform"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Grafana source at resolved_commit",
+      "Dockerfile",
+      "package.json",
+      "packages/grafana-plugin-configs/package.json",
+      "packages/grafana-test-utils/package.json",
+      "yarn.lock",
+      "patches/loongarch.patch"
+    ],
+    "build_entrypoints": [
+      "docker buildx build --target final-alpine",
+      "Dockerfile js-builder stage (official Yarn/Nx frontend build)",
+      "Dockerfile go-builder stage (official make build-go backend build)"
+    ],
+    "compatible_targets": [
+      "linux/loong64"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 Docker daemon/buildx; no emulation.",
+      "The verified lcr.loongnix.cn images and npm/Go dependency sources are reachable during the build.",
+      "The build context is the Grafana repository root.",
+      "Only the final-alpine target is covered by this verified recipe."
+    ],
+    "runtime": "Grafana server on port 3000, running as UID 472 with the official /run.sh entrypoint."
+  },
+  "provenance": {
+    "task_id": "bcla-80f2aa4eb5d84b3f920407dd062c7cef",
+    "checkpoint_revision": 8,
+    "accepted_dockerfile_sha256": "dc3627a6ea03fa9768f8d656650af62d0ccbe7fcb61b9de89072a5380d70896c",
+    "accepted_upstream_dockerfile_sha256": "1cef8504d638f04f375f60157835acf9e32b936c9d4f8da7dfd5ec3b821c78a6",
+    "accepted_patch_sha256": "672214d84e15c8875af328697a16ba1c3736f85e4412cf97b1e3344fbdd1b8c9"
+  }
+}
