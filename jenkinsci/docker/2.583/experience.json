@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/jenkinsci/docker",
+  "requested_version": "2.583",
+  "resolved_commit": "42ea8b6681fac34a1a8b447644728e70b3eeaae0",
+  "targets": [
+    "debian"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE/jenkins-docker",
+      "command": "DOCKER_BUILDKIT=0 docker build -f debian/Dockerfile -t jenkins:2.583 .",
+      "environment": {
+        "architecture": "loong64",
+        "platform": "linux/loong64",
+        "base_image": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "apt_mirror": "http://mirrors.ustc.edu.cn/debian",
+        "builder": "Docker legacy builder (BuildKit disabled)",
+        "context": "Jenkins repository root"
+      },
+      "execution_id": "exec-913f02f623e240918ddf226f31a02874"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\nimage_id=\"$(docker image inspect --format '{{.Id}}' jenkins:2.583)\"\nplatform=\"$(docker image inspect --format '{{.Os}}/{{.Architecture}}' jenkins:2.583)\"\nuser=\"$(docker image inspect --format '{{.Config.User}}' jenkins:2.583)\"\nprintf 'image=%s\\nplatform=%s\\nuser=%s\\n' \"$image_id\" \"$platform\" \"$user\"\ndocker run --rm --entrypoint /bin/sh jenkins:2.583 -c '\n  set -eu\n  java -version 2>&1\n  java -version 2>&1 | grep -F \"21.0.12\"\n  java -version 2>&1 | grep -F \"Zero VM\"\n  git lfs version | grep -F \"git-lfs/3.8.0\"\n  test -f /usr/share/jenkins/jenkins.war\n  test -f /opt/jenkins-plugin-manager.jar\n  test -f /usr/lib/loongarch64-linux-gnu/libharfbuzz.so.0\n  ldd /opt/java/openjdk/lib/libfontmanager.so | grep -F \"libharfbuzz.so.0\"\n'\ndocker rm -f jenkins2583-smoke >/dev/null 2>&1 || true\ntrap 'docker rm -f jenkins2583-smoke >/dev/null 2>&1 || true' EXIT\ndocker run -d --name jenkins2583-smoke   -e JENKINS_JAVA_OPTIONS=-Djenkins.install.runSetupWizard=false   jenkins:2.583 >/dev/null\nready=0\nfor i in $(seq 1 120); do\n  state=\"$(docker inspect --format '{{.State.Status}}' jenkins2583-smoke)\"\n  if [ \"$state\" = \"exited\" ] || [ \"$state\" = \"dead\" ]; then\n    docker inspect --format 'status={{.State.Status}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}}' jenkins2583-smoke\n    docker logs --tail 240 jenkins2583-smoke\n    exit 1\n  fi\n  code=\"$(docker exec jenkins2583-smoke curl -sS --max-time 2 -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/ 2>/dev/null || true)\"\n  case \"$code\" in\n    2*|3*|4*) ready=1; printf 'http_status=%s after=%ss\\n' \"$code\" \"$i\"; break ;;\n  esac\n  sleep 1\ndone\nif [ \"$ready\" -ne 1 ]; then\n  docker inspect --format 'status={{.State.Status}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}}' jenkins2583-smoke\n  docker logs --tail 240 jenkins2583-smoke\n  exit 1\nfi\ndocker logs --tail 80 jenkins2583-smoke",
+      "execution_id": "exec-002019a15fe342d6b22a97ccc7f00a58",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "Dockerfile.debian.loong64",
+      "sha256": "ac49b0767e6e8ce7df986d7bce977558c89fbb3729dc010b42a84c424f7bb8bf"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "1a25d9e8650df6b106943ffb455dd3e871c479d4f3cde67df07b9b515cc2350c"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "ed5ed196c70da9d6f56de6fa5d3ea7ab2662d893610d16ea5e6d77bcc48d5b20"
+    },
+    {
+      "path": "README.md",
+      "sha256": "be92e2401c6b7512e9a0c38fc0a1ca2701e0459dc89eaf8d192dc5bd2b1c15e8"
+    }
+  ],
+  "images": [
+    {
+      "target": "debian",
+      "id": "sha256:aa8b2baf898740872c3d8abff6cc4173af492fb041462c28f13af0803d4c812b",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile.debian.loong64",
+      "source": {
+        "kind": "adapted_official_dockerfile",
+        "repository": "https://github.com/jenkinsci/docker",
+        "commit": "42ea8b6681fac34a1a8b447644728e70b3eeaae0",
+        "path": "debian/Dockerfile",
+        "version": "2.583"
+      }
+    }
+  ],
+  "artifacts": [],
+  "dependencies": [
+    {
+      "name": "Debian Forky LoongArch64 base",
+      "version": "forky",
+      "source": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+      "content_identity": "sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+      "architecture": "loong64",
+      "consumer": "Both Dockerfile FROM stages"
+    },
+    {
+      "name": "Jenkins WAR",
+      "version": "2.583",
+      "source": "https://get.jenkins.io/war/2.583/jenkins.war",
+      "content_identity": "sha256:2eb6df14b0c1cda704ad88800395a071856774cadc4f64d9527d8ec8380b41c6",
+      "consumer": "jre-and-war stage and controller /usr/share/jenkins/jenkins.war",
+      "verification": "SHA-256, GPG signature, and ZIP integrity"
+    },
+    {
+      "name": "Jenkins plugin manager",
+      "version": "2.15.0",
+      "source": "https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.15.0/jenkins-plugin-manager-2.15.0.jar",
+      "content_identity": "sha256:a86853ec2e2933f37a4b471ba65099b61e03c87a80c2ef8fe2315eb135672d43",
+      "consumer": "controller /opt/jenkins-plugin-manager.jar",
+      "verification": "SHA-256 and java -jar --version"
+    },
+    {
+      "name": "OpenJDK",
+      "version": "21.0.12.1",
+      "source": "Debian Forky apt package openjdk-21-jdk-headless via USTC",
+      "architecture": "loong64",
+      "consumer": "jre-and-war stage and copied runtime"
+    },
+    {
+      "name": "Git LFS",
+      "version": "3.8.0",
+      "source": "Debian Forky apt package git-lfs=3.8.0-1 via USTC",
+      "content_identity": "git-lfs/3.8.0 (linux loong64)",
+      "architecture": "loong64",
+      "consumer": "controller image"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Jenkins source checkout at resolved_commit",
+      ".bcla-inputs/jenkins-2.583.war",
+      ".bcla-inputs/jenkins-2.583.war.asc",
+      ".bcla-inputs/jenkins-plugin-manager-2.15.0.jar",
+      "jenkins.io-2026.key",
+      "Dockerfile.debian.loong64 copied to debian/Dockerfile"
+    ],
+    "build_entrypoints": [
+      "DOCKER_BUILDKIT=0 docker build -f debian/Dockerfile -t jenkins:2.583 ."
+    ],
+    "compatible_targets": [
+      "linux/loong64"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 Docker daemon; no emulation",
+      "Docker legacy builder available; BuildKit is disabled for this recipe",
+      "USTC Debian mirror reachable",
+      "Build context is the Jenkins repository root",
+      "Image remains local and is not pushed"
+    ],
+    "runtime": "Jenkins on port 8080 with agent port 50000, running as user jenkins; smoke accepts any HTTP 2xx/3xx/4xx response after startup"
+  },
+  "provenance": {
+    "task_id": "bcla-9bf1621c0f214b2da729e4d93d451f90",
+    "checkpoint_revision": 12,
+    "accepted_dockerfile_sha256": "ac49b0767e6e8ce7df986d7bce977558c89fbb3729dc010b42a84c424f7bb8bf",
+    "accepted_patch_sha256": "1a25d9e8650df6b106943ffb455dd3e871c479d4f3cde67df07b9b515cc2350c"
+  }
+}

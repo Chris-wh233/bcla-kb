@@ -1,0 +1,15 @@
+{
+  "experiences": [
+    {
+      "path": "2.583",
+      "status": "verified",
+      "targets": [
+        "debian"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "2.583"
+    }
+  ],
+  "repository": "https://github.com/jenkinsci/docker",
+  "schema_version": 2
+}

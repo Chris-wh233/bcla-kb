@@ -15,6 +15,10 @@
     {
       "path": "influxdata/kapacitor",
       "repository": "https://github.com/influxdata/kapacitor"
+    },
+    {
+      "path": "jenkinsci/docker",
+      "repository": "https://github.com/jenkinsci/docker"
     }
   ],
   "schema_version": 2
