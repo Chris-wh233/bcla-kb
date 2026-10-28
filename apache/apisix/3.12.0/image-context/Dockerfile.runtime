@@ -1,0 +1,34 @@
+# Stage 1: independently build the required Debian APISIX runtime image.
+FROM lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b
+
+LABEL org.opencontainers.image.title="APISIX Debian runtime for LoongArch64" \
+      org.opencontainers.image.version="3.12.0" \
+      org.opencontainers.image.description="OpenResty runtime required by apache/apisix:3.12.0"
+
+ENV PATH="/usr/local/openresty/bin:/usr/local/openresty/nginx/sbin:/usr/local/openresty/luajit/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    LD_LIBRARY_PATH="/usr/local/openresty/openssl3/lib:/usr/local/openresty/wasmtime-c-api/lib:/usr/local/openresty/pcre/lib:/usr/local/openresty/luajit/lib:/usr/local/openresty/zlib/lib"
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-upgrade --no-install-recommends \
+        ca-certificates \
+        libbrotli1 \
+        libluajit-5.1-2 \
+        libxml2 \
+        libxslt1.1 \
+        libyaml-0-2 \
+        lua-sec \
+        lua-socket \
+        lua5.1 \
+        luajit \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY runtime-rootfs/ /
+
+RUN set -eux; \
+    test -x /usr/local/openresty/nginx/sbin/nginx; \
+    test -s /usr/local/openresty/wasmtime-c-api/lib/libwasmtime.so; \
+    /usr/local/openresty/luajit/bin/luajit -e 'assert(jit.arch == "loongarch64"); print(jit.version, jit.arch)'; \
+    ! ldd /usr/local/openresty/nginx/sbin/nginx | grep -F 'not found'; \
+    /usr/local/openresty/bin/openresty -V
+
+WORKDIR /usr/local/openresty

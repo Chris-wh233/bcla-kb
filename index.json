@@ -1,6 +1,10 @@
 {
   "projects": [
     {
+      "path": "apache/apisix",
+      "repository": "https://github.com/apache/apisix"
+    },
+    {
       "path": "emqx/emqx",
       "repository": "https://github.com/emqx/emqx"
     },

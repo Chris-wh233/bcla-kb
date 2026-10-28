@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "dependency",
+  "status": "verified",
+  "repository": "https://github.com/apache/apisix",
+  "requested_version": "3.12.0",
+  "resolved_commit": "75d94c051fc940a174fbdba4ce0588c13fecf864",
+  "targets": [
+    "apache/apisix-runtime-deb:3.12.0"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE/sources/deps/apisix-runtime",
+      "command": "runtime_version=1.3.0 bash build-apisix-runtime-debian-loong64.sh",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "source_repository": "https://github.com/api7/apisix-build-tools",
+        "source_tag": "apisix-runtime/1.3.0",
+        "source_commit": "0cd7a9b31cb7b03320c98b724c8b88335b9029da",
+        "adaptation": "Saved exact LoongArch builder script and complete patch; uses staged Loongson LuaJIT and Wasmtime; reuses verified OpenSSL 3.2.0 prefix; no PCRE JIT"
+      },
+      "execution_id": "exec-396d3be3d2d54c0997d01a017114a151"
+    },
+    {
+      "cwd": "$WORKSPACE",
+      "command": "docker build -f image-context/Dockerfile.runtime -t apache/apisix-runtime-deb:3.12.0 image-context",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "base": "lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "prepared_input": "image-context/runtime-rootfs; deterministic tar sha256 0bc44c4d446a599bdbc923d940859ae9a1a809e5b90a22aee5a11fcb54628752"
+      },
+      "execution_id": "exec-6c70bbb5125645939a09a00af843f1f5"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\nprintf '%s\\n' '--- runtime image identity ---'\ndocker image inspect apache/apisix-runtime-deb:3.12.0 --format '{{.Id}} {{.Os}}/{{.Architecture}} size={{.Size}} title={{index .Config.Labels \"org.opencontainers.image.title\"}}'\nprintf '%s\\n' '--- final image identity and parent ---'\ndocker image inspect apache/apisix:3.12.0 --format '{{.Id}} {{.Os}}/{{.Architecture}} size={{.Size}} parent={{.Parent}}'\nprintf '%s\\n' '--- runtime consumer checks ---'\ndocker run --rm --entrypoint sh apache/apisix-runtime-deb:3.12.0 -ec 'luajit -e '\\''assert(jit.arch == \"loongarch64\"); print(jit.arch, jit.version)'\\''; openresty -V 2>&1 | head -n 3; ! ldd /usr/local/openresty/nginx/sbin/nginx | grep -F \"not found\"'\nprintf '%s\\n' '--- final image consumer checks ---'\ndocker run --rm --entrypoint sh apache/apisix:3.12.0 -ec 'apisix version; luajit -e '\\''assert(jit.arch == \"loongarch64\"); print(jit.arch, jit.version)'\\''; openresty -t'\nprintf '%s\\n' '--- final history begins from runtime ---'\ndocker history --no-trunc apache/apisix:3.12.0 | head -n 5",
+      "execution_id": "exec-5ec52ef87a654803b49b7083f7e56667",
+      "result": "passed"
+    },
+    {
+      "command": "set -e; git -C sources/deps/luajit2-loongarch64 rev-parse --abbrev-ref HEAD; git -C sources/deps/luajit2-loongarch64 rev-parse HEAD; LD_LIBRARY_PATH=/usr/local/openresty/luajit/lib /usr/local/openresty/luajit/bin/luajit -e 'print(jit.arch, jit.version); local s=0; for i=1,1000000 do s=s+i end; print(s)'; ldd /usr/local/openresty/nginx/sbin/nginx | grep -i luajit; /usr/local/openresty/bin/openresty -t; /usr/local/openresty/bin/openresty -V 2>&1 | grep -q -- '--with-pcre-jit' && { echo 'ERROR: PCRE JIT enabled'; exit 1; } || echo 'Nginx PCRE JIT flag is absent'",
+      "execution_id": "exec-80752b8af86d41849e4564d3a3c456f4",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "b2c6896ab45d02a24b2d03a6323ed367f7c7bc1192d89dfc52b0c69be14e1124"
+    },
+    {
+      "path": "Dockerfile.runtime",
+      "sha256": "f487b6de587b41389d63f65f1bdfe07e1bd02907c005fb376f3b6074e648e5ca"
+    },
+    {
+      "path": "build-images.sh",
+      "sha256": "93c42f99c0c251c02b483a04bccc555caca3250b1b99d6abea1575b0eac280af"
+    },
+    {
+      "path": "build-apisix-runtime-debian-loong64.sh",
+      "sha256": "caef5020b86289462387b2a68e0ff030fde6b6b37a1b423fbb39474034b14cf0"
+    },
+    {
+      "path": "build-apisix-runtime.sh.upstream",
+      "sha256": "5b8e864600ea84ce940afcc00495fe7559aa40a146169a3fbf65e55c82bfc971"
+    },
+    {
+      "path": "loongarch.patch",
+      "sha256": "1462f16c68e40f504f54c7cf718fe2ca33b5dad4b4ce552ea345ad0ef6a677a8"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "apache/apisix-runtime-deb:3.12.0",
+      "version": "3.12.0",
+      "source": "Adapted API7 APISIX runtime build tools at apisix-runtime/1.3.0 commit 0cd7a9b31cb7b03320c98b724c8b88335b9029da, packaged with the pinned Debian Forky Dockerfile",
+      "content_identity": "sha256:1dc51b3e0a750b4cd0b9bbded4a5ff41f558ab87329071e932d5b1737863cb5",
+      "architecture": "loong64",
+      "abi": "Debian Forky/glibc",
+      "consumer": "Required base image for apache/apisix:3.12.0 Stage 2"
+    },
+    {
+      "name": "OpenResty runtime rootfs",
+      "version": "1.27.1.1",
+      "source": "Saved API7 runtime builder script and LoongArch patch",
+      "content_identity": "deterministic tar sha256:0bc44c4d446a599bdbc923d940859ae9a1a809e5b90a22aee5a11fcb54628752",
+      "architecture": "loong64",
+      "abi": "Debian/glibc",
+      "consumer": "Copied into apache/apisix-runtime-deb:3.12.0"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Debian Forky base",
+      "version": "forky",
+      "source": "lcr.loongnix.cn/library/debian",
+      "content_identity": "sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+      "architecture": "loong64",
+      "consumer": "Stage 1 runtime image"
+    },
+    {
+      "name": "Loongson LuaJIT",
+      "version": "v2.1-agentzh-loongarch64",
+      "source": "https://github.com/loongson/luajit2.git@99cd1bd492c480c8dc7bec44309ca29df86b82b5",
+      "consumer": "OpenResty LuaJIT runtime",
+      "recipe": "dependencies/luajit2-v2.1-agentzh-loongarch64"
+    },
+    {
+      "name": "PCRE1",
+      "version": "8.45",
+      "source": "https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz",
+      "consumer": "OpenResty regex engine; JIT disabled",
+      "recipe": "dependencies/pcre-8.45"
+    },
+    {
+      "name": "Wasmtime C API",
+      "version": "v37.0.0",
+      "source": "https://github.com/bytecodealliance/wasmtime@7b3d6ae79e9153a2477668062f5622c10333925f",
+      "consumer": "wasm-nginx-module runtime",
+      "recipe": "dependencies/wasmtime-v37.0.0"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Adapted API7 runtime builder script",
+      "LoongArch LuaJIT checkout pinned to recorded commit",
+      "staged Wasmtime C API under runtime-stage/wasmtime-c-api",
+      "preinstalled verified OpenSSL 3.2.0 prefix",
+      "image-context/runtime-rootfs/"
+    ],
+    "build_entrypoints": [
+      "runtime_version=1.3.0 bash build-apisix-runtime-debian-loong64.sh",
+      "docker build -f image-context/Dockerfile.runtime -t apache/apisix-runtime-deb:3.12.0 image-context"
+    ],
+    "compatible_targets": [
+      "linux/loong64",
+      "Debian Forky"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 build helper and Docker daemon",
+      "API7 source at recorded commit",
+      "Source and staged dependency artifacts are available at the paths expected by the saved builder"
+    ]
+  },
+  "provenance": {
+    "task_id": "bcla-0c134f6c85fb4487905d32088b2dacc8",
+    "checkpoint_revision": 82
+  }
+}

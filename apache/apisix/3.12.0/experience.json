@@ -1,0 +1,214 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/apache/apisix",
+  "requested_version": "3.12.0",
+  "resolved_commit": "75d94c051fc940a174fbdba4ce0588c13fecf864",
+  "targets": [
+    "apache/apisix-runtime-deb:3.12.0",
+    "apache/apisix:3.12.0"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE",
+      "command": "docker build -f image-context/Dockerfile.runtime -t apache/apisix-runtime-deb:3.12.0 image-context",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "base": "lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "stage": "1/2; independently builds the required runtime image before APISIX",
+        "prepared_input": "image-context/runtime-rootfs; deterministic tar sha256 0bc44c4d446a599bdbc923d940859ae9a1a809e5b90a22aee5a11fcb54628752"
+      },
+      "execution_id": "exec-6c70bbb5125645939a09a00af843f1f5"
+    },
+    {
+      "cwd": "$WORKSPACE",
+      "command": "docker build -f image-context/Dockerfile -t apache/apisix:3.12.0 image-context",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "stage": "2/2; Dockerfile starts FROM apache/apisix-runtime-deb:3.12.0",
+        "prepared_input": "image-context/apisix-rootfs; deterministic tar sha256 392eed1ed3a411a66921af6758d529f96e74736b47e319ad7e82e8725f9cca1f",
+        "dockerfile_note": "The exact accepted Dockerfile is the corrected file used by this successful direct build."
+      },
+      "execution_id": "exec-c3c780e8c6764b568249ecdc0150ef0e"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\nprintf '%s\\n' '--- runtime image identity ---'\ndocker image inspect apache/apisix-runtime-deb:3.12.0 --format '{{.Id}} {{.Os}}/{{.Architecture}} size={{.Size}} title={{index .Config.Labels \"org.opencontainers.image.title\"}}'\nprintf '%s\\n' '--- final image identity and parent ---'\ndocker image inspect apache/apisix:3.12.0 --format '{{.Id}} {{.Os}}/{{.Architecture}} size={{.Size}} parent={{.Parent}}'\nprintf '%s\\n' '--- runtime consumer checks ---'\ndocker run --rm --entrypoint sh apache/apisix-runtime-deb:3.12.0 -ec 'luajit -e '\\''assert(jit.arch == \"loongarch64\"); print(jit.arch, jit.version)'\\''; openresty -V 2>&1 | head -n 3; ! ldd /usr/local/openresty/nginx/sbin/nginx | grep -F \"not found\"'\nprintf '%s\\n' '--- final image consumer checks ---'\ndocker run --rm --entrypoint sh apache/apisix:3.12.0 -ec 'apisix version; luajit -e '\\''assert(jit.arch == \"loongarch64\"); print(jit.arch, jit.version)'\\''; openresty -t'\nprintf '%s\\n' '--- final history begins from runtime ---'\ndocker history --no-trunc apache/apisix:3.12.0 | head -n 5",
+      "execution_id": "exec-5ec52ef87a654803b49b7083f7e56667",
+      "result": "passed"
+    },
+    {
+      "command": "set -eu\nname=apisix312-runtime-base-smoke\ndocker rm -f \"$name\" >/dev/null 2>&1 || true\ntrap 'docker rm -f \"$name\" >/dev/null 2>&1 || true' EXIT\ndocker run -d --name \"$name\" \\\n  -v \"$PWD/image-context/test-config/config.yaml:/usr/local/apisix/conf/config.yaml:ro\" \\\n  -v \"$PWD/image-context/test-config/apisix.yaml:/usr/local/apisix/conf/apisix.yaml:ro\" \\\n  apache/apisix:3.12.0 >/dev/null\nsleep 5\nstate=$(docker inspect \"$name\" --format '{{.State.Status}}')\ntest \"$state\" = running\nprintf 'state=%s\\n' \"$state\"\ndocker exec \"$name\" /usr/local/openresty/luajit/bin/luajit -e 'local socket=require(\"socket\"); local s=assert(socket.tcp()); s:settimeout(5); assert(s:connect(\"127.0.0.1\",9080)); assert(s:send(\"GET /get HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n\")); local line=assert(s:receive(\"*l\")); print(line); assert(line:find(\"503\",1,true), \"expected unavailable web1 upstream HTTP 503\"); s:close()'\nif docker logs \"$name\" 2>&1 | grep -Ei 'SIGSEGV|segmentation fault|pcre jit stack allocation failed'; then exit 1; fi\nprintf '%s\\n' 'startup smoke passed: YAML route responded; APISIX remained running without PCRE JIT or worker crash'\n",
+      "execution_id": "exec-fc6fa1cc5d2e4d8299cc75c1ae690615",
+      "result": "passed"
+    },
+    {
+      "command": "set -eu\nfor image in apache/apisix-runtime-deb:3.12.0 apache/apisix:3.12.0; do\n  docker image inspect \"$image\" --format 'image={{index .RepoTags 0}} id={{.Id}} os={{.Os}} arch={{.Architecture}} size={{.Size}} layers={{len .RootFS.Layers}} env={{json .Config.Env}}'\ndone",
+      "execution_id": "exec-f6af7cf618b44a889872dacefb199124",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "image-context/Dockerfile.runtime",
+      "sha256": "f487b6de587b41389d63f65f1bdfe07e1bd02907c005fb376f3b6074e648e5ca"
+    },
+    {
+      "path": "image-context/Dockerfile",
+      "sha256": "d46f9869379b3e4d575df21c28774daa7baf3e5b714b657e307842de1c4e2210"
+    },
+    {
+      "path": "image-context/build-images.sh",
+      "sha256": "93c42f99c0c251c02b483a04bccc555caca3250b1b99d6abea1575b0eac280af"
+    },
+    {
+      "path": "image-context/docker-entrypoint.sh",
+      "sha256": "ed99ac2755efa9c98ff04b4699e076e0ac5b8b4e6b832f36ef954324ee6ce5fe"
+    },
+    {
+      "path": "image-context/test-config/config.yaml",
+      "sha256": "683fee6912f5e047bf77456580ee2e378e6d0cd1de6aa2f25431e75b5e73b893"
+    },
+    {
+      "path": "image-context/test-config/apisix.yaml",
+      "sha256": "cf65c1635819477ad8a5a59809f4dc5b0837952404dd6ece215400a087b4eced"
+    },
+    {
+      "path": "Dockerfile.upstream.debian",
+      "sha256": "0b1c8df229da1c754b920a6e327a58def5e129e060fb661b16b6021a3d2d35f3"
+    },
+    {
+      "path": "README.md",
+      "sha256": "df036e2c161e87bdfbeee4af4dacc1173a4ed9a8537177b8d9086f67dcd72392"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "ca85e2e07468f0068513a892839e71a83f774d9149cb8adabfb6fe1ddb8f8144"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "93192d63c1f41d2713b02fa051e95b79ef7e7c4bd4a7f8d97229d440e6360f0e"
+    },
+    {
+      "path": "patches/apisix-runtime/loongarch.patch",
+      "sha256": "1462f16c68e40f504f54c7cf718fe2ca33b5dad4b4ce552ea345ad0ef6a677a8"
+    }
+  ],
+  "images": [
+    {
+      "target": "apache/apisix-runtime-deb:3.12.0",
+      "id": "sha256:1dc51b3e0a750b4cd0b9bbded4a5ff41f558ab87329071e932d5b1737863cb5",
+      "architecture": "loong64",
+      "dockerfile": "image-context/Dockerfile.runtime",
+      "source": {
+        "kind": "adapted runtime-stage image",
+        "repository": "https://github.com/api7/apisix-build-tools",
+        "commit": "0cd7a9b31cb7b03320c98b724c8b88335b9029da",
+        "path": "build-apisix-runtime.sh",
+        "version": "apisix-runtime/1.3.0",
+        "base": "lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b"
+      }
+    },
+    {
+      "target": "apache/apisix:3.12.0",
+      "id": "sha256:739cd0baf0e69545c23c90bd0ac4b98aef7d85c27d6340e7ab2576332965d994",
+      "architecture": "loong64",
+      "dockerfile": "image-context/Dockerfile",
+      "source": {
+        "kind": "adapted_official_dockerfile",
+        "repository": "https://github.com/apache/apisix-docker",
+        "commit": "b96636c559c05a118b4bfed1f193288bbad912a0",
+        "path": "debian/Dockerfile",
+        "version": "3.12.0",
+        "upstream_sha256": "0b1c8df229da1c754b920a6e327a58def5e129e060fb661b16b6021a3d2d35f3",
+        "required_base": "apache/apisix-runtime-deb:3.12.0"
+      }
+    }
+  ],
+  "artifacts": [],
+  "dependencies": [
+    {
+      "name": "APISIX runtime base image",
+      "version": "3.12.0",
+      "source": "locally built apache/apisix-runtime-deb:3.12.0",
+      "content_identity": "sha256:1dc51b3e0a750b4cd0b9bbded4a5ff41f558ab87329071e932d5b1737863cb5",
+      "architecture": "linux/loong64",
+      "abi": "Debian Forky/glibc",
+      "consumer": "Required FROM base for Stage 2 apache/apisix:3.12.0",
+      "recipe": "dependencies/apisix-runtime-deb-3.12.0"
+    },
+    {
+      "name": "Loongson LuaJIT",
+      "version": "v2.1-agentzh-loongarch64",
+      "source": "https://github.com/loongson/luajit2.git@99cd1bd492c480c8dc7bec44309ca29df86b82b5",
+      "content_identity": "sha256:58ea3581915d84fbe68964d7fd16b1056c0257002523be2843ec3989147c6b31",
+      "architecture": "loong64",
+      "abi": "Debian/glibc",
+      "consumer": "OpenResty runtime JIT and Lua ABI",
+      "recipe": "dependencies/luajit2-v2.1-agentzh-loongarch64"
+    },
+    {
+      "name": "PCRE1",
+      "version": "8.45",
+      "source": "https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz",
+      "content_identity": "archive sha256:4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09; installed lib sha256:c078b3a6a7f0dc9d4b2c81ec941edb760b55567fdf2f7d20efd27a42216a8139",
+      "architecture": "loong64",
+      "abi": "Debian/glibc; JIT disabled",
+      "consumer": "OpenResty PCRE regex engine",
+      "recipe": "dependencies/pcre-8.45"
+    },
+    {
+      "name": "Wasmtime C API",
+      "version": "v37.0.0",
+      "source": "https://github.com/bytecodealliance/wasmtime@7b3d6ae79e9153a2477668062f5622c10333925f",
+      "content_identity": "libwasmtime.so sha256:4e1cf2209f6cbc52c6de971675af473b443e01e348cfef78a1cef53722c68000",
+      "architecture": "loong64",
+      "abi": "Debian/glibc",
+      "consumer": "OpenResty wasm-nginx-module runtime",
+      "recipe": "dependencies/wasmtime-v37.0.0"
+    },
+    {
+      "name": "APISIX application rootfs",
+      "version": "3.12.0",
+      "source": "https://github.com/apache/apisix@75d94c051fc940a174fbdba4ce0588c13fecf864",
+      "content_identity": "deterministic tar sha256:392eed1ed3a411a66921af6758d529f96e74736b47e319ad7e82e8725f9cca1f",
+      "architecture": "LoongArch64 Lua modules and application files",
+      "consumer": "Copied into the required runtime image in Stage 2"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "image-context/Dockerfile.runtime",
+      "image-context/Dockerfile",
+      "image-context/build-images.sh",
+      "image-context/docker-entrypoint.sh",
+      "image-context/runtime-rootfs/ (prepare per runtime dependency recipe)",
+      "image-context/apisix-rootfs/ (prepare from APISIX commit and recorded install commands)",
+      "image-context/test-config/config.yaml",
+      "image-context/test-config/apisix.yaml"
+    ],
+    "build_entrypoints": [
+      "./image-context/build-images.sh",
+      "docker build -f image-context/Dockerfile.runtime -t apache/apisix-runtime-deb:3.12.0 image-context",
+      "docker build -f image-context/Dockerfile -t apache/apisix:3.12.0 image-context"
+    ],
+    "compatible_targets": [
+      "linux/loong64",
+      "Debian Forky"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 Docker daemon; no emulation",
+      "The pinned Debian base is available",
+      "Both prepared rootfs trees are present in image-context",
+      "Build Stage 1 and retain its local tag before Stage 2",
+      "APISIX and API7 source artifacts are acquired at recorded commits"
+    ]
+  },
+  "provenance": {
+    "task_id": "bcla-0c134f6c85fb4487905d32088b2dacc8",
+    "checkpoint_revision": 82
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "dependency",
+  "status": "verified",
+  "repository": "https://github.com/bytecodealliance/wasmtime",
+  "requested_version": "v37.0.0",
+  "resolved_commit": "7b3d6ae79e9153a2477668062f5622c10333925f",
+  "targets": [
+    "loong64"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE/sources/deps/wasmtime/src-v37.0.0",
+      "command": "export CARGO_NET_RETRY=5 CARGO_BUILD_JOBS=4 RUSTFLAGS=\"-C target-feature=-crt-static\"; cargo build --locked --release --manifest-path crates/c-api/artifact/Cargo.toml",
+      "environment": {
+        "architecture": "native loong64",
+        "rust": "1.97.1",
+        "cargo": "1.97.1",
+        "cmake": "4.3.4",
+        "cargo_profile": "release",
+        "features": "default C API artifact features"
+      },
+      "execution_id": "exec-f5a0295ee00d4b96bd7b6dfd14a20c92"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\ncd sources/deps/wasmtime/src-v37.0.0\nreadelf -d target/release/libwasmtime.so | grep NEEDED\n/tmp/wasmtime-pulley-smoke",
+      "execution_id": "exec-4c2d0e7b9df2458ba81722a4d12b74e3",
+      "result": "passed"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "libwasmtime.so",
+      "version": "v37.0.0",
+      "source": "https://github.com/bytecodealliance/wasmtime@7b3d6ae79e9153a2477668062f5622c10333925f",
+      "content_identity": "sha256:4e1cf2209f6cbc52c6de971675af473b443e01e348cfef78a1cef53722c68000",
+      "architecture": "loong64",
+      "abi": "Debian/glibc; dynamic C API library with Pulley execution",
+      "consumer": "OpenResty wasm-nginx-module and APISIX WASI runtime"
+    }
+  ],
+  "dependencies": [],
+  "applicability": {
+    "required_files": [
+      "Wasmtime v37.0.0 source archive with recorded sha256"
+    ],
+    "build_entrypoints": [
+      "cargo build --locked --release --manifest-path crates/c-api/artifact/Cargo.toml"
+    ],
+    "compatible_targets": [
+      "loong64"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 Rust/Cargo and CMake toolchains",
+      "glibc runtime",
+      "CARGO_NET_RETRY=5; CARGO_BUILD_JOBS=4; RUSTFLAGS=-C target-feature=-crt-static"
+    ]
+  },
+  "provenance": {
+    "task_id": "bcla-0c134f6c85fb4487905d32088b2dacc8",
+    "checkpoint_revision": 82
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "a0dbcb3f49af483d1d7fcaf9eb07e6a17e03ea09fe293b9452dc91f17721ac85"
+    }
+  ]
+}

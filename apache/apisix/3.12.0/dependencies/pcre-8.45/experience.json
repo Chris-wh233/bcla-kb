@@ -1,0 +1,80 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "dependency",
+  "status": "verified",
+  "repository": "https://sourceforge.net/projects/pcre",
+  "requested_version": "8.45",
+  "resolved_commit": "archive-sha256:4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09",
+  "targets": [
+    "loong64"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE",
+      "command": "src=sources/deps/pcre1/pcre-8.45; cfg=sources/deps/gnu-config-helpers/autoconf-2.72/build-aux; cd \"$src\"; cp \"$OLDPWD/$cfg/config.guess\" config.guess; cp \"$OLDPWD/$cfg/config.sub\" config.sub; chmod +x config.guess config.sub; ./configure --prefix=/usr --enable-shared --disable-static; make -j2; make check; make install; ldconfig",
+      "environment": {
+        "architecture": "native loong64",
+        "abi": "Debian/glibc",
+        "configure": "--enable-shared --disable-static; --enable-jit deliberately omitted",
+        "source_archive_sha256": "4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09",
+        "config_helpers": "GNU Autoconf 2.72 config.guess/config.sub"
+      },
+      "execution_id": "exec-29a401f29fe84ed08b6a72a571afb12d"
+    }
+  ],
+  "tests": [
+    {
+      "command": "set -eu\nsrc=sources/deps/pcre1/pcre-8.45\ncfg=sources/deps/gnu-config-helpers/autoconf-2.72/build-aux\ncd \"$src\"\nsha256sum config.guess config.sub > ../../pcre1-original-config.sha256\ncp \"$OLDPWD/$cfg/config.guess\" config.guess\ncp \"$OLDPWD/$cfg/config.sub\" config.sub\nchmod +x config.guess config.sub\nprintf 'GNU Autoconf 2.72 helper hashes: '; sha256sum config.guess config.sub\nprintf 'Detected host: '; ./config.guess\nprintf 'Normalized host: '; ./config.sub loongarch64-linux-gnu\n./configure --prefix=/usr --enable-shared --disable-static > ../../pcre1-configure.log 2>&1\nmake -j2 > ../../pcre1-make.log 2>&1\nmake check > ../../pcre1-check.log 2>&1\nmake install > ../../pcre1-install.log 2>&1\nldconfig\nprintf 'PCRE version: '; pcre-config --version\nprintf 'Installed headers: '; test -f /usr/include/pcre.h && echo yes\nprintf 'Installed libraries:\\n'; ldconfig -p | grep -E 'libpcre\\.so'\nprintf 'Test summary:\\n'; tail -n 12 ../../pcre1-check.log\nprintf 'Original bundled scripts:\\n'; cat ../../pcre1-original-config.sha256",
+      "execution_id": "exec-29a401f29fe84ed08b6a72a571afb12d",
+      "result": "passed"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "libpcre.so.1",
+      "version": "8.45",
+      "source": "https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz",
+      "content_identity": "archive sha256:4e6ce03e0336e8b4a3d6c2b70b1c5e18590a5673a98186da90d4f33c23defc09; installed library sha256:c078b3a6a7f0dc9d4b2c81ec941edb760b55567fdf2f7d20efd27a42216a8139",
+      "architecture": "loong64",
+      "abi": "Debian/glibc, PCRE1 JIT disabled",
+      "consumer": "OpenResty 1.27.1.1 regex engine"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "GNU Autoconf build helpers",
+      "version": "2.72",
+      "source": "https://ftp.gnu.org/gnu/autoconf/autoconf-2.72.tar.xz",
+      "consumer": "LoongArch host detection for PCRE configure"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Verified pcre-8.45.tar.gz and detached signature",
+      "Autoconf 2.72 build-aux/config.guess and config.sub"
+    ],
+    "build_entrypoints": [
+      "./configure --prefix=/usr --enable-shared --disable-static",
+      "make check"
+    ],
+    "compatible_targets": [
+      "loong64"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 compiler",
+      "Debian/glibc",
+      "Do not enable PCRE1 JIT or OpenResty PCRE JIT"
+    ]
+  },
+  "provenance": {
+    "task_id": "bcla-0c134f6c85fb4487905d32088b2dacc8",
+    "checkpoint_revision": 82
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "7e4a5d09a91a804956575926183c2bb9d8345f779209233cb917b09d122a9a80"
+    }
+  ]
+}

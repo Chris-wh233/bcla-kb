@@ -1,0 +1,11 @@
+--- a/apisix/init.lua
++++ b/apisix/init.lua
+@@ -18,7 +18,7 @@
+ -- set the JIT options before any code, to prevent error "changing jit stack size is not
+ -- allowed when some regexs have already been compiled and cached"
+ if require("ffi").os == "Linux" then
+-    require("ngx.re").opt("jit_stack_size", 200 * 1024)
++    if require("jit").arch ~= "loongarch64" then require("ngx.re").opt("jit_stack_size", 200 * 1024) end
+ end
+ 
+ require("jit.opt").start("minstitch=2", "maxtrace=4000",

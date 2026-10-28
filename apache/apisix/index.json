@@ -1,0 +1,16 @@
+{
+  "experiences": [
+    {
+      "path": "3.12.0",
+      "status": "verified",
+      "targets": [
+        "apache/apisix-runtime-deb:3.12.0",
+        "apache/apisix:3.12.0"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "3.12.0"
+    }
+  ],
+  "repository": "https://github.com/apache/apisix",
+  "schema_version": 2
+}

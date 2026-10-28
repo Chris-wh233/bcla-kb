@@ -1,0 +1,137 @@
+--- a/build-apisix-runtime.sh
++++ b/build-apisix-runtime.sh
+@@ -36,7 +36,9 @@
+         fips="enable-fips"
+     fi
+     # required for openssl 3.x config
+-    cpanm IPC/Cmd.pm
++    if ! perl -MIPC::Cmd -e 1 >/dev/null 2>&1; then
++        cpanm IPC/Cmd.pm
++    fi
+     wget --no-check-certificate https://github.com/openssl/openssl/releases/download/openssl-3.2.0/openssl-${OPENSSL_VERSION}.tar.gz
+     tar xvf openssl-${OPENSSL_VERSION}.tar.gz
+     cd openssl-${OPENSSL_VERSION}/
+@@ -52,13 +54,13 @@
+       --with-zlib-lib=$zlib_prefix/lib \
+       --with-zlib-include=$zlib_prefix/include
+     make -j $(nproc) LD_LIBRARY_PATH= CC="gcc"
+-    sudo make install
++    make install
+     if [ -f "$OPENSSL_CONF_PATH" ]; then
+-        sudo cp "$OPENSSL_CONF_PATH" "$OPENSSL_PREFIX"/ssl/openssl.cnf
++        cp "$OPENSSL_CONF_PATH" "$OPENSSL_PREFIX"/ssl/openssl.cnf
+     fi
+     if [ "$ENABLE_FIPS" == "true" ]; then
+         $OPENSSL_PREFIX/bin/openssl fipsinstall -out $OPENSSL_PREFIX/ssl/fipsmodule.cnf -module $OPENSSL_PREFIX/lib/ossl-modules/fips.so
+-        sudo sed -i 's@# .include fipsmodule.cnf@.include '"$OPENSSL_PREFIX"'/ssl/fipsmodule.cnf@g; s/# \(fips = fips_sect\)/\1\nbase = base_sect\n\n[base_sect]\nactivate=1\n/g' $OPENSSL_PREFIX/ssl/openssl.cnf
++        sed -i 's@# .include fipsmodule.cnf@.include '"$OPENSSL_PREFIX"'/ssl/fipsmodule.cnf@g; s/# \(fips = fips_sect\)/\1\nbase = base_sect\n\n[base_sect]\nactivate=1\n/g' $OPENSSL_PREFIX/ssl/openssl.cnf
+     fi
+     cd ..
+ }
+@@ -74,7 +76,11 @@
+ cd "$workdir" || exit 1
+ 
+ 
+-install_openssl_3
++if LD_LIBRARY_PATH="$OPENSSL_PREFIX/lib:$zlib_prefix/lib" "$OPENSSL_PREFIX/bin/openssl" version 2>/dev/null | grep -q "^OpenSSL ${OPENSSL_VERSION} "; then
++    echo "Using verified OpenSSL ${OPENSSL_VERSION} already installed at $OPENSSL_PREFIX"
++else
++    install_openssl_3
++fi
+ 
+ wget --no-check-certificate https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz
+ tar -zxvpf openresty-${OPENRESTY_VERSION}.tar.gz > /dev/null
+@@ -136,13 +142,31 @@
+ cd ../..
+ 
+ cd wasm-nginx-module-${wasm_nginx_module_ver} || exit 1
+-./install-wasmtime.sh
++test -s "$prev_workdir/../../../runtime-stage/wasmtime-c-api/lib/libwasmtime.so"
++rm -rf "$OR_PREFIX/wasmtime-c-api"
++install -d "$OR_PREFIX/wasmtime-c-api"
++cp -a "$prev_workdir/../../../runtime-stage/wasmtime-c-api/." "$OR_PREFIX/wasmtime-c-api/"
++rm -rf "$PWD/wasmtime-c-api"
++cp -a "$OR_PREFIX/wasmtime-c-api" "$PWD/wasmtime-c-api"
+ cd ..
+ 
+ 
+ luajit_xcflags=${luajit_xcflags:="-DLUAJIT_NUMMODE=2 -DLUAJIT_ENABLE_LUA52COMPAT"}
+ no_pool_patch=${no_pool_patch:-}
+ 
++luajit_source_dir="$prev_workdir/../luajit2-loongarch64"
++if [ ! -d "$luajit_source_dir/.git" ]; then
++    git clone --depth=1 --branch v2.1-agentzh-loongarch64 \
++        https://github.com/loongson/luajit2.git "$luajit_source_dir"
++fi
++make -C "$luajit_source_dir" clean
++make -C "$luajit_source_dir" -j"$(nproc)" XCFLAGS="$luajit_xcflags"
++rm -rf "$OR_PREFIX/luajit"
++make -C "$luajit_source_dir" install PREFIX="$OR_PREFIX/luajit"
++luajit_arch=$(LD_LIBRARY_PATH="$OR_PREFIX/luajit/lib:${LD_LIBRARY_PATH:-}" \
++    "$OR_PREFIX/luajit/bin/luajit" -e 'io.write(jit.arch)')
++test "$luajit_arch" = loongarch64
++
+ cd openresty-${OPENRESTY_VERSION} || exit 1
+ 
+ or_limit_ver=0.09
+@@ -158,7 +182,7 @@
+ fi
+ 
+ 
+-./configure --prefix="$OR_PREFIX" \
++./configure --with-luajit="$OR_PREFIX/luajit" --prefix="$OR_PREFIX" \
+     --with-cc-opt="-DAPISIX_RUNTIME_VER=$runtime_version $cc_opt" \
+     --with-ld-opt="-Wl,-rpath,$OR_PREFIX/wasmtime-c-api/lib $ld_opt" \
+     $debug_args \
+@@ -171,7 +195,6 @@
+     --add-module=../lua-var-nginx-module-${lua_var_nginx_module_ver} \
+     --add-module=../lua-resty-events-${lua_resty_events_ver} \
+     --with-poll_module \
+-    --with-pcre-jit \
+     --without-http_rds_json_module \
+     --without-http_rds_csv_module \
+     --without-lua_rds_parser \
+@@ -202,35 +225,22 @@
+     -j`nproc`
+ 
+ make -j`nproc`
+-sudo make install
++make install
+ cd ..
+ 
+ cd lua-resty-events-${lua_resty_events_ver} || exit 1
+-sudo install -d "$OR_PREFIX"/lualib/resty/events/
+-sudo install -m 664 lualib/resty/events/*.lua "$OR_PREFIX"/lualib/resty/events/
+-sudo install -d "$OR_PREFIX"/lualib/resty/events/compat/
+-sudo install -m 644 lualib/resty/events/compat/*.lua "$OR_PREFIX"/lualib/resty/events/compat/
++install -d "$OR_PREFIX"/lualib/resty/events/
++install -m 664 lualib/resty/events/*.lua "$OR_PREFIX"/lualib/resty/events/
++install -d "$OR_PREFIX"/lualib/resty/events/compat/
++install -m 644 lualib/resty/events/compat/*.lua "$OR_PREFIX"/lualib/resty/events/compat/
+ cd ..
+ 
+ cd apisix-nginx-module-${apisix_nginx_module_ver} || exit 1
+-sudo OPENRESTY_PREFIX="$OR_PREFIX" make install
++OPENRESTY_PREFIX="$OR_PREFIX" make install
+ cd ..
+ 
+ cd wasm-nginx-module-${wasm_nginx_module_ver} || exit 1
+-sudo OPENRESTY_PREFIX="$OR_PREFIX" make install
++OPENRESTY_PREFIX="$OR_PREFIX" make install
+ cd ..
+ 
+-# package etcdctl
+-ETCD_ARCH="amd64"
+-ETCD_VERSION=${ETCD_VERSION:-'3.5.4'}
+-ARCH=${ARCH:-$(uname -m | tr '[:upper:]' '[:lower:]')}
+-
+-if [[ $ARCH == "arm64" ]] || [[ $ARCH == "aarch64" ]]; then
+-    ETCD_ARCH="arm64"
+-fi
+-
+-wget -q https://github.com/etcd-io/etcd/releases/download/v${ETCD_VERSION}/etcd-v${ETCD_VERSION}-linux-${ETCD_ARCH}.tar.gz
+-tar xf etcd-v${ETCD_VERSION}-linux-${ETCD_ARCH}.tar.gz
+-# ship etcdctl under the same bin dir of openresty so we can package it easily
+-sudo cp etcd-v${ETCD_VERSION}-linux-${ETCD_ARCH}/etcdctl "$OR_PREFIX"/bin/
+-rm -rf etcd-v${ETCD_VERSION}-linux-${ETCD_ARCH}
++# etcdctl is not shipped in the official APISIX Debian image.
