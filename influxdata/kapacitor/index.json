@@ -6,7 +6,7 @@
       "targets": [
         "alpine"
       ],
-      "validation": "structure_and_hashes_valid",
+      "validation": "historical_metadata_only",
       "version": "v1.8.0"
     }
   ],

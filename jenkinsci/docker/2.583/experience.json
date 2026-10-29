@@ -7,59 +7,76 @@
   "requested_version": "2.583",
   "resolved_commit": "42ea8b6681fac34a1a8b447644728e70b3eeaae0",
   "targets": [
-    "debian"
+    "alpine-loongarch64"
   ],
   "build": [
     {
       "cwd": "$WORKSPACE/jenkins-docker",
-      "command": "DOCKER_BUILDKIT=0 docker build -f debian/Dockerfile -t jenkins:2.583 .",
+      "command": "docker build --network=host -f alpine/hotspot/Dockerfile -t jenkins:2.583-alpine-loongarch64 --build-arg JENKINS_VERSION=2.583 --build-arg COMMIT_SHA=42ea8b6681fac34a1a8b447644728e70b3eeaae0 .",
       "environment": {
         "architecture": "loong64",
         "platform": "linux/loong64",
-        "base_image": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
-        "apt_mirror": "http://mirrors.ustc.edu.cn/debian",
-        "builder": "Docker legacy builder (BuildKit disabled)",
-        "context": "Jenkins repository root"
+        "base_image": "lcr.loongnix.cn/library/alpine:latest",
+        "observed_base_image_version": "Alpine 3.24.3",
+        "observed_base_image_id": "sha256:5f5123bece66cb4de60b6d4bbb31c6b03bfe43d930d02381dfd67b6ad5e9bc7a",
+        "observed_base_image_digest": "sha256:6fd5d99e0bd67d9f59333d6c60b893989d96164ccc0a0c9ca61b38631f24aa49",
+        "build_args": {
+          "JENKINS_VERSION": "2.583",
+          "COMMIT_SHA": "42ea8b6681fac34a1a8b447644728e70b3eeaae0"
+        },
+        "builder": "Docker legacy builder",
+        "network": "host",
+        "context": "Jenkins repository root",
+        "required_inputs": [
+          "jenkins.io-2026.key",
+          "artifacts/jenkins-2.583.war",
+          "artifacts/jenkins-2.583.war.sha256",
+          "artifacts/jenkins-2.583.war.asc",
+          "artifacts/jenkins-plugin-manager-2.15.0.jar",
+          "artifacts/jenkins-plugin-manager-2.15.0.jar.sha256"
+        ]
       },
-      "execution_id": "exec-913f02f623e240918ddf226f31a02874"
+      "execution_id": "exec-c495ded5a7c14869b4970b167559ff97"
     }
   ],
   "tests": [
     {
-      "command": "set -eu\nimage_id=\"$(docker image inspect --format '{{.Id}}' jenkins:2.583)\"\nplatform=\"$(docker image inspect --format '{{.Os}}/{{.Architecture}}' jenkins:2.583)\"\nuser=\"$(docker image inspect --format '{{.Config.User}}' jenkins:2.583)\"\nprintf 'image=%s\\nplatform=%s\\nuser=%s\\n' \"$image_id\" \"$platform\" \"$user\"\ndocker run --rm --entrypoint /bin/sh jenkins:2.583 -c '\n  set -eu\n  java -version 2>&1\n  java -version 2>&1 | grep -F \"21.0.12\"\n  java -version 2>&1 | grep -F \"Zero VM\"\n  git lfs version | grep -F \"git-lfs/3.8.0\"\n  test -f /usr/share/jenkins/jenkins.war\n  test -f /opt/jenkins-plugin-manager.jar\n  test -f /usr/lib/loongarch64-linux-gnu/libharfbuzz.so.0\n  ldd /opt/java/openjdk/lib/libfontmanager.so | grep -F \"libharfbuzz.so.0\"\n'\ndocker rm -f jenkins2583-smoke >/dev/null 2>&1 || true\ntrap 'docker rm -f jenkins2583-smoke >/dev/null 2>&1 || true' EXIT\ndocker run -d --name jenkins2583-smoke   -e JENKINS_JAVA_OPTIONS=-Djenkins.install.runSetupWizard=false   jenkins:2.583 >/dev/null\nready=0\nfor i in $(seq 1 120); do\n  state=\"$(docker inspect --format '{{.State.Status}}' jenkins2583-smoke)\"\n  if [ \"$state\" = \"exited\" ] || [ \"$state\" = \"dead\" ]; then\n    docker inspect --format 'status={{.State.Status}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}}' jenkins2583-smoke\n    docker logs --tail 240 jenkins2583-smoke\n    exit 1\n  fi\n  code=\"$(docker exec jenkins2583-smoke curl -sS --max-time 2 -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/ 2>/dev/null || true)\"\n  case \"$code\" in\n    2*|3*|4*) ready=1; printf 'http_status=%s after=%ss\\n' \"$code\" \"$i\"; break ;;\n  esac\n  sleep 1\ndone\nif [ \"$ready\" -ne 1 ]; then\n  docker inspect --format 'status={{.State.Status}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}}' jenkins2583-smoke\n  docker logs --tail 240 jenkins2583-smoke\n  exit 1\nfi\ndocker logs --tail 80 jenkins2583-smoke",
-      "execution_id": "exec-002019a15fe342d6b22a97ccc7f00a58",
+      "command": "set -eu\ndocker image inspect -f 'id={{.Id}} platform={{.Os}}/{{.Architecture}} user={{.Config.User}} entrypoint={{json .Config.Entrypoint}} env={{json .Config.Env}}' jenkins:2.583-alpine-loongarch64\ndocker run --rm --entrypoint /bin/sh jenkins:2.583-alpine-loongarch64 -c 'set -eu; java -version; java -XshowSettings:properties -version 2>&1 | grep -F \"java.vm.name = OpenJDK 64-Bit Server VM\"; apk info -e openjdk25-loongarch-jre-headless; apk info -e openjdk25-loongarch-jre; test -r /usr/lib/jvm/java-25-openjdk/lib/server/libjvm.so; test -r /usr/lib/jvm/java-25-openjdk/lib/libfontmanager.so; java -jar /usr/share/jenkins/jenkins.war --version'",
+      "execution_id": "exec-23e812d210a44b2eb5038ca252f17be0",
+      "result": "passed"
+    },
+    {
+      "command": "set -eu\nname=jenkins-2583-smoke\ntrap 'docker rm -fv \"$name\" >/dev/null 2>&1 || true' EXIT\ndocker rm -fv \"$name\" >/dev/null 2>&1 || true\ndocker run -d --name \"$name\" --network none -e JAVA_OPTS=-Djenkins.install.runSetupWizard=false -e JENKINS_OPTS=--httpPort=8080 jenkins:2.583-alpine-loongarch64 >/dev/null\nready=0\nfor i in $(seq 1 90); do\n  code=$(docker exec \"$name\" curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/login 2>/dev/null || true)\n  if [ \"$code\" = 200 ] || [ \"$code\" = 403 ]; then\n    echo \"Jenkins HTTP /login returned $code\"\n    ready=1\n    break\n  fi\n  if [ \"$(docker inspect -f '{{.State.Running}}' \"$name\" 2>/dev/null || true)\" != true ]; then\n    echo 'Jenkins container exited before readiness'\n    docker logs \"$name\" 2>&1 || true\n    exit 1\n  fi\n  sleep 2\ndone\nif [ \"$ready\" != 1 ]; then\n  echo 'Jenkins did not become ready within 180 seconds'\n  docker logs \"$name\" 2>&1 || true\n  exit 1\nfi\ndocker logs \"$name\" 2>&1 | tail -n 80\ndocker logs \"$name\" 2>&1 | grep -F 'Jenkins is fully up and running' >/dev/null",
+      "execution_id": "exec-813803be6c6e45979f79bdac190ee40c",
       "result": "passed"
     }
   ],
   "files": [
     {
-      "path": "Dockerfile.debian.loong64",
-      "sha256": "ac49b0767e6e8ce7df986d7bce977558c89fbb3729dc010b42a84c424f7bb8bf"
-    },
-    {
-      "path": "patches/loongarch.patch",
-      "sha256": "1a25d9e8650df6b106943ffb455dd3e871c479d4f3cde67df07b9b515cc2350c"
-    },
-    {
-      "path": "adaptation.md",
-      "sha256": "ed5ed196c70da9d6f56de6fa5d3ea7ab2662d893610d16ea5e6d77bcc48d5b20"
+      "path": "Dockerfile.alpine-loongarch64",
+      "sha256": "230f52d5b686a7b2b57d902bf2cedddda718e5798a32ac72e73b57a0ad2ba5aa"
     },
     {
       "path": "README.md",
-      "sha256": "be92e2401c6b7512e9a0c38fc0a1ca2701e0459dc89eaf8d192dc5bd2b1c15e8"
+      "sha256": "93a1995ffd4e40839de7de070479859f8ed3b6124ee85262d6d64ef169aed468"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "30ac8522be06dbaecfec3045b83bdcc14c58dbd61af92f1e001b0334f94da571"
     }
   ],
   "images": [
     {
-      "target": "debian",
-      "id": "sha256:aa8b2baf898740872c3d8abff6cc4173af492fb041462c28f13af0803d4c812b",
+      "target": "alpine-loongarch64",
+      "tag": "jenkins:2.583-alpine-loongarch64",
+      "id": "sha256:58592cde8e4493b9b20344c2abc97907d61073532caeca9a2cd780f718a18f80",
       "architecture": "loong64",
-      "dockerfile": "Dockerfile.debian.loong64",
+      "dockerfile": "Dockerfile.alpine-loongarch64",
       "source": {
         "kind": "adapted_official_dockerfile",
         "repository": "https://github.com/jenkinsci/docker",
         "commit": "42ea8b6681fac34a1a8b447644728e70b3eeaae0",
-        "path": "debian/Dockerfile",
+        "path": "alpine/hotspot/Dockerfile",
         "version": "2.583"
       }
     }
@@ -67,73 +84,73 @@
   "artifacts": [],
   "dependencies": [
     {
-      "name": "Debian Forky LoongArch64 base",
-      "version": "forky",
-      "source": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
-      "content_identity": "sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+      "name": "Alpine LoongArch64 base image",
+      "version": "3.24.3 observed under latest",
+      "source": "lcr.loongnix.cn/library/alpine:latest",
+      "content_identity": "sha256:6fd5d99e0bd67d9f59333d6c60b893989d96164ccc0a0c9ca61b38631f24aa49",
       "architecture": "loong64",
-      "consumer": "Both Dockerfile FROM stages"
+      "consumer": "Both stages in the final Dockerfile",
+      "image_id": "sha256:5f5123bece66cb4de60b6d4bbb31c6b03bfe43d930d02381dfd67b6ad5e9bc7a"
+    },
+    {
+      "name": "OpenJDK 25 LoongArch JRE packages",
+      "version": "25.0.1_p8-r1",
+      "source": "Configured Alpine v3.24 main/community LoongArch APK repositories",
+      "content_identity": "openjdk25-loongarch-jre-headless and openjdk25-loongarch-jre, both 25.0.1_p8-r1",
+      "architecture": "loong64",
+      "consumer": "Controller Java runtime; headless package provides the verified Server VM and companion JRE package provides libfontmanager.so"
     },
     {
       "name": "Jenkins WAR",
       "version": "2.583",
-      "source": "https://get.jenkins.io/war/2.583/jenkins.war",
+      "source": "https://mirrors.xmission.com/jenkins/war/2.583/jenkins.war",
       "content_identity": "sha256:2eb6df14b0c1cda704ad88800395a071856774cadc4f64d9527d8ec8380b41c6",
-      "consumer": "jre-and-war stage and controller /usr/share/jenkins/jenkins.war",
-      "verification": "SHA-256, GPG signature, and ZIP integrity"
+      "consumer": "Final image at /usr/share/jenkins/jenkins.war",
+      "verification": "Official SHA-256 sidecar and Jenkins GPG signature verified with jenkins.io-2026.key"
     },
     {
-      "name": "Jenkins plugin manager",
+      "name": "Jenkins Plugin Installation Manager",
       "version": "2.15.0",
       "source": "https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.15.0/jenkins-plugin-manager-2.15.0.jar",
       "content_identity": "sha256:a86853ec2e2933f37a4b471ba65099b61e03c87a80c2ef8fe2315eb135672d43",
-      "consumer": "controller /opt/jenkins-plugin-manager.jar",
-      "verification": "SHA-256 and java -jar --version"
-    },
-    {
-      "name": "OpenJDK",
-      "version": "21.0.12.1",
-      "source": "Debian Forky apt package openjdk-21-jdk-headless via USTC",
-      "architecture": "loong64",
-      "consumer": "jre-and-war stage and copied runtime"
-    },
-    {
-      "name": "Git LFS",
-      "version": "3.8.0",
-      "source": "Debian Forky apt package git-lfs=3.8.0-1 via USTC",
-      "content_identity": "git-lfs/3.8.0 (linux loong64)",
-      "architecture": "loong64",
-      "consumer": "controller image"
+      "consumer": "Final image at /opt/jenkins-plugin-manager.jar",
+      "verification": "Official release SHA-256 sidecar verified; archive contains no native libraries or executables"
     }
   ],
   "applicability": {
     "required_files": [
       "Jenkins source checkout at resolved_commit",
-      ".bcla-inputs/jenkins-2.583.war",
-      ".bcla-inputs/jenkins-2.583.war.asc",
-      ".bcla-inputs/jenkins-plugin-manager-2.15.0.jar",
+      "Dockerfile.alpine-loongarch64 copied to alpine/hotspot/Dockerfile",
       "jenkins.io-2026.key",
-      "Dockerfile.debian.loong64 copied to debian/Dockerfile"
+      "artifacts/jenkins-2.583.war",
+      "artifacts/jenkins-2.583.war.sha256",
+      "artifacts/jenkins-2.583.war.asc",
+      "artifacts/jenkins-plugin-manager-2.15.0.jar",
+      "artifacts/jenkins-plugin-manager-2.15.0.jar.sha256"
     ],
     "build_entrypoints": [
-      "DOCKER_BUILDKIT=0 docker build -f debian/Dockerfile -t jenkins:2.583 ."
+      "docker build --network=host -f alpine/hotspot/Dockerfile -t jenkins:2.583-alpine-loongarch64 --build-arg JENKINS_VERSION=2.583 --build-arg COMMIT_SHA=42ea8b6681fac34a1a8b447644728e70b3eeaae0 ."
     ],
     "compatible_targets": [
       "linux/loong64"
     ],
     "environment_assumptions": [
-      "Native LoongArch64 Docker daemon; no emulation",
-      "Docker legacy builder available; BuildKit is disabled for this recipe",
-      "USTC Debian mirror reachable",
+      "Docker daemon builds LoongArch64 layers natively",
+      "Docker legacy builder is available",
+      "Host networking is available to the build so Alpine package repositories can be reached",
       "Build context is the Jenkins repository root",
-      "Image remains local and is not pushed"
+      "The lcr.loongnix.cn/library/alpine:latest tag may resolve to a newer image than the one recorded here",
+      "Artifact acquisition endpoints are reachable when preparing the build context"
     ],
-    "runtime": "Jenkins on port 8080 with agent port 50000, running as user jenkins; smoke accepts any HTTP 2xx/3xx/4xx response after startup"
+    "runtime": "Runs as user jenkins with ports 8080 and 50000 and JENKINS_HOME=/var/jenkins_home; validated with networking disabled, /login HTTP 200 and the fully-up log message"
   },
   "provenance": {
-    "task_id": "bcla-9bf1621c0f214b2da729e4d93d451f90",
+    "task_id": "bcla-8bef5a4fb4564e6990258dea54630889",
     "checkpoint_revision": 12,
-    "accepted_dockerfile_sha256": "ac49b0767e6e8ce7df986d7bce977558c89fbb3729dc010b42a84c424f7bb8bf",
-    "accepted_patch_sha256": "1a25d9e8650df6b106943ffb455dd3e871c479d4f3cde67df07b9b515cc2350c"
+    "accepted_dockerfile_sha256": "230f52d5b686a7b2b57d902bf2cedddda718e5798a32ac72e73b57a0ad2ba5aa",
+    "accepted_patch_sha256": "b99971436adbb8238a418c809b3d31d07b439b20fc92b920127436d73b483bc5",
+    "build_execution_id": "exec-c495ded5a7c14869b4970b167559ff97",
+    "image_inspect_execution_id": "exec-23e812d210a44b2eb5038ca252f17be0",
+    "startup_execution_id": "exec-813803be6c6e45979f79bdac190ee40c"
   }
 }

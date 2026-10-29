@@ -4,7 +4,7 @@
       "path": "2.583",
       "status": "verified",
       "targets": [
-        "debian"
+        "alpine-loongarch64"
       ],
       "validation": "structure_and_hashes_valid",
       "version": "2.583"
