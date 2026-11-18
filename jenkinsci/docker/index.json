@@ -1,6 +1,15 @@
 {
   "experiences": [
     {
+      "path": "2.440.1",
+      "status": "verified",
+      "targets": [
+        "alpine-loongarch64"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "2.440.1"
+    },
+    {
       "path": "2.583",
       "status": "verified",
       "targets": [
