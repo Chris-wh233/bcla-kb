@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "dependency",
+  "status": "verified",
+  "repository": "https://github.com/happyfish100/libfastcommon",
+  "requested_version": "1.0.83",
+  "resolved_commit": "ccc84945d397762e9d043a8436048966b9f95fe4",
+  "targets": [
+    "loong64"
+  ],
+  "provenance": {
+    "task_id": "bcla-3d2b5f53fe8f42b6af08bb81219d7569",
+    "checkpoint_revision": 9
+  },
+  "applicability": {
+    "required_files": [
+      "Pinned source",
+      "$WORKSPACE/artifacts/rootfs"
+    ],
+    "build_entrypoints": [
+      "../../build-native.sh"
+    ],
+    "compatible_targets": [
+      "loong64"
+    ],
+    "environment_assumptions": [
+      "native Debian/glibc helper",
+      "sources laid out as in parent README"
+    ]
+  },
+  "build": [
+    {
+      "cwd": "$WORKSPACE/deps/libfastcommon",
+      "command": "./make.sh && ./make.sh install && DESTDIR=\"$ROOTFS\" ./make.sh install",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "abi": "glibc 2.43, LP64D",
+        "helper_base": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "compiler": "GCC 16.2.0 (Debian 16.2.0-4)",
+        "make": "GNU Make 4.4.1"
+      },
+      "execution_id": "exec-cb3a5b08276544c591d6e3e666d951a0"
+    }
+  ],
+  "tests": [
+    {
+      "command": "make -C deps/libfastcommon/src",
+      "execution_id": "exec-cb3a5b08276544c591d6e3e666d951a0",
+      "result": "passed"
+    },
+    {
+      "command": "cmp smoke/payload.txt smoke/http-downloaded.txt",
+      "execution_id": "exec-9f6bc1e1341c41a3ac569be64cb0a74e",
+      "result": "passed"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "system compiler/libc",
+      "source": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "libfastcommon",
+      "version": "1.0.83",
+      "source": "https://github.com/happyfish100/libfastcommon/tree/ccc84945d397762e9d043a8436048966b9f95fe4 + upstream e009d750a5f2288fcdb6c1aba0a0a54a65f184f0",
+      "content_identity": "sha256:4fc8b545bf9464d7de645aa5f19c997fed037dcc24befc6c8efea9bc3cc3b5e4",
+      "architecture": "loong64",
+      "abi": "glibc / ELF64 LoongArch LP64D",
+      "consumers": [
+        "libserverframe",
+        "FastDFS 6.15.3",
+        "nginx FastDFS module"
+      ],
+      "installed_path": "usr/lib/libfastcommon.so"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "7297fef0c2dd16c56d700e03a6a66fee7ccfd6ceb6b93258b37bf3db2abdd999"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "761bf463f580e2e74fba4ceabf121616ed4d9099ba7e12e5b7a5444933372065"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "7f9016cbffecc52fbd345ebcffd9973d76a110ba607ac846a96c9d9903bd868c"
+    }
+  ]
+}

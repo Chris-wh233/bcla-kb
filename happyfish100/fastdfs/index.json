@@ -1,0 +1,16 @@
+{
+  "experiences": [
+    {
+      "path": "v6.15.3",
+      "status": "verified",
+      "targets": [
+        "fastdfs:6.15.3-loong64",
+        "happyfish100/fastdfs:6.15.3-loong64"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "v6.15.3"
+    }
+  ],
+  "repository": "https://github.com/happyfish100/fastdfs",
+  "schema_version": 2
+}

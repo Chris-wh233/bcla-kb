@@ -1,0 +1,11 @@
+--- source/docker/dockerfile_network/conf/tracker.conf	2026-11-18 06:59:15.007494401 +0000
++++ artifacts/rootfs/etc/fdfs/tracker.conf	2026-11-18 07:28:27.643271180 +0000
+@@ -120,7 +120,7 @@
+ 
+ # thread stack size, should >= 64KB
+ # default value is 64KB
+-thread_stack_size = 64KB
++thread_stack_size=512KB
+ 
+ # auto adjust when the ip address of the storage server changed
+ # default value is true

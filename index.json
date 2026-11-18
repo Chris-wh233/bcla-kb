@@ -13,6 +13,10 @@
       "repository": "https://github.com/grafana/grafana.git"
     },
     {
+      "path": "happyfish100/fastdfs",
+      "repository": "https://github.com/happyfish100/fastdfs"
+    },
+    {
       "path": "henrygd/beszel",
       "repository": "https://github.com/henrygd/beszel"
     },

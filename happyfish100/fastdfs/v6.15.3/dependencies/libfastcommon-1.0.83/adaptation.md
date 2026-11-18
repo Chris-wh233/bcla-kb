@@ -1,0 +1,1 @@
+Backport the exact accepted upstream e009d75 diff onto V1.0.83 before invoking the parent build. This adds free_queue_task_arg_offset and uses the same calculation in task_alloc_init. Approved by the user; consumed by FastDFS storage and verified by end-to-end tests. No further source changes.
