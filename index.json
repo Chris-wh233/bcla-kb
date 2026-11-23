@@ -5,6 +5,10 @@
       "repository": "https://github.com/apache/apisix"
     },
     {
+      "path": "apache/rocketmq",
+      "repository": "https://github.com/apache/rocketmq"
+    },
+    {
       "path": "emqx/emqx",
       "repository": "https://github.com/emqx/emqx"
     },

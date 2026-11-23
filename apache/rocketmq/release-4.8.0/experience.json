@@ -1,0 +1,203 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/apache/rocketmq",
+  "requested_version": "release-4.8.0",
+  "resolved_commit": "39bb9386f10d5d8dfe81183c172a3a86f6d313bd",
+  "targets": [
+    "alpine-loongarch64",
+    "jdk8-server-base"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE/rocketmq-docker/image-build",
+      "command": "docker build --pull=false --network=host --platform=linux/loong64 --build-arg version=4.8.0 -f Dockerfile-alpine -t apache/rocketmq:4.8.0-alpine .",
+      "environment": {
+        "platform": "linux/loong64",
+        "builder": "Docker legacy builder",
+        "network": "host",
+        "build_args": {
+          "version": "4.8.0"
+        },
+        "base_image": "eclipse-temurin:8-jdk-alpine-loongarch64-server",
+        "required_inputs": [
+          "Dockerfile-alpine",
+          "scripts/ from pinned container-template commit",
+          "artifacts/rocketmq.zip",
+          "artifacts/rocketmq.zip.asc",
+          "artifacts/KEYS"
+        ]
+      },
+      "execution_id": "exec-ef804dfd88a74a19b65675a695aaee5a"
+    },
+    {
+      "cwd": "$RECIPE_DIR/base-evidence",
+      "command": "docker build --pull=false --network=host --platform=linux/loong64 -t eclipse-temurin:8-jdk-alpine-loongarch64-server .",
+      "environment": {
+        "platform": "linux/loong64",
+        "base_image": "lcr.loongnix.cn/library/alpine:latest",
+        "observed_base_image_id": "sha256:dc0a951b7a78247d8b1f784390eaa54cc3b8180b2fc44b6105515fe971ee34d3",
+        "required_inputs": [
+          "Dockerfile",
+          "entrypoint.sh"
+        ],
+        "role": "Supplemental repair evidence; reuse an existing verified Server VM base whenever available"
+      },
+      "execution_id": "exec-329a7996b9a14f8daaae5faa5f798f86"
+    }
+  ],
+  "tests": [
+    {
+      "command": "docker run --rm eclipse-temurin:8-jdk-alpine-loongarch64-server sh -ec 'java -XshowSettings:properties -version 2>&1 | grep -F \"java.vm.name = OpenJDK 64-Bit Server VM\"; java -XX:+UseG1GC -version; java -XX:+UseConcMarkSweepGC -version; javac -version'",
+      "execution_id": "exec-ef804dfd88a74a19b65675a695aaee5a",
+      "result": "passed"
+    },
+    {
+      "command": "set -eu\ndocker run --rm --network rocketmq-smoke -v \"$WORKSPACE/smoke:/smoke:ro\" apache/rocketmq:4.8.0-alpine sh -c 'set -eu; mkdir -p /tmp/smoke; javac -cp \"$ROCKETMQ_HOME/lib/*\" -d /tmp/smoke /smoke/MessageSmoke.java; java -Xms64m -Xmx128m -cp \"/tmp/smoke:$ROCKETMQ_HOME/lib/*\" MessageSmoke rocketmq-namesrv:9876'\ndocker exec rocketmq-broker sh -c './mqadmin clusterList -n rocketmq-namesrv:9876'\ndocker logs rocketmq-namesrv\ndocker logs rocketmq-broker",
+      "execution_id": "exec-b2a95642977f4e8d96609a05281954fd",
+      "result": "passed"
+    },
+    {
+      "command": "docker image inspect --format 'ID={{.Id}} OS={{.Os}} ARCH={{.Architecture}}' eclipse-temurin:8-jdk-alpine-loongarch64-server apache/rocketmq:4.8.0-alpine",
+      "execution_id": "exec-9d94cb9db04f4e01a379a0d813af526d",
+      "result": "passed"
+    }
+  ],
+  "files": [
+    {
+      "path": "Dockerfile-alpine",
+      "sha256": "e14434d92d869077df132b3c5e7d3a8839f3e160e212c46bccf4ca3dfa69059c"
+    },
+    {
+      "path": "MessageSmoke.java",
+      "sha256": "f9272eae6f343b0a72c2e8857105f38cd66cd663a8b7acbc71beda64643f6c2e"
+    },
+    {
+      "path": "README.md",
+      "sha256": "385e678d961192237d2cc02cc0e5cecdccf8f18a985e71f545ea23d496fa0ad1"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "6ddd775970e5e60e344edd9bb5c1dfddbb7953a0d61bc1381dd91ca71ca9c139"
+    },
+    {
+      "path": "base-evidence/Dockerfile",
+      "sha256": "0d2c724d86e68786a2c76aeae65e54509701a2ba935329827648b9e5210b8f87"
+    },
+    {
+      "path": "base-evidence/entrypoint.sh",
+      "sha256": "794b42d55178ba4f003a306e7a940157c9f4f191fb7860c4177e001ad876774d"
+    }
+  ],
+  "images": [
+    {
+      "target": "alpine-loongarch64",
+      "tag": "apache/rocketmq:4.8.0-alpine",
+      "id": "sha256:6c105fa50d60b56acc9100666e99eb65ac7e64c7ca01374249fbce2c294acc35",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile-alpine",
+      "source": {
+        "kind": "adapted_official_dockerfile",
+        "repository": "https://github.com/apache/rocketmq-docker",
+        "commit": "56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16",
+        "path": "image-build/Dockerfile-alpine",
+        "original_sha256": "b3d7904720234eea5e856a35cd6ac1afc5f41d2661e6e132b65b65b3bdfee939"
+      },
+      "base": "eclipse-temurin:8-jdk-alpine-loongarch64-server"
+    },
+    {
+      "target": "jdk8-server-base",
+      "tag": "eclipse-temurin:8-jdk-alpine-loongarch64-server",
+      "id": "sha256:fb31043f65b981f47a09f95a0652f0b9291be57127ecdf3a4bbff45be3f88edf",
+      "architecture": "loong64",
+      "dockerfile": "base-evidence/Dockerfile",
+      "source": {
+        "kind": "adapted_official_dockerfile",
+        "repository": "https://github.com/adoptium/containers",
+        "commit": "e9537bd887790c584a6cf17bb97938b7ae0bb7bc",
+        "path": "8/jdk/alpine/3.24/Dockerfile",
+        "original_sha256": "00882316fc06fcd66cedc74ebe2955d309e598e0c0a78b5cba8e96509cab701c"
+      },
+      "role": "Supplemental base correction, not the focus of this RocketMQ recipe"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "JDK8 Alpine base",
+      "source": "eclipse-temurin:8-jdk-alpine (must provide Server VM)",
+      "consumer": "Both RocketMQ Dockerfile stages",
+      "content_identity": "sha256:fb31043f65b981f47a09f95a0652f0b9291be57127ecdf3a4bbff45be3f88edf",
+      "used_reference": "eclipse-temurin:8-jdk-alpine-loongarch64-server",
+      "requirement": "Ensure JDK Server VM; if the registry image provides Zero VM, first build the expected base image."
+    },
+    {
+      "name": "RocketMQ binary distribution",
+      "version": "4.8.0",
+      "source": "https://repo.huaweicloud.com/apache/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip",
+      "upstream_source": "https://archive.apache.org/dist/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip",
+      "content_identity": "sha256:56bce195af3843a234f77e4248657d0f72d5da0f7f44923bd820762e7d35c548",
+      "sha512": "8aced3af4deb223ccb4c546fe238477cb8e68b5d133983163219c44ee50e1b987f487150c1cff7c4b918c3168f479dd14f92d9dbe360f82a250cbf91b75e46b3",
+      "consumer": "builder stage -> /home/rocketmq/rocketmq-4.8.0",
+      "verification": "Apache publisher SHA512 and GPG signature EC9F268B4C20590138B11FE701420E4292296EAE; actual producer/pull-consumer roundtrip passed",
+      "independently_source_built": false
+    },
+    {
+      "name": "RocketMQ release signature",
+      "source": "https://archive.apache.org/dist/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip.asc",
+      "content_identity": "sha256:681c56809c23afff7d7e1cfc02e2e3583bcb0db8c914a9959aaac7e9f1ffe126",
+      "consumer": "builder GPG verification"
+    },
+    {
+      "name": "Apache RocketMQ signing keys",
+      "source": "https://www.apache.org/dist/rocketmq/KEYS",
+      "content_identity": "sha256:a0603f1b8496ab61d56923434a876bc11b15d63e3b1d55402f3507793e853a53",
+      "consumer": "builder GPG verification",
+      "note": "KEYS may evolve; signature verification must still succeed."
+    },
+    {
+      "name": "LoongArch JDK8 APK (supplemental base evidence)",
+      "version": "8.472.08-r0",
+      "source": "Alpine v3.24 community LoongArch repository",
+      "consumer": "Recorded base image",
+      "content_identity": "openjdk8-loongarch-jdk=8.472.08-r0 and matching JRE packages",
+      "architecture": "loongarch64",
+      "verification": "OpenJDK 64-Bit Server VM 1.8.0_472, G1/CMS verified"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Pinned apache/rocketmq-docker checkout and its image-build/scripts/",
+      "Dockerfile-alpine copied into image-build/",
+      "image-build/artifacts/rocketmq.zip",
+      "image-build/artifacts/rocketmq.zip.asc",
+      "image-build/artifacts/KEYS"
+    ],
+    "build_entrypoints": [
+      "docker build --pull=false --network=host --platform=linux/loong64 --build-arg version=4.8.0 -f Dockerfile-alpine -t apache/rocketmq:4.8.0-alpine ."
+    ],
+    "compatible_targets": [
+      "linux/loong64"
+    ],
+    "environment_assumptions": [
+      "Native LoongArch64 Docker daemon and Alpine/musl image",
+      "Verify JDK8 Server VM first; otherwise first build the required base",
+      "Both FROM references use the verified base alias recorded in Dockerfile",
+      "WORKSPACE is a writable absolute directory; RECIPE_DIR is this recipe's absolute directory",
+      "Host network for builds and access to Alpine packages",
+      "Commands normalize execution-local paths/container names and omit temporary proxy arguments"
+    ],
+    "runtime": "Upstream nameserver/broker entrypoint; user rocketmq; ports9876/10909/10911/10912; smoke-test memory override leaves defaults unchanged"
+  },
+  "provenance": {
+    "task_id": "bcla-602a4b92a1bc4c169b538429d2a68d61",
+    "checkpoint_revision": 5,
+    "container_template_commit": "56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16",
+    "accepted_dockerfile_sha256": "e14434d92d869077df132b3c5e7d3a8839f3e160e212c46bccf4ca3dfa69059c",
+    "accepted_base_dockerfile_sha256": "0d2c724d86e68786a2c76aeae65e54509701a2ba935329827648b9e5210b8f87",
+    "command_normalization": "Build and test invocations extracted from successful executions; transient proxy arguments and task-specific paths/container names removed. Original accepted Dockerfiles unchanged.",
+    "base_evidence_emphasis": "Prerequisite only, per user request"
+  },
+  "artifacts": []
+}

@@ -1,0 +1,16 @@
+{
+  "experiences": [
+    {
+      "path": "release-4.8.0",
+      "status": "verified",
+      "targets": [
+        "alpine-loongarch64",
+        "jdk8-server-base"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "release-4.8.0"
+    }
+  ],
+  "repository": "https://github.com/apache/rocketmq",
+  "schema_version": 2
+}
