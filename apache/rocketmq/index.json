@@ -4,8 +4,7 @@
       "path": "release-4.8.0",
       "status": "verified",
       "targets": [
-        "alpine-loongarch64",
-        "jdk8-server-base"
+        "apache/rocketmq:4.8.0-debian"
       ],
       "validation": "structure_and_hashes_valid",
       "version": "release-4.8.0"

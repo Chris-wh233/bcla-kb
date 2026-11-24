@@ -1,0 +1,17 @@
+[
+  {
+    "coordinate": "io.netty:netty-all:4.0.56.Final",
+    "url": "https://maven.loongnix.cn/loongarch/maven/io/netty/netty-all/4.0.56.Final/netty-all-4.0.56.Final.jar",
+    "sha256": "5b0778b89f3e48837ac17ae7bca6dc69a63f30a172473fa007db097fb6509536"
+  },
+  {
+    "coordinate": "io.netty:netty-tcnative-boringssl-static:2.0.7.Final",
+    "url": "https://maven.loongnix.cn/loongarch/maven/io/netty/netty-tcnative-boringssl-static/2.0.7.Final/netty-tcnative-boringssl-static-2.0.7.Final.jar",
+    "sha256": "ca9ac670d92b699792f5498562b0ade1cded5a629cd8f7cc069ef5b3d2e0188c"
+  },
+  {
+    "coordinate": "net.java.dev.jna:jna:4.2.2",
+    "url": "https://maven.loongnix.cn/loongarch/maven/net/java/dev/jna/jna/4.2.2/jna-4.2.2.jar",
+    "sha256": "d41e251fff61b2bcd23e59abef30e13517c931e17587ea9b7865abaa32266218"
+  }
+]

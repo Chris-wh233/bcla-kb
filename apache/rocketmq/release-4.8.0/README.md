@@ -1,59 +1,83 @@
-# RocketMQ 4.8.0 Alpine / LoongArch64
+# RocketMQ 4.8.0 Debian / LoongArch64
 
-本配方复用 apache/rocketmq-docker 官方 Alpine 模板，构建 apache/rocketmq:4.8.0-alpine。RocketMQ release-4.8.0 对应提交 39bb9386f10d5d8dfe81183c172a3a86f6d313bd；容器模板固定为 https://github.com/apache/rocketmq-docker 提交 56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16 的 image-build/Dockerfile-alpine。
+最终目标为 `apache/rocketmq:4.8.0-debian`。复用 RocketMQ 4.8.0 上游二进制发行包，在本地完成三个原生依赖 JAR 的替换并重新打包，然后用官方容器模板派生的 Dockerfile 构建镜像。RocketMQ 本体无需源码编译。
 
-## 基础镜像前提
+项目版本为 `release-4.8.0`，源码 commit 为 `39bb9386f10d5d8dfe81183c172a3a86f6d313bd`。容器模板为 [apache/rocketmq-docker](https://github.com/apache/rocketmq-docker/tree/56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16/image-build)，commit `56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16` 的 `Dockerfile-ubuntu`；最终文件为本目录的 `Dockerfile-debian`。官方三个启动脚本按原字节保存在 `scripts/`。
 
-**必须确保 eclipse-temurin:8-jdk-alpine 基础镜像使用 JDK 8 Server VM；若仓库镜像使用 Zero VM，则需要先构建符合要求的基础镜像，再构建 RocketMQ。** 使用时先验证 java.vm.name、javac，以及 G1/CMS 支持。此次实际使用的基础镜像别名为 eclipse-temurin:8-jdk-alpine-loongarch64-server，两个 FROM 阶段均引用此别名。补充构建仅用于纠正仓库镜像的 VM 类型；原样文件和镜像身份保存在 base-evidence 及 experience.json 中供追溯。
+两个构建阶段均使用 `lcr.loongnix.cn/library/eclipse-temurin:8-jdk-forky`。验证时摘要为 `sha256:70edd7f83966f2d9bc188f1f3239993efb4a1703fc453ee6da37f94db55244a8`，提供 Debian forky/sid、glibc、JDK 8u492 和 OpenJDK 64-Bit Server VM。基础镜像需提供 JDK 8 Server VM，本次直接使用该已验证镜像。
 
-## 准备构建上下文
+**准备二进制 ZIP。** 在有 LoongArch64 Docker daemon 访问权限的辅助环境中执行。将本经验目录复制到工作区，设置变量；工作区在宿主机和辅助容器中的绝对路径应一致。
 
-在原生 LoongArch64 Docker 主机上运行，需要 Git、curl、SHA-512 工具，以及可访问 Alpine APK 仓库的构建网络。将 RECIPE_DIR 设置为本配方绝对路径，WORKSPACE 设置为可写的工作目录，BASE_IMAGE 设置为已经验证符合上述前提的基础镜像引用。
+```sh
+export WORK_DIR=/absolute/path/to/rocketmq-work
+export RECIPE_DIR="$WORK_DIR/recipe"
+export ARTIFACT_DIR="$WORK_DIR/rocketmq-docker/image-build/artifacts"
+export BUILD_CONTEXT="$WORK_DIR/build-context"
+mkdir -p "$ARTIFACT_DIR/native"
+cp "$RECIPE_DIR/native-provenance.json" "$ARTIFACT_DIR/native/provenance.json"
+```
 
-    docker run --rm "$BASE_IMAGE" sh -ec 'java -XshowSettings:properties -version 2>&1 | grep -F "java.vm.name = OpenJDK 64-Bit Server VM"; javac -version; java -XX:+UseG1GC -version; java -XX:+UseConcMarkSweepGC -version'
-    docker tag "$BASE_IMAGE" eclipse-temurin:8-jdk-alpine-loongarch64-server
-    git clone https://github.com/apache/rocketmq-docker.git "$WORKSPACE/rocketmq-docker"
-    cd "$WORKSPACE/rocketmq-docker"
-    git checkout --detach 56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16
-    cp "$RECIPE_DIR/Dockerfile-alpine" image-build/Dockerfile-alpine
-    mkdir -p image-build/artifacts
-    cd image-build/artifacts
-    curl -fSL https://repo.huaweicloud.com/apache/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip -o rocketmq.zip
-    curl -fsSL https://archive.apache.org/dist/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip.sha512 -o rocketmq.zip.sha512
-    curl -fsSL https://archive.apache.org/dist/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip.asc -o rocketmq.zip.asc
-    curl -fsSL https://www.apache.org/dist/rocketmq/KEYS -o KEYS
-    expected=$(sed 's/^[^:]*://' rocketmq.zip.sha512 | tr -d ' \r\n' | tr A-F a-f)
-    test "${#expected}" -eq 128
-    printf '%s  %s\n' "$expected" rocketmq.zip | sha512sum -c
+从 [Apache 归档](https://archive.apache.org/dist/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip)或本次实际使用的 [华为云镜像](https://repo.huaweicloud.com/apache/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip)取得原包，保存为 `$ARTIFACT_DIR/rocketmq.zip`。其 SHA256 为 `56bce195af3843a234f77e4248657d0f72d5da0f7f44923bd820762e7d35c548`。
 
-RocketMQ 发布包为 Apache 官方 4.8.0 二进制分发 ZIP，镜像站提供相同字节；也可从 https://archive.apache.org/dist/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip 下载。它由 builder 阶段解包，随后复制到最终镜像，无需额外编译 RocketMQ。ZIP 的 SHA-256 为 56bce195af3843a234f77e4248657d0f72d5da0f7f44923bd820762e7d35c548。构建阶段继续使用 Apache KEYS 验证发布签名，此次验证的签名指纹为 EC9F268B4C20590138B11FE701420E4292296EAE。
+从 Loongnix Maven 仓库取得以下三个 JAR，按下载文件原名放到 `$ARTIFACT_DIR/native/`。表内哈希用于识别本次已验证的准备输入。
 
-image-build/scripts/ 保持来自固定提交的上游脚本。ZIP、签名和 KEYS 是 builder 的必要输入；无需将整个 RocketMQ 源码放入构建上下文。
+| Maven 坐标 | 获取地址 | SHA256 |
+| --- | --- | --- |
+| `io.netty:netty-all:4.0.56.Final` | [下载 JAR](https://maven.loongnix.cn/loongarch/maven/io/netty/netty-all/4.0.56.Final/netty-all-4.0.56.Final.jar) | `5b0778b89f3e48837ac17ae7bca6dc69a63f30a172473fa007db097fb6509536` |
+| `io.netty:netty-tcnative-boringssl-static:2.0.7.Final` | [下载 JAR](https://maven.loongnix.cn/loongarch/maven/io/netty/netty-tcnative-boringssl-static/2.0.7.Final/netty-tcnative-boringssl-static-2.0.7.Final.jar) | `ca9ac670d92b699792f5498562b0ade1cded5a629cd8f7cc069ef5b3d2e0188c` |
+| `net.java.dev.jna:jna:4.2.2` | [下载 JAR](https://maven.loongnix.cn/loongarch/maven/net/java/dev/jna/jna/4.2.2/jna-4.2.2.jar) | `d41e251fff61b2bcd23e59abef30e13517c931e17587ea9b7865abaa32266218` |
 
-## 构建最终镜像
+Netty 与 tcnative 使用上述已验证的配对。JNA 版本保持 4.2.2，使用其中包含 LoongArch 原生库的构建。执行记录中实际采用的重打包算法已提取为 `prepare-zip.py`；该脚本保留 ZIP 目录结构、文件权限和时间戳，并检查其余文件内容。
 
-工作目录为容器模板仓库的 image-build/：
+```sh
+cd "$WORK_DIR"
+docker run --rm --network none -i -v "$PWD:$PWD" -w "$PWD" \
+  --entrypoint python3 lcr.loongnix.cn/library/python:3.12-slim \
+  - < "$RECIPE_DIR/prepare-zip.py"
+```
 
-    cd "$WORKSPACE/rocketmq-docker/image-build"
-    docker build --pull=false --network=host --platform=linux/loong64 --build-arg version=4.8.0 -f Dockerfile-alpine -t apache/rocketmq:4.8.0-alpine .
+输出为 `$ARTIFACT_DIR/rocketmq-all-4.8.0-bin-release-loongarch64.zip`，是镜像构建必需的独立二进制产物。它包含 34 个 JAR，恰好三个替换，另 87 个普通文件及条目权限、时间戳保持一致；ZIP 共 100 个条目，CRC 检查通过。本次文件大小为 12,204,062 字节，SHA256 为 `4850543dd1e378fbb061d88d3a8bbdda42b5fa7ff84b350eea6e0ae1a956d00e`。完整来源和替换映射见 `prepared-artifact.json`。
 
-命令保留成功构建的版本、上下文、平台和网络模式；执行环境临时代理参数未写入配方。最终镜像使用上游 rocketmq 用户、启动入口、9876/10909/10911/10912 端口和运行脚本。builder 只是内部构建阶段。
+知识库保存准备方法和产物身份，ZIP 二进制另行提供。已有这一预处理 ZIP 时，可直接将它作为制作镜像或扁平项目的输入。
 
-## 运行与验证
+**构建最终镜像。** 构建上下文由预处理 ZIP、最终 Dockerfile 和官方启动脚本组成。以下流程与成功构建采用的最小上下文一致。
 
-测试使用独立网络、NameServer 和 Broker，并通过 HEAP_OPTS 缩小测试内存；不修改镜像默认内存配置：
+```sh
+mkdir -p "$BUILD_CONTEXT/artifacts"
+cp "$RECIPE_DIR/Dockerfile-debian" "$BUILD_CONTEXT/Dockerfile-debian"
+cp -a "$RECIPE_DIR/scripts" "$BUILD_CONTEXT/"
+cp "$ARTIFACT_DIR/rocketmq-all-4.8.0-bin-release-loongarch64.zip" "$BUILD_CONTEXT/artifacts/"
+cd "$BUILD_CONTEXT"
+docker build --pull=false --network=host --platform=linux/loong64 \
+  --build-arg version=4.8.0 -f Dockerfile-debian \
+  -t apache/rocketmq:4.8.0-debian .
+```
 
-    docker network create rocketmq-smoke
-    docker run -d --name rocketmq-namesrv --network rocketmq-smoke -e HEAP_OPTS='-Xms128m -Xmx128m -Xmn64m' apache/rocketmq:4.8.0-alpine nameserver
-    docker run -d --name rocketmq-broker --network rocketmq-smoke -e HEAP_OPTS='-Xms256m -Xmx256m -Xmn128m -XX:MaxDirectMemorySize=128m' apache/rocketmq:4.8.0-alpine broker -n rocketmq-namesrv:9876 autoCreateTopicEnable=true
+Dockerfile 的 builder 阶段安装 unzip，COPY 本地 ZIP 并解压；运行阶段沿用官方用户 UID 3000、端口和启动脚本。依赖准备已在 ZIP 产物阶段完成。最终 Dockerfile 按任务约定只消费该 ZIP，不执行哈希或签名校验。
 
-等待两个容器日志出现 boot success 后，使用配方中的原始测试客户端验证实际收发：
+**验证最终镜像。** `tests/` 保存最终通过的原生库、TLS、消息收发检查及配置。测试脚本的目录和容器名称已归一化；测试逻辑与成功执行记录一致。
 
-    mkdir -p "$WORKSPACE/smoke"
-    cp "$RECIPE_DIR/MessageSmoke.java" "$WORKSPACE/smoke/"
-    docker run --rm --network rocketmq-smoke -v "$WORKSPACE/smoke:/smoke:ro" apache/rocketmq:4.8.0-alpine sh -ec 'mkdir -p /tmp/smoke; javac -cp "$ROCKETMQ_HOME/lib/*" -d /tmp/smoke /smoke/MessageSmoke.java; java -Xms64m -Xmx128m -cp "/tmp/smoke:$ROCKETMQ_HOME/lib/*" MessageSmoke rocketmq-namesrv:9876'
-    docker exec rocketmq-broker sh -c './mqadmin clusterList -n rocketmq-namesrv:9876'
+```sh
+mkdir -p "$WORK_DIR/smoke" "$WORK_DIR/verification"
+cp "$RECIPE_DIR/tests/"*.java "$WORK_DIR/smoke/"
+cp "$RECIPE_DIR/tests/"*.properties "$WORK_DIR/smoke/"
+cp "$RECIPE_DIR/tests/native-image-tests.sh" "$WORK_DIR/smoke/"
+cp "$RECIPE_DIR/tests/run-broker-tests.sh" "$WORK_DIR/verification/"
+cd "$WORK_DIR"
+docker run --rm --network none \
+  --hostname rocketmq-native --add-host rocketmq-native:127.0.0.1 \
+  -v "$PWD/smoke:/smoke:ro" \
+  -v "$ARTIFACT_DIR/rocketmq.zip:/original.zip:ro" \
+  apache/rocketmq:4.8.0-debian sh /smoke/native-image-tests.sh
+sh verification/run-broker-tests.sh
+```
 
-任务已验证 NameServer/Broker 启动、SEND_OK、发送内容读取一致、集群版本 V4_8_0。基础镜像和最终镜像均为 linux/loong64、使用 OpenJDK 8u472 Server VM，且无代理环境变量；最终镜像继承基础镜像层也已校验。最终镜像 ID 为 sha256:6c105fa50d60b56acc9100666e99eb65ac7e64c7ca01374249fbce2c294acc35。测试容器和网络已移除，镜像仅保存在本地，未推送。只构建并验证 Alpine 变体。
+最终已验证的镜像 ID 为 `sha256:31374b062fc36961b2b9d34e0a8e3bed29b9d2e6794a1aa976cbd88deaf756db`，平台 `linux/loong64`。验证结果包括：
 
-来源任务：bcla-602a4b92a1bc4c169b538429d2a68d61，证据修订号 5。
+- 34 个 JAR 的文件集合和内容身份正确，31 个保持上游原样；三个原生组件均包含 LoongArch ELF。
+- 默认用户 UID 3000 下，JNA 的 mlock、madvise、munlock 返回 0，原生 epoll 成功绑定端口，BoringSSL 可用。
+- RocketMQ 使用 EpollEventLoopGroup 和 OpenSslServerContext，连续 10 次 TLS 请求往返通过。
+- 官方 NameServer、Broker 启动成功，集群版本 V4_8_0，生产者 SEND_OK，消费者读回完全相同的消息。
+- 开启文件预热、临时存储池后，commitlog 的 mlock、madvise 返回 0；JDK 的 G1/CMS 可用，基础镜像层继承关系正确。
+
+本次未进行完整回归、长时间压力测试或镜像发布，没有功能省略。执行 ID 仅标识本地任务证据；可复用命令和输入地址均已在此给出。

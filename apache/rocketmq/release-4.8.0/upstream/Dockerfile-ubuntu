@@ -19,26 +19,33 @@
 # Build stage 1 `builder`:
 # Download and extract RocketMQ
 ################################################################################
-FROM eclipse-temurin:8-jdk-alpine-loongarch64-server AS builder
+FROM eclipse-temurin:8-jdk AS builder
 
 ARG version
 
 RUN set -eux; \
-    apk add --virtual .build-deps curl gnupg unzip;
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        gnupg2 \
+        unzip \
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
-COPY artifacts/rocketmq.zip artifacts/rocketmq.zip.asc artifacts/KEYS /
-RUN gpg --import KEYS && gpg --batch --verify rocketmq.zip.asc rocketmq.zip
+RUN curl -L https://archive.apache.org/dist/rocketmq/${version}/rocketmq-all-${version}-bin-release.zip -o rocketmq.zip \
+    && curl -L https://archive.apache.org/dist/rocketmq/${version}/rocketmq-all-${version}-bin-release.zip.asc -o rocketmq.zip.asc \
+	&& curl -L https://www.apache.org/dist/rocketmq/KEYS -o KEYS \
+    && gpg --import KEYS \
+    && gpg --batch --verify rocketmq.zip.asc rocketmq.zip
 
-RUN unzip rocketmq.zip; \
-    mkdir -p /tmp/rocketmq-${version}; \
-	mv rocketmq*/* /tmp/rocketmq-${version}
+RUN unzip rocketmq.zip \
+    && mkdir -p /tmp/rocketmq-${version} \
+	&& mv rocketmq*/* /tmp/rocketmq-${version}
 
-   
 ################################################################################
 # Build stage 2:
 # Make the actual RocketMQ docker image
 ################################################################################
-FROM eclipse-temurin:8-jdk-alpine-loongarch64-server
+FROM eclipse-temurin:8-jdk
 
 ARG user=rocketmq
 ARG group=rocketmq
@@ -48,30 +55,36 @@ ARG gid=3000
 ARG version
 
 # Rocketmq version
-ENV ROCKETMQ_VERSION ${version}
+ENV ROCKETMQ_VERSION=${version}
 
 # Rocketmq home
-ENV ROCKETMQ_HOME  /home/rocketmq/rocketmq-${ROCKETMQ_VERSION}
+ENV ROCKETMQ_HOME=/home/rocketmq/rocketmq-${ROCKETMQ_VERSION}
 
-
-# Expose namesrv port
+# expose namesrv port
 EXPOSE 9876
-# Expose broker ports
+
+# expose broker ports
 EXPOSE 10909 10911 10912
 
 # RocketMQ is run with user `rocketmq`, uid = 3000
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
-RUN addgroup --gid ${gid} ${group} \
-    && adduser --uid ${uid} -G ${group} ${user} -s /bin/bash -D \
-    && apk add --no-cache bash gettext nmap-ncat openssl busybox-extras which
+RUN groupadd -g ${gid} ${group} \
+    && useradd -l -u ${uid} -g ${gid} -m -s /bin/bash ${user} \
+    && apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        less \
+        openssl \
+        which \
+    \
+    && apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy customized scripts
 COPY scripts/ ${ROCKETMQ_HOME}/bin/
 
 # Copy RocketMQ artifact from builder
 COPY --from=builder --chown=${uid}:${gid} /tmp/rocketmq-${version}/ ${ROCKETMQ_HOME}
-
 
 # Override customized scripts for namesrv
 # Override customized scripts for broker
@@ -84,6 +97,7 @@ RUN mv ${ROCKETMQ_HOME}/bin/runserver-customize.sh ${ROCKETMQ_HOME}/bin/runserve
  && sed -i 's/${JAVA_HOME}\/jre\/lib\/ext/${JAVA_HOME}\/jre\/lib\/ext:${JAVA_HOME}\/lib\/ext/' ${ROCKETMQ_HOME}/bin/tools.sh \
  && chown -R ${uid}:${gid} ${ROCKETMQ_HOME}
 
+
 USER ${user}
 
 WORKDIR ${ROCKETMQ_HOME}/bin
@@ -91,4 +105,3 @@ WORKDIR ${ROCKETMQ_HOME}/bin
 ENTRYPOINT ["./docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint
 CMD ["dummy"]
-

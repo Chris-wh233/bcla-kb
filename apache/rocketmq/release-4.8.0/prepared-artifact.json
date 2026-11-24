@@ -1,0 +1,63 @@
+{
+  "name": "rocketmq-all-4.8.0-bin-release-loongarch64.zip",
+  "version": "4.8.0",
+  "architecture": "loongarch64",
+  "abi": "Linux glibc, LoongArch ELF machine258; JDK8 JNI; verified on Debian forky",
+  "path": "artifacts/rocketmq-all-4.8.0-bin-release-loongarch64.zip",
+  "sha256": "4850543dd1e378fbb061d88d3a8bbdda42b5fa7ff84b350eea6e0ae1a956d00e",
+  "bytes": 12204062,
+  "source": {
+    "repository": "https://github.com/apache/rocketmq",
+    "commit": "39bb9386f10d5d8dfe81183c172a3a86f6d313bd",
+    "upstream_url": "https://archive.apache.org/dist/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip",
+    "download_url": "https://repo.huaweicloud.com/apache/rocketmq/4.8.0/rocketmq-all-4.8.0-bin-release.zip",
+    "sha256": "56bce195af3843a234f77e4248657d0f72d5da0f7f44923bd820762e7d35c548"
+  },
+  "preparation": {
+    "method": "Replace exactly the3 native-dependent JARs in the locally acquired originalZIP, preserve entry metadata and all other files, repack before imagebuild",
+    "script": "prepare-zip.py",
+    "verification": {
+      "zip_crc": "PASS",
+      "exact_replacements": 3,
+      "unchanged_regular_files": 87,
+      "jar_count": 34,
+      "entry_count": 100,
+      "entry_set": "PASS",
+      "permissions_and_timestamps_preserved": true
+    },
+    "replacements": [
+      {
+        "old_entry": "rocketmq-all-4.8.0-bin-release/lib/netty-tcnative-boringssl-static-1.1.33.Fork26.jar",
+        "new_entry": "rocketmq-all-4.8.0-bin-release/lib/netty-tcnative-boringssl-static-2.0.7.Final.jar",
+        "old_sha256": "d5dbfbc5d944695ef350a4f9b6ba5d5fce8857ea85c9009c037b00b30059bd00",
+        "new_sha256": "ca9ac670d92b699792f5498562b0ade1cded5a629cd8f7cc069ef5b3d2e0188c",
+        "coordinate": "io.netty:netty-tcnative-boringssl-static:2.0.7.Final",
+        "source": "https://maven.loongnix.cn/loongarch/maven/io/netty/netty-tcnative-boringssl-static/2.0.7.Final/netty-tcnative-boringssl-static-2.0.7.Final.jar"
+      },
+      {
+        "old_entry": "rocketmq-all-4.8.0-bin-release/lib/netty-all-4.0.42.Final.jar",
+        "new_entry": "rocketmq-all-4.8.0-bin-release/lib/netty-all-4.0.56.Final.jar",
+        "old_sha256": "f35c85046142fe3a69e0d0cb38a18989d04ac5b98d5c3c597bd4f0a3830331b3",
+        "new_sha256": "5b0778b89f3e48837ac17ae7bca6dc69a63f30a172473fa007db097fb6509536",
+        "coordinate": "io.netty:netty-all:4.0.56.Final",
+        "source": "https://maven.loongnix.cn/loongarch/maven/io/netty/netty-all/4.0.56.Final/netty-all-4.0.56.Final.jar"
+      },
+      {
+        "old_entry": "rocketmq-all-4.8.0-bin-release/lib/jna-4.2.2.jar",
+        "new_entry": "rocketmq-all-4.8.0-bin-release/lib/jna-4.2.2.jar",
+        "old_sha256": "1f38af54e06c6e6f6dbf39ba2c052b952dea5dddb4871127b34639ddeb11bdbe",
+        "new_sha256": "d41e251fff61b2bcd23e59abef30e13517c931e17587ea9b7865abaa32266218",
+        "coordinate": "net.java.dev.jna:jna:4.2.2",
+        "source": "https://maven.loongnix.cn/loongarch/maven/net/java/dev/jna/jna/4.2.2/jna-4.2.2.jar"
+      }
+    ]
+  },
+  "consumers": [
+    "Dockerfile-debian builder stage"
+  ],
+  "distribution": "Supply the preparedZIP as an image-build binary input; binary bytes are not stored in this knowledge recipe",
+  "provenance": {
+    "task_id": "bcla-602a4b92a1bc4c169b538429d2a68d61",
+    "execution_id": "exec-d5ad04c99e2a4fc8bfc420ed0f4f331b"
+  }
+}

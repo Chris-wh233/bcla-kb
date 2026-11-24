@@ -1,9 +1,9 @@
-# RocketMQ Alpine 适配
+# RocketMQ 4.8.0 LoongArch 适配
 
-官方容器模板：apache/rocketmq-docker@56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16 的 image-build/Dockerfile-alpine；原文件 SHA-256 为 b3d7904720234eea5e856a35cd6ac1afc5f41d2661e6e132b65b65b3bdfee939。
+应用范围为 RocketMQ `release-4.8.0` 的 Debian 容器镜像。项目源码基线为 `39bb9386f10d5d8dfe81183c172a3a86f6d313bd`；容器模板来自 `apache/rocketmq-docker` 的 `56bebfc4a6a3555e4fb1bdab9d8979eaa4d39c16`，路径为 `image-build/Dockerfile-ubuntu`。
 
-接受的 Dockerfile-alpine 保留上游两阶段结构、用户、启动脚本、端口和安装目录。两个 FROM 指向已验证使用 JDK 8 Server VM 的基础镜像别名；builder 从构建上下文读取经 SHA-512 校验的 RocketMQ 4.8.0 ZIP、发布签名及 Apache KEYS，并保留 GPG 验证。
+上游二进制 ZIP 可以复用。镜像构建前，将其中 JNA、Netty 和 tcnative 的 JAR 替换为已验证的 Loongnix Maven 产物，再生成独立的 LoongArch ZIP。替换映射、获取地址、内容身份及完整性检查见 `prepared-artifact.json`；实际采用的重打包算法见 `prepare-zip.py`。
 
-所有构建适配均在单独保存的 Dockerfile 内；RocketMQ 源码和上游运行脚本没有适配改动，因此不另外生成重复的源码补丁。base-evidence 只保存基础镜像补充构建的准确文件，不作为 RocketMQ 构建的主要流程。
+两个镜像阶段均使用 `lcr.loongnix.cn/library/eclipse-temurin:8-jdk-forky`。构建阶段安装 unzip，复制并解压预处理 ZIP；运行阶段沿用官方用户、启动脚本、端口和目录布局。Dockerfile 不进行依赖准备或 ZIP 校验。Dockerfile 本身就是保留的适配文件，原始模板单独存放于 `upstream/Dockerfile-ubuntu`。
 
-复用时确保基础镜像使用 JDK Server VM；否则先构建符合要求的基础镜像。
+Netty `4.0.56.Final` 与 tcnative `2.0.7.Final` 成对使用；JNA 保持 `4.2.2` 并使用 LoongArch 构建。三个原生库均有 LoongArch ELF，并已在最终镜像的默认用户 UID 3000 下通过原生调用和实际业务验证。没有 RocketMQ 源码改动，也没有源码构建的依赖。
