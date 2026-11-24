@@ -1,0 +1,492 @@
+[
+  {
+    "package": "adduser",
+    "version": "3.159",
+    "architecture": "all",
+    "file": "adduser_3.159_all.deb",
+    "sha256": "d286185bec76106bbba85cbfc87cbec3b044fa3bedee174bbaf84e4056f66d3e"
+  },
+  {
+    "package": "base-passwd",
+    "version": "3.6.8+b1",
+    "architecture": "loong64",
+    "file": "base-passwd_3.6.8+b1_loong64.deb",
+    "sha256": "003753dbdb82dd65920305d1715fd3d6747560cb55accf7c99510977f15bfbd6"
+  },
+  {
+    "package": "bzip2",
+    "version": "1.0.8-6+b2",
+    "architecture": "loong64",
+    "file": "bzip2_1.0.8-6+b2_loong64.deb",
+    "sha256": "f58ed0a2d4d8687404e5e26699811e313f5240e8b29bb168954b46462e0a2a7d"
+  },
+  {
+    "package": "ca-certificates",
+    "version": "20260816+nmu1",
+    "architecture": "all",
+    "file": "ca-certificates_20260816+nmu1_all.deb",
+    "sha256": "14a35850411e3a26ac4802638ccafe437dae4c79a1d10b3a264d1a404a286305"
+  },
+  {
+    "package": "debconf",
+    "version": "1.5.92",
+    "architecture": "all",
+    "file": "debconf_1.5.92_all.deb",
+    "sha256": "cdee7273fe92dad870fa6c7e3a8aa5b4001a8ddeffccb0958e1607bf15879803"
+  },
+  {
+    "package": "findutils",
+    "version": "4.11.0-3",
+    "architecture": "loong64",
+    "file": "findutils_4.11.0-3_loong64.deb",
+    "sha256": "3cf7462561b145639828ced8f8d917dbc4465a6da9550ec42b0cd8bec9c166c3"
+  },
+  {
+    "package": "gcc-16-base",
+    "version": "16.2.0-5",
+    "architecture": "loong64",
+    "file": "gcc-16-base_16.2.0-5_loong64.deb",
+    "sha256": "091d8b278e23086a7579dac54bc34a1455ab4921f388772efd10b705de947072"
+  },
+  {
+    "package": "gosu",
+    "version": "1.19-1+b1",
+    "architecture": "loong64",
+    "file": "gosu_1.19-1+b1_loong64.deb",
+    "sha256": "effca0b17b68d2842b53bc0237ceeef75f12055873a5cbcc66557fd4a71c77fa"
+  },
+  {
+    "package": "gzip",
+    "version": "1.14-1",
+    "architecture": "loong64",
+    "file": "gzip_1.14-1_loong64.deb",
+    "sha256": "074dc499ebd65410129da3e51580a5954b8fda9a8d506634b2f8c1a7ee4f98fd"
+  },
+  {
+    "package": "libacl1",
+    "version": "2.4.0-1",
+    "architecture": "loong64",
+    "file": "libacl1_2.4.0-1_loong64.deb",
+    "sha256": "f68bcef64e1fa2a5947abfeb3b9d6d0d14d8d0add8df93dc888f9dcc1fc1d503"
+  },
+  {
+    "package": "libaio1t64",
+    "version": "0.3.113-10",
+    "architecture": "loong64",
+    "file": "libaio1t64_0.3.113-10_loong64.deb",
+    "sha256": "a5f4f42ea1299847dce5f14e2d2dd9fb6cc61a9b54c5bf6b9ad4888b31e9c8fd"
+  },
+  {
+    "package": "libaudit-common",
+    "version": "1:4.1.2-1",
+    "architecture": "all",
+    "file": "libaudit-common_1%3a4.1.2-1_all.deb",
+    "sha256": "3d4206918b2c61e7b95bdd2f7e7d927afb1432ecb0deecdd0ade209ed6150c93"
+  },
+  {
+    "package": "libaudit1",
+    "version": "1:4.1.2-1+b2",
+    "architecture": "loong64",
+    "file": "libaudit1_1%3a4.1.2-1+b2_loong64.deb",
+    "sha256": "99c4ea75295ca61c3b97fa34d32dff0919679116b0d3226df5e3682aab8c5916"
+  },
+  {
+    "package": "libbsd0",
+    "version": "0.12.2-3",
+    "architecture": "loong64",
+    "file": "libbsd0_0.12.2-3_loong64.deb",
+    "sha256": "db82295d11b4b59fd2def8a2ebe85aa1d503b8d258c976616d11df9253ae0acd"
+  },
+  {
+    "package": "libbz2-1.0",
+    "version": "1.0.8-6+b2",
+    "architecture": "loong64",
+    "file": "libbz2-1.0_1.0.8-6+b2_loong64.deb",
+    "sha256": "2ee74162f81529128c51b994538c02656bfaf94b85fb74a8532bc72186dcdce8"
+  },
+  {
+    "package": "libc-gconv-modules-extra",
+    "version": "2.43-7",
+    "architecture": "loong64",
+    "file": "libc-gconv-modules-extra_2.43-7_loong64.deb",
+    "sha256": "2b50e6624b44691053ba8d1c91245beeaca5813caa45bcf96a5f248a497bb19e"
+  },
+  {
+    "package": "libc6",
+    "version": "2.43-7",
+    "architecture": "loong64",
+    "file": "libc6_2.43-7_loong64.deb",
+    "sha256": "b6346725a3b73f4dde5c9ba15d7399b15b45076e923d8a91dedfafc22c649efb"
+  },
+  {
+    "package": "libcap-ng0",
+    "version": "0.9.6-1+b1",
+    "architecture": "loong64",
+    "file": "libcap-ng0_0.9.6-1+b1_loong64.deb",
+    "sha256": "e6edb6e622685ffea856e4b4fed46075f1408f83f46d3e87d6da78ba6cfe7d58"
+  },
+  {
+    "package": "libcbor0.10",
+    "version": "0.10.2-2.2",
+    "architecture": "loong64",
+    "file": "libcbor0.10_0.10.2-2.2_loong64.deb",
+    "sha256": "f358e6f28f03af54f68f20e0cce46759337d1033f18fba0a07d4c5ab340ecd65"
+  },
+  {
+    "package": "libcom-err2",
+    "version": "1.47.4-1+b3",
+    "architecture": "loong64",
+    "file": "libcom-err2_1.47.4-1+b3_loong64.deb",
+    "sha256": "6eb5b4a54db2e45cc0ad6afe6f5b253ec86a436151de3181277d240397bbe2b6"
+  },
+  {
+    "package": "libcrypt1",
+    "version": "1:4.5.2+20251210-1",
+    "architecture": "loong64",
+    "file": "libcrypt1_1%3a4.5.2+20251210-1_loong64.deb",
+    "sha256": "f0c1a7efd4a6f27644759041264f2944de9ce517a73912e3a95f7ccc31a36be5"
+  },
+  {
+    "package": "libdb5.3t64",
+    "version": "5.3.28+dfsg2-12",
+    "architecture": "loong64",
+    "file": "libdb5.3t64_5.3.28+dfsg2-12_loong64.deb",
+    "sha256": "7506dbc590e751389065befcf9dbfa84b83c757013a872800d90aaaa60cf28ae"
+  },
+  {
+    "package": "libdebconfclient0",
+    "version": "0.283",
+    "architecture": "loong64",
+    "file": "libdebconfclient0_0.283_loong64.deb",
+    "sha256": "25ed98db32234834687274f69b353e88dc2c6073daac108deb9a6d7faa35f65a"
+  },
+  {
+    "package": "libfido2-1",
+    "version": "1.17.0-2",
+    "architecture": "loong64",
+    "file": "libfido2-1_1.17.0-2_loong64.deb",
+    "sha256": "49e9f5f6025774e7cb0f883ee44c16e05a7a59d75a67f3a01908fb268387de82"
+  },
+  {
+    "package": "libgcc-s1",
+    "version": "16.2.0-5",
+    "architecture": "loong64",
+    "file": "libgcc-s1_16.2.0-5_loong64.deb",
+    "sha256": "4306aecfc802c685aade7ece96dcb86e44bea2ba2bf51844e595ccd130943e75"
+  },
+  {
+    "package": "libgdbm-compat4t64",
+    "version": "1.26-1+b2",
+    "architecture": "loong64",
+    "file": "libgdbm-compat4t64_1.26-1+b2_loong64.deb",
+    "sha256": "59bd7008807f616f6c87561ba02ae8578e4679cdec0c381387e2238e69fd650c"
+  },
+  {
+    "package": "libgdbm6t64",
+    "version": "1.26-1+b2",
+    "architecture": "loong64",
+    "file": "libgdbm6t64_1.26-1+b2_loong64.deb",
+    "sha256": "8e8bb8b321a141978f12e93d56625ad302565bda9fb1936d20ee3a07129da1b8"
+  },
+  {
+    "package": "libgssapi-krb5-2",
+    "version": "1.22.3-1",
+    "architecture": "loong64",
+    "file": "libgssapi-krb5-2_1.22.3-1_loong64.deb",
+    "sha256": "4368f9f0582a7039648ad415ce6700639819a69d5ab56db004c1ad92b272c969"
+  },
+  {
+    "package": "libk5crypto3",
+    "version": "1.22.3-1",
+    "architecture": "loong64",
+    "file": "libk5crypto3_1.22.3-1_loong64.deb",
+    "sha256": "2f53c43d72af9b735313a744ad373d61e2f792f5b887b2e716df3bb6a26e8d69"
+  },
+  {
+    "package": "libkeyutils1",
+    "version": "1.6.3-6+b2",
+    "architecture": "loong64",
+    "file": "libkeyutils1_1.6.3-6+b2_loong64.deb",
+    "sha256": "68f2d1e7e24552a2b70f419d053e4fbbf127a588dfd2d480e35e9f74249da522"
+  },
+  {
+    "package": "libkrb5-3",
+    "version": "1.22.3-1",
+    "architecture": "loong64",
+    "file": "libkrb5-3_1.22.3-1_loong64.deb",
+    "sha256": "cc3f1e159ccc27b599eb10ffc836b0cdb7a773504288b012b050ce0579975b40"
+  },
+  {
+    "package": "libkrb5support0",
+    "version": "1.22.3-1",
+    "architecture": "loong64",
+    "file": "libkrb5support0_1.22.3-1_loong64.deb",
+    "sha256": "02c4bdc78b057f7fd5c73839d599021747cc86bb8af59ed9c26e73de32a08f5e"
+  },
+  {
+    "package": "liblz4-1",
+    "version": "1.11.1-2",
+    "architecture": "loong64",
+    "file": "liblz4-1_1.11.1-2_loong64.deb",
+    "sha256": "c80fe603cfcc2a9d141f651b65931ec4caa950fdab88275029e2fd30176a34cb"
+  },
+  {
+    "package": "liblzma5",
+    "version": "5.8.4-1",
+    "architecture": "loong64",
+    "file": "liblzma5_5.8.4-1_loong64.deb",
+    "sha256": "bf8ab6239eaded94c2aa577631862ee70c6411604c8ec47dd0b7306c96fe5610"
+  },
+  {
+    "package": "libmd0",
+    "version": "1.3.0-1",
+    "architecture": "loong64",
+    "file": "libmd0_1.3.0-1_loong64.deb",
+    "sha256": "5fb9237cd610ecb16d42360909ffa03036372af4e8ceebd20173d4bedc7c82b3"
+  },
+  {
+    "package": "libmecab2",
+    "version": "0.996-16.1+b3",
+    "architecture": "loong64",
+    "file": "libmecab2_0.996-16.1+b3_loong64.deb",
+    "sha256": "b9efd12432c2c11cea1a0eb5a8623f5bc8192d5f3effe4aadb8256d5ef609d0e"
+  },
+  {
+    "package": "libnuma1",
+    "version": "2.0.19-1+b2",
+    "architecture": "loong64",
+    "file": "libnuma1_2.0.19-1+b2_loong64.deb",
+    "sha256": "0444487d220872e08c3c2cc18d32f401cf917cbad79d19ca20f2cd4dd1abbf8d"
+  },
+  {
+    "package": "libpam-modules-bin",
+    "version": "1.7.0-8",
+    "architecture": "loong64",
+    "file": "libpam-modules-bin_1.7.0-8_loong64.deb",
+    "sha256": "6056de62dfe7ca33f401cdb4167c534aea4572d337529ae7c266dc83d9a332c1"
+  },
+  {
+    "package": "libpam-modules",
+    "version": "1.7.0-8",
+    "architecture": "loong64",
+    "file": "libpam-modules_1.7.0-8_loong64.deb",
+    "sha256": "dbd1dd0d9cfdbb4b1016c2163d98618375deeb96bdc2e84cd1b2e323f6c7455a"
+  },
+  {
+    "package": "libpam0g",
+    "version": "1.7.0-8",
+    "architecture": "loong64",
+    "file": "libpam0g_1.7.0-8_loong64.deb",
+    "sha256": "67f629114ca6774fd05878956d5889d55e75c29170e7224a2d89f55eb15387e6"
+  },
+  {
+    "package": "libpcre2-8-0",
+    "version": "10.49-1",
+    "architecture": "loong64",
+    "file": "libpcre2-8-0_10.49-1_loong64.deb",
+    "sha256": "65e4a6adc71900019db8cff8974c919f30ee2b40f6e78c752796bf816e6d2871"
+  },
+  {
+    "package": "libperl5.44",
+    "version": "5.44.0-3",
+    "architecture": "loong64",
+    "file": "libperl5.44_5.44.0-3_loong64.deb",
+    "sha256": "80627b639e8d988f4cc1ceca9b20e4aa03fd1e763b02326d760ed2c9782e469f"
+  },
+  {
+    "package": "libsasl2-2",
+    "version": "2.1.28+dfsg1-12",
+    "architecture": "loong64",
+    "file": "libsasl2-2_2.1.28+dfsg1-12_loong64.deb",
+    "sha256": "62adcb86e2d5b2a081ae3752617b4e5f3073dde8b5833dfe1fe70651cfc8db50"
+  },
+  {
+    "package": "libsasl2-modules-db",
+    "version": "2.1.28+dfsg1-12",
+    "architecture": "loong64",
+    "file": "libsasl2-modules-db_2.1.28+dfsg1-12_loong64.deb",
+    "sha256": "acc18dc18f68fa7993531e74630cdff7e7f41c6fadac19424a399d5e9acb5014"
+  },
+  {
+    "package": "libselinux1",
+    "version": "3.11-2.1+b1",
+    "architecture": "loong64",
+    "file": "libselinux1_3.11-2.1+b1_loong64.deb",
+    "sha256": "48f9913d6c66d5b9f6ac1739ad7f3196d8a7d9155e024c7d2f80ce506f5de363"
+  },
+  {
+    "package": "libsemanage-common",
+    "version": "3.11-1",
+    "architecture": "all",
+    "file": "libsemanage-common_3.11-1_all.deb",
+    "sha256": "c322450a9ed61de368442c5a5a916aeee5f0783ef2d81fbd4f555c6a1c4fcbcb"
+  },
+  {
+    "package": "libsemanage2",
+    "version": "3.11-1+b2",
+    "architecture": "loong64",
+    "file": "libsemanage2_3.11-1+b2_loong64.deb",
+    "sha256": "7244e5fd04932db200b873d22ec0268ec91b620fc01f611f64680035dfd7ddc1"
+  },
+  {
+    "package": "libsepol2",
+    "version": "3.11-1",
+    "architecture": "loong64",
+    "file": "libsepol2_3.11-1_loong64.deb",
+    "sha256": "b8b4bf21fb55537935af5b3a169c1834c67b9c7edcfb4aa6aa379c36b44f35fc"
+  },
+  {
+    "package": "libssl3t64",
+    "version": "3.6.5-1",
+    "architecture": "loong64",
+    "file": "libssl3t64_3.6.5-1_loong64.deb",
+    "sha256": "a720e52eb1d3be435a5e23f6f773510413e95925216aecd0a4b38fc0d3db1159"
+  },
+  {
+    "package": "libstdc++6",
+    "version": "16.2.0-5",
+    "architecture": "loong64",
+    "file": "libstdc++6_16.2.0-5_loong64.deb",
+    "sha256": "a3c891a1fe915d285989e58df365191c4cad4a1e65de8f5b51368c3d918f3c05"
+  },
+  {
+    "package": "libsystemd0",
+    "version": "262.2-1",
+    "architecture": "loong64",
+    "file": "libsystemd0_262.2-1_loong64.deb",
+    "sha256": "fbca8f311d1cb09fadf6a5a4c594f4eb463cf918fe30c8aae44dfe5c5f4e7549"
+  },
+  {
+    "package": "libtinfo6",
+    "version": "6.6+20260608-2",
+    "architecture": "loong64",
+    "file": "libtinfo6_6.6+20260608-2_loong64.deb",
+    "sha256": "6993eb3809d6e021a810f3c07cc72bf2be5338bebc1d401e783558d472b03290"
+  },
+  {
+    "package": "libtirpc-common",
+    "version": "1.3.7+ds-1",
+    "architecture": "all",
+    "file": "libtirpc-common_1.3.7+ds-1_all.deb",
+    "sha256": "5b59ea5cc2fbbaccd9bc4e286a545d0cc8ea14d52b9ca0cd73b3b1fb78b1d385"
+  },
+  {
+    "package": "libtirpc3t64",
+    "version": "1.3.7+ds-1",
+    "architecture": "loong64",
+    "file": "libtirpc3t64_1.3.7+ds-1_loong64.deb",
+    "sha256": "e1c9e5d8d04cd9eefc59137301f03fefa7bd9690b57b56226fd89b3a8bfc4ee5"
+  },
+  {
+    "package": "libudev1",
+    "version": "262.2-1",
+    "architecture": "loong64",
+    "file": "libudev1_262.2-1_loong64.deb",
+    "sha256": "9536cfb7e705f977efe8535f3dca06d8a8fc2156750fdfcf5dc69ed42601262a"
+  },
+  {
+    "package": "libxxhash0",
+    "version": "0.8.3-2+b2",
+    "architecture": "loong64",
+    "file": "libxxhash0_0.8.3-2+b2_loong64.deb",
+    "sha256": "7a2247b5e49aa0284c0d078ba9aa277a82952cb2d4e615bb9d69102dde79f727"
+  },
+  {
+    "package": "libzstd1",
+    "version": "1.5.7+dfsg-4",
+    "architecture": "loong64",
+    "file": "libzstd1_1.5.7+dfsg-4_loong64.deb",
+    "sha256": "0a6ceb17c2a05c02c30d7bba35dd469f78a4e5c8edee6820ff13ba2784194434"
+  },
+  {
+    "package": "login.defs",
+    "version": "1:4.20.3-1",
+    "architecture": "all",
+    "file": "login.defs_1%3a4.20.3-1_all.deb",
+    "sha256": "f45302223931644b1d54acb01b9ca97d5ec4728f1b355bc4153517040079f400"
+  },
+  {
+    "package": "openssl-provider-legacy",
+    "version": "3.6.5-1",
+    "architecture": "loong64",
+    "file": "openssl-provider-legacy_3.6.5-1_loong64.deb",
+    "sha256": "5e8e335e2db7b5fa178246da00656b37e349fdb9e5a8fbdd6e4f6b8390ffe109"
+  },
+  {
+    "package": "openssl",
+    "version": "3.6.5-1",
+    "architecture": "loong64",
+    "file": "openssl_3.6.5-1_loong64.deb",
+    "sha256": "3ded9f1395eb8b9b45d619e2b17561f78f774d9571e6234fd865f43c9c12784c"
+  },
+  {
+    "package": "passwd",
+    "version": "1:4.20.3-1",
+    "architecture": "loong64",
+    "file": "passwd_1%3a4.20.3-1_loong64.deb",
+    "sha256": "c81469f05315a532b96762dfb98b7159dd742684723b2404cc97081322f3cfc9"
+  },
+  {
+    "package": "perl-base",
+    "version": "5.44.0-3",
+    "architecture": "loong64",
+    "file": "perl-base_5.44.0-3_loong64.deb",
+    "sha256": "5f2721b0496621f13b1b43a5180d2e1a5acdb42b88b46dfc0de4cacd2d37049f"
+  },
+  {
+    "package": "perl-modules-5.44",
+    "version": "5.44.0-3",
+    "architecture": "all",
+    "file": "perl-modules-5.44_5.44.0-3_all.deb",
+    "sha256": "b5dd41388403bcdc5b91f348f765678f72230b8027eb41fa34d7b004b9243ced"
+  },
+  {
+    "package": "perl",
+    "version": "5.44.0-3",
+    "architecture": "loong64",
+    "file": "perl_5.44.0-3_loong64.deb",
+    "sha256": "6d98ee57118aa9773ea3eb19bc8c3b05efae080a1944c53c9386ce3e627c422d"
+  },
+  {
+    "package": "psmisc",
+    "version": "23.7-2+b1",
+    "architecture": "loong64",
+    "file": "psmisc_23.7-2+b1_loong64.deb",
+    "sha256": "ab773bdcf5c1abbd24ab6bb9af7fac3bcc5ff7c5eaf469dc1e78c3c23bb47d56"
+  },
+  {
+    "package": "tzdata-legacy",
+    "version": "2026f-1",
+    "architecture": "all",
+    "file": "tzdata-legacy_2026f-1_all.deb",
+    "sha256": "2b9bd58b650d46ba501cc89b5ca3b1bc80ffbf594dfc98975475be2416760704"
+  },
+  {
+    "package": "tzdata",
+    "version": "2026f-1",
+    "architecture": "all",
+    "file": "tzdata_2026f-1_all.deb",
+    "sha256": "7ef210d4dfaca780b16cfbd307c4a38d0408b24e6774bde541a45b8ffe742b9f"
+  },
+  {
+    "package": "xz-utils",
+    "version": "5.8.4-1",
+    "architecture": "loong64",
+    "file": "xz-utils_5.8.4-1_loong64.deb",
+    "sha256": "8e71897122bb19ec46a01635da810f875a7eefb5759f997a4cdd219d8baac5df"
+  },
+  {
+    "package": "zlib1g",
+    "version": "1:1.3.dfsg+really1.3.2-4",
+    "architecture": "loong64",
+    "file": "zlib1g_1%3a1.3.dfsg+really1.3.2-4_loong64.deb",
+    "sha256": "eee9e66fa901260fc12fe8ef9e02bdc0b7d8a7d9af0688bac3c7404fd70f1df9"
+  },
+  {
+    "package": "zstd",
+    "version": "1.5.7+dfsg-4",
+    "architecture": "loong64",
+    "file": "zstd_1.5.7+dfsg-4_loong64.deb",
+    "sha256": "e86ea3e5441513e49d8ad2ec094ec3937c968d16e7ab00535232455785300b49"
+  }
+]

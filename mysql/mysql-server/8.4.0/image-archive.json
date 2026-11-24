@@ -1,0 +1,9 @@
+{
+  "path": "mysql-8.4.0-loong64.tar.gz",
+  "sha256": "055d3b34109f3a0408dc09721b08129d87d4915a68798d094f955f98d624e1df",
+  "bytes": 253402806,
+  "image_id": "sha256:0d1f4915989e3ec4b55a4d81cb0442e63d044be767062b7606cd63baeff6ef79",
+  "image_tag": "mysql:8.4.0-loong64",
+  "architecture": "loong64",
+  "image_bytes": 630302996
+}

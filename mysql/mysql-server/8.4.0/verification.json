@@ -1,0 +1,67 @@
+{
+  "image_id": "sha256:0d1f4915989e3ec4b55a4d81cb0442e63d044be767062b7606cd63baeff6ef79",
+  "architecture": "loong64",
+  "proxy_environment_absent": true,
+  "server_version": "8.4.0",
+  "official_entrypoint_initialization": true,
+  "dpkg_audit": "clean",
+  "package_versions": [
+    "mysql-community-client-core\t8.4.0-1debian14\tloong64",
+    "mysql-community-server-core\t8.4.0-1debian14\tloong64",
+    "mysql-server\t8.4.0-1debian14\tloong64"
+  ],
+  "cycle_timer": "CYCLE\t99800995\t1",
+  "innodb_transaction_json_utf8mb4": true,
+  "indexed_rows_join_and_temporary_table": true,
+  "timezone_tables_loaded": true,
+  "separate_container_tcp_tls_client": [
+    "8.4.0\tbcla@%",
+    "Ssl_cipher\tTLS_AES_128_GCM_SHA256",
+    "entrypoint-init-ok"
+  ],
+  "performance_schema_wait_timing": {
+    "timed_wait_events": [
+      "wait/synch/cond/sql/Item_func_sleep::cond\t200464889520",
+      "wait/io/file/innodb/innodb_temp_file\t107087196900",
+      "wait/io/file/innodb/innodb_log_file\t88229667120",
+      "wait/io/file/innodb/innodb_data_file\t81624733620",
+      "wait/io/file/innodb/innodb_data_file\t66161098080",
+      "wait/io/file/innodb/innodb_data_file\t31512328860",
+      "wait/io/file/innodb/innodb_log_file\t29958507420",
+      "wait/io/file/innodb/innodb_temp_file\t24258430020",
+      "wait/io/socket/sql/client_connection\t20433555540",
+      "wait/io/file/innodb/innodb_data_file\t20175560580",
+      "wait/io/socket/sql/client_connection\t20086382580",
+      "wait/io/socket/sql/client_connection\t19584360540",
+      "wait/io/socket/sql/client_connection\t19146205980",
+      "wait/io/socket/sql/client_connection\t18987699600",
+      "wait/io/socket/sql/client_connection\t18631188000",
+      "wait/io/file/innodb/innodb_data_file\t18312541980",
+      "wait/io/file/innodb/innodb_data_file\t16721596440",
+      "wait/io/file/innodb/innodb_dblwr_file\t15320419680",
+      "wait/io/file/innodb/innodb_log_file\t12664017480",
+      "wait/io/file/innodb/innodb_data_file\t8000489040"
+    ],
+    "sleep_requested_seconds": 0.2,
+    "sleep_wait_seconds": 0.20046488952
+  },
+  "adaptive_hash_index_default": "OFF",
+  "plugins": {
+    "innodb_xplugin": [
+      "InnoDB\tACTIVE",
+      "mysqlx\tACTIVE"
+    ],
+    "group_replication_load": "ACTIVE"
+  },
+  "mysqldump_restore": true,
+  "daemon_user": "mysql (UID 999)",
+  "restart_persistence_and_init_once": true,
+  "status": "PASSED",
+  "graceful_shutdown": true,
+  "cycle_timer_warning_absent": true,
+  "known_limitations": [
+    "Synthetic hash distribution quality assertion remains; no identified correctness/availability failure; workload-specific efficiency unbenchmarked",
+    "Full NDB cluster integration not exercised; CSR unit tests pass"
+  ],
+  "image_tag": "mysql:8.4.0-loong64"
+}

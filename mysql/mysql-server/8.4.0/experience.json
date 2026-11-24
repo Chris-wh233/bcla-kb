@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "producer": "bcla",
+  "status": "verified",
+  "repository": "https://github.com/mysql/mysql-server",
+  "requested_version": "8.4.0",
+  "resolved_commit": "dc86e412f18b36ce271f791026714e8caa0ec919",
+  "provenance": {
+    "task_id": "bcla-1e7c8928576a4f4293b8c339b66aa5f8",
+    "checkpoint_revision": 21
+  },
+  "kind": "image",
+  "targets": [
+    "mysql:8.4.0-loong64"
+  ],
+  "build": [
+    {
+      "cwd": "$IMAGE_CONTEXT",
+      "command": "docker build --network=none --tag mysql:8.4.0-loong64-timerfix .",
+      "environment": {
+        "architecture": "loong64",
+        "DOCKER_HOST": "unix:///var/run/docker.sock",
+        "prepared_inputs": "nine MySQL DEBs and seventy runtime OS DEBs, exact accepted Dockerfile/entrypoint"
+      },
+      "execution_id": "exec-e9f8126c72524e238c68ff6aaecc8714"
+    }
+  ],
+  "tests": [
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/merge_small_tests-t\" \"$IMAGE_ID\" --gtest_filter=RDTimeStampCounter.*",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    },
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/merge_small_tests-t\" \"$IMAGE_ID\" --gtest_filter=Mysys.CreateTempFile",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    },
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/merge_large_tests-t\" \"$IMAGE_ID\" --gtest_filter=LogTimestampTest.iso8601",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    },
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/NodeCertificate-t\" \"$IMAGE_ID\"",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    },
+    {
+      "command": "SELECT VERSION(); SELECT TIMER_NAME,TIMER_FREQUENCY,TIMER_RESOLUTION FROM performance_schema.performance_timers WHERE TIMER_NAME='CYCLE'; SELECT SLEEP(0.2);",
+      "execution_id": "exec-5946b67e65ea41608c66d80360edbcc0",
+      "result": "passed"
+    },
+    {
+      "command": "sha256sum -c SHA256SUMS && gzip -t mysql-8.4.0-loong64.tar.gz",
+      "execution_id": "exec-8bd7ff1f8f484bf399bb2c1664c0af7f",
+      "result": "passed"
+    }
+  ],
+  "images": [
+    {
+      "target": "mysql:8.4.0-loong64",
+      "id": "sha256:0d1f4915989e3ec4b55a4d81cb0442e63d044be767062b7606cd63baeff6ef79",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile",
+      "source": {
+        "upstream": "https://github.com/docker-library/mysql",
+        "commit": "c05422492215b3f0602409288c868ee4fd606ac3",
+        "path": "8.4/Dockerfile.oracle",
+        "adaptation": "Debian forky DEB runtime replaces Oracle RPM installation; exact accepted file included"
+      },
+      "build_tag": "mysql:8.4.0-loong64-timerfix"
+    }
+  ],
+  "dependencies": [
+    {
+      "recipe": "dependencies/mysql-server-8.4.0",
+      "role": "native twelve DEB producer; nine consumed by image"
+    },
+    {
+      "source": "lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+      "role": "immutable runtime base"
+    },
+    {
+      "manifest": "runtime-dependencies.json",
+      "role": "seventy prebuilt forky system DEBs; exact SHA256 and versions"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Dockerfile",
+      "docker-entrypoint.sh",
+      "runtime-dependencies.json",
+      "dependencies/mysql-server-8.4.0/mysql-packages.json"
+    ],
+    "build_entrypoints": [
+      "docker build --network=none"
+    ],
+    "compatible_targets": [
+      "mysql:8.4.0-loong64"
+    ],
+    "assumptions": [
+      "native LoongArch64 Linux Docker daemon; prepared validated DEBs; immutable forky base available",
+      "see README for full test scope and unresolved synthetic hash-distribution assertion"
+    ]
+  },
+  "files": [
+    {
+      "path": "Dockerfile",
+      "sha256": "6fdcac6b95be0bebce4329cb2dea4f0246477b6aeb93113de3b17fe52b597104"
+    },
+    {
+      "path": "README.md",
+      "sha256": "ae5c977cd01f78db9171624db672953d5de3a31dfd7a8bf0a04e8a9ad4f01b83"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "b4b3b1bb203d3feae1df41eec5e194dda9e5fe08bcabcf38c88c9471b0b4abdb"
+    },
+    {
+      "path": "docker-entrypoint.sh",
+      "sha256": "75a06b67b9535d4ed47ca9a054eb5813c12549eae3b2eaa356bb75fde847ac9a"
+    },
+    {
+      "path": "image-archive.json",
+      "sha256": "2d7d713ebb543a0ce7ccca555d0bb2af9435c8c155601c216f05980c6611dcc9"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "1aa81f38ae961b0f2202892cc50a170f8f05a00c5abbe27ad393f1beded471cf"
+    },
+    {
+      "path": "runtime-dependencies.json",
+      "sha256": "bac0ea687ec7694ec59cd93e5ef804b09b21a785794a8f976d9aea668f624821"
+    },
+    {
+      "path": "source-provenance.json",
+      "sha256": "a4f8e105f62d13d42f4e76b62421ffb6dfaec0ebb41e2a9107dcfd39869a55ed"
+    },
+    {
+      "path": "unit-rechecks.json",
+      "sha256": "53478cb79246c49c07ca389a1e11ce84457e5a8060e8816cb06e084c8171342c"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "2ee886c6af3af2b9ab245754dafa7b4850e8227def66e193aa120eadf480e777"
+    }
+  ]
+}

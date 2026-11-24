@@ -31,6 +31,10 @@
     {
       "path": "jenkinsci/docker",
       "repository": "https://github.com/jenkinsci/docker"
+    },
+    {
+      "path": "mysql/mysql-server",
+      "repository": "https://github.com/mysql/mysql-server"
     }
   ],
   "schema_version": 2

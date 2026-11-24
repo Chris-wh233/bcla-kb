@@ -1,0 +1,32 @@
+[
+  {
+    "name": "tempfile-tmpfs",
+    "exit_code": 0,
+    "status": "PASSED",
+    "log": "unit-rechecks/tempfile-tmpfs.log"
+  },
+  {
+    "name": "timezone-CET",
+    "exit_code": 0,
+    "status": "PASSED",
+    "log": "unit-rechecks/timezone-CET.log"
+  },
+  {
+    "name": "cycle-timer",
+    "exit_code": 0,
+    "status": "PASSED",
+    "log": "unit-rechecks/cycle-timer.log"
+  },
+  {
+    "name": "innodb-hash-distribution",
+    "exit_code": 1,
+    "status": "FAILED",
+    "log": "unit-rechecks/innodb-hash-distribution.log"
+  },
+  {
+    "name": "ndb-csr",
+    "exit_code": 0,
+    "status": "PASSED",
+    "log": "unit-rechecks/ndb-csr.log"
+  }
+]

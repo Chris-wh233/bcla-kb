@@ -1,0 +1,59 @@
+--- a/debian/mysql-community-server.install
++++ b/debian/mysql-community-server.install
+@@ -31,7 +31,6 @@
+ 
+ usr/share/mysql-8.4/mysql-helpers
+ usr/share/mysql-8.4/mysql-systemd-start
+-usr/share/mysql-8.4/mysqld_multi.server
+ # legal
+ usr/share/mysql-8.4/LICENSE usr/share/doc/mysql-community-server/
+ usr/share/mysql-8.4/README usr/share/doc/mysql-community-server/
+--- a/debian/mysql-community-server-core.install
++++ b/debian/mysql-community-server-core.install
+@@ -32,7 +32,6 @@
+ usr/bin/mysql_migrate_keyring
+ usr/bin/mysql_tzinfo_to_sql
+ usr/bin/mysql_secure_installation
+-usr/bin/mysqld_multi
+ usr/bin/mysqld_safe
+ usr/bin/perror
+ usr/sbin/mysqld
+@@ -47,8 +46,6 @@
+ usr/share/man/man1/mysql_tzinfo_to_sql.1
+ usr/share/man/man1/mysql.server.1
+ usr/share/man/man1/mysqlbinlog.1
+-usr/share/man/man1/mysqld_multi.1
+-usr/share/man/man1/mysqld_safe.1
+ usr/share/man/man1/perror.1
+ usr/share/man/man8/mysqld.8
+ # private shared libraries
+--- a/debian/mysql-community-client-plugins.install
++++ b/debian/mysql-community-client-plugins.install
+@@ -27,7 +27,6 @@
+ usr/lib/mysql/plugin/authentication_ldap_sasl_client.so
+ usr/lib/mysql/plugin/authentication_oci_client.so
+ usr/lib/mysql/plugin/authentication_webauthn_client.so
+-usr/lib/mysql/private/libfido2.*
+ 
+ # legal
+ usr/share/mysql-8.4/LICENSE usr/share/doc/mysql-community-client-plugins/
+--- a/debian/rules
++++ b/debian/rules
+@@ -54,7 +54,7 @@
+ 		-DINSTALL_LAYOUT=DEB \
+ 		-DREPRODUCIBLE_BUILD=OFF \
+ 		-DDEB_PRODUCT=community \
+-		-DCMAKE_C_COMPILER=/usr/bin/gcc-14 -DCMAKE_CXX_COMPILER=/usr/bin/g++-14 -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DMYSQL_MAINTAINER_MODE=OFF -DDEB_NOROUTER=1 -DWITH_ROUTER=OFF -DDEB_ID=debian -DDEB_RELEASE=14 -DDEB_CODENAME=forky -DWITH_SYSTEMD=ON
++		-DCMAKE_C_COMPILER=/usr/bin/gcc-14 -DCMAKE_CXX_COMPILER=/usr/bin/g++-14 -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DMYSQL_MAINTAINER_MODE=OFF -DDEB_NOROUTER=1 -DWITH_ROUTER=OFF -DDEB_ID=debian -DDEB_RELEASE=14 -DDEB_CODENAME=forky -DWITH_SYSTEMD=ON -DWITH_AUTHENTICATION_CLIENT_PLUGINS=ON -DWITH_FIDO=system -DWITH_KERBEROS=system
+ 
+ 	touch $@
+ 
+--- /dev/null
++++ b/debian/not-installed
+@@ -0,0 +1,6 @@
++# Debian packages install their own mysql.service/mysql@.service and mysql-systemd-start.
++# These CMake-generated RPM-style alternatives must not create duplicate services.
++usr/bin/mysqld_pre_systemd
++usr/lib/systemd/system/mysqld.service
++usr/lib/systemd/system/mysqld@.service
++usr/lib/tmpfiles.d/mysql.conf

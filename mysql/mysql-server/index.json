@@ -1,0 +1,15 @@
+{
+  "experiences": [
+    {
+      "path": "8.4.0",
+      "status": "verified",
+      "targets": [
+        "mysql:8.4.0-loong64"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "8.4.0"
+    }
+  ],
+  "repository": "https://github.com/mysql/mysql-server",
+  "schema_version": 2
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "package": "libmysqlclient-dev",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "libmysqlclient-dev_8.4.0-1debian14_loong64.deb",
+    "bytes": 2769528,
+    "sha256": "e65ea3cfe256a99870dd40f3a0fa46e53c0304149e5deda6c07b3a53289487cd"
+  },
+  {
+    "package": "libmysqlclient24",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "libmysqlclient24_8.4.0-1debian14_loong64.deb",
+    "bytes": 1363604,
+    "sha256": "74b5b5ab38130a5034e91c468abced54b722423ab1d35fe71a3f69c755654620"
+  },
+  {
+    "package": "mysql-client",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-client_8.4.0-1debian14_loong64.deb",
+    "bytes": 66660,
+    "sha256": "269781afdea60fc59f18515de5292eb293893d8f21378a3e4b6f7429cb516f8c"
+  },
+  {
+    "package": "mysql-common",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-common_8.4.0-1debian14_loong64.deb",
+    "bytes": 67888,
+    "sha256": "19af9c0b3a2c56bef6ade8d780aa8a552c4aace1477e9da3a5507f17741a488e"
+  },
+  {
+    "package": "mysql-community-client-core",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-community-client-core_8.4.0-1debian14_loong64.deb",
+    "bytes": 1660148,
+    "sha256": "8e9568779970eb746eb01c32a8ac26be8349c8816ab7cf7dc376d367f2879676"
+  },
+  {
+    "package": "mysql-community-client-plugins",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-community-client-plugins_8.4.0-1debian14_loong64.deb",
+    "bytes": 1898396,
+    "sha256": "e89ea27a0c2bf934429b65efe1154918f96b13d7b376e33397ae527a11f57638"
+  },
+  {
+    "package": "mysql-community-client",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-community-client_8.4.0-1debian14_loong64.deb",
+    "bytes": 3522028,
+    "sha256": "eb1995aa36234991be21a33f56936b1729cce9cd26638fe688592df806890382"
+  },
+  {
+    "package": "mysql-community-server-core",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-community-server-core_8.4.0-1debian14_loong64.deb",
+    "bytes": 26685280,
+    "sha256": "490367027aa823762e0c4990cc947e343ec68c989a0fe6ee085e4108694361d4"
+  },
+  {
+    "package": "mysql-community-server",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-community-server_8.4.0-1debian14_loong64.deb",
+    "bytes": 75276,
+    "sha256": "e98227d9ae68a144497badf267c64b9bc6d232c359088dc1ee86d0daba184758"
+  },
+  {
+    "package": "mysql-community-test",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-community-test_8.4.0-1debian14_loong64.deb",
+    "bytes": 331610412,
+    "sha256": "3d1e7e4c4b8a1be54bae5d28b29d9f7504710f55c90a84f5db07577c9a6c3054"
+  },
+  {
+    "package": "mysql-server",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-server_8.4.0-1debian14_loong64.deb",
+    "bytes": 66652,
+    "sha256": "9f9ec8abcd5c3dab370b83adc4aff02822e17980ab268177bb79422f6e298485"
+  },
+  {
+    "package": "mysql-testsuite",
+    "version": "8.4.0-1debian14",
+    "architecture": "loong64",
+    "file": "mysql-testsuite_8.4.0-1debian14_loong64.deb",
+    "bytes": 66672,
+    "sha256": "6f96cce8f79bd680e714fd7efec0f2b12b6f9db9ca4a1869904615a8d83b0bdb"
+  }
+]

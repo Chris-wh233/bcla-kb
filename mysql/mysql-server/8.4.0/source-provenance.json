@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/mysql/mysql-server",
+  "tag": "mysql-8.4.0",
+  "commit": "dc86e412f18b36ce271f791026714e8caa0ec919",
+  "archive": "https://cdn.mysql.com/archives/mysql-8.4/mysql-8.4.0.tar.gz",
+  "archive_sha256": "47a5433fcdd639db836b99e1b5459c2b813cbdad23ff2b5dd4ad27f792ba918e",
+  "checksum_origin": "locally calculated on the downloaded official HTTPS archive; not a publisher signature",
+  "base_image": "lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+  "docker_library_mysql_commit": "c05422492215b3f0602409288c868ee4fd606ac3",
+  "entrypoint_path": "8.4/docker-entrypoint.sh",
+  "entrypoint_sha256": "75a06b67b9535d4ed47ca9a054eb5813c12549eae3b2eaa356bb75fde847ac9a",
+  "compiler": "GCC14 14.4.1 20261107 (package 14.4.0-4)",
+  "cmake": "4.4.5",
+  "debhelper": "14.5, compat 11",
+  "dpkg": "1.23.12",
+  "jobs": 32
+}

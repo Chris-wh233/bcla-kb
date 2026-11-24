@@ -1,0 +1,6 @@
+# Debian packages install their own mysql.service/mysql@.service and mysql-systemd-start.
+# These CMake-generated RPM-style alternatives must not create duplicate services.
+usr/bin/mysqld_pre_systemd
+usr/lib/systemd/system/mysqld.service
+usr/lib/systemd/system/mysqld@.service
+usr/lib/tmpfiles.d/mysql.conf
