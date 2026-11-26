@@ -1,0 +1,71 @@
+{
+  "image_id": "sha256:c9effc8c871fa926e696cad8ada2132cf296bb2d91bd90e16edc0a922b460382",
+  "architecture": "loong64",
+  "proxy_environment_absent": true,
+  "server_version": "8.4.0",
+  "official_entrypoint_initialization": true,
+  "rpm_dependency_audit": "dnf check passed",
+  "package_versions": [
+    "mysql-community-server\t8.4.0-1.lns23\tloongarch64",
+    "mysql-community-client\t8.4.0-1.lns23\tloongarch64",
+    "mysql-community-client-plugins\t8.4.0-1.lns23\tloongarch64",
+    "mysql-community-common\t8.4.0-1.lns23\tloongarch64",
+    "mysql-community-icu-data-files\t8.4.0-1.lns23\tloongarch64",
+    "mysql-community-libs\t8.4.0-1.lns23\tloongarch64"
+  ],
+  "cycle_timer": "CYCLE\t99621890\t1",
+  "innodb_transaction_json_utf8mb4": true,
+  "indexed_rows_join_and_temporary_table": true,
+  "timezone_tables_loaded": true,
+  "timezone_CET": true,
+  "innodb_on_disk_temporary_table": true,
+  "forced_disk_temporary_grouping": [
+    "17",
+    "Created_tmp_disk_tables\t1"
+  ],
+  "separate_container_tcp_tls_client": [
+    "8.4.0\tbcla@%",
+    "Ssl_cipher\tTLS_AES_128_GCM_SHA256",
+    "entrypoint-init-ok"
+  ],
+  "performance_schema_wait_timing": {
+    "timed_wait_events": [
+      "wait/synch/cond/sql/Item_func_sleep::cond\t200818641996",
+      "wait/io/socket/sql/client_connection\t7670296788",
+      "wait/io/socket/sql/client_connection\t7637221578",
+      "wait/io/socket/sql/client_connection\t7550222232",
+      "wait/io/socket/sql/client_connection\t5724571020",
+      "wait/io/socket/sql/client_connection\t5541427710",
+      "wait/io/socket/sql/client_connection\t5511203292",
+      "wait/io/table/sql/handler\t247557156",
+      "wait/io/socket/sql/client_connection\t241142874",
+      "wait/io/socket/sql/client_connection\t154474782",
+      "wait/io/socket/sql/client_connection\t150218670",
+      "wait/io/socket/sql/client_connection\t122604132",
+      "wait/io/socket/sql/client_connection\t114623922",
+      "wait/synch/mutex/innodb/log_flusher_mutex\t110377848",
+      "wait/io/socket/sql/client_connection\t93584274",
+      "wait/io/socket/sql/client_connection\t90512646",
+      "wait/synch/mutex/innodb/srv_sys_mutex\t76891080",
+      "wait/io/socket/sql/client_connection\t67425246",
+      "wait/io/socket/sql/client_connection\t63500388",
+      "wait/io/socket/sql/server_tcpip_socket\t60187848"
+    ],
+    "sleep_requested_seconds": 0.2,
+    "sleep_wait_seconds": 0.200818641996
+  },
+  "adaptive_hash_index_default": "OFF",
+  "plugins": {
+    "innodb_xplugin": [
+      "InnoDB\tACTIVE",
+      "mysqlx\tACTIVE"
+    ],
+    "group_replication_load": "ACTIVE"
+  },
+  "mysqldump_restore": true,
+  "daemon_user": "mysql (UID 27)",
+  "restart_persistence_and_init_once": true,
+  "status": "PASSED",
+  "graceful_shutdown": true,
+  "cycle_timer_warning_absent": true
+}

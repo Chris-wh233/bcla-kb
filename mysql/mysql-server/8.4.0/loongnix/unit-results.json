@@ -1,0 +1,93 @@
+{
+  "full_native_ctest": {
+    "ctest_exit_code": 8,
+    "summary": "81% tests passed, 58 tests failed out of 305",
+    "failed_groups": [
+      "52:merge_small_tests",
+      "57:merge_innodb_tests-t",
+      "141:routertest_harness_logging",
+      "147:routertest_harness_filesystem",
+      "166:routertest_harness_keyring_manager",
+      "179:routertest_harness_net_ts_internet",
+      "217:routertest_mysqlrouter_plugin_info_plugin_info_app",
+      "228:routertest_router_mysqlrouter_app",
+      "249:routertest_component_async_replicaset",
+      "250:routertest_component_bootstrap",
+      "251:routertest_component_bootstrap_account",
+      "252:routertest_component_bootstrap_clusterset",
+      "254:routertest_component_bootstrap_tls_endpoint",
+      "255:routertest_component_clusterset",
+      "257:routertest_component_config",
+      "258:routertest_component_config_overwrites",
+      "260:routertest_component_gr_notifications",
+      "261:routertest_component_http_server",
+      "262:routertest_component_logging",
+      "264:routertest_component_master_key_reader_writer",
+      "265:routertest_component_metadata_ttl",
+      "266:routertest_component_cluster_metadata",
+      "267:routertest_component_node_attributes",
+      "268:routertest_component_gr_state",
+      "270:routertest_component_read_replica",
+      "271:routertest_component_rest_api",
+      "272:routertest_component_rest_api_enable",
+      "273:routertest_component_rest_metadata_cache",
+      "274:routertest_component_rest_mock_server",
+      "275:routertest_component_rest_router",
+      "276:routertest_component_rest_routing",
+      "277:routertest_component_rest_connection_pool",
+      "278:routertest_component_router_configuration_errors",
+      "279:routertest_component_router_stacktrace",
+      "280:routertest_component_routing",
+      "281:routertest_component_routing_connection",
+      "282:routertest_component_routing_connection_errors",
+      "283:routertest_component_routing_retry",
+      "284:routertest_component_routing_router_require",
+      "285:routertest_component_routing_strategy",
+      "286:routertest_component_routing_sharing",
+      "287:routertest_component_routing_splitting",
+      "288:routertest_component_sd_notify",
+      "289:routertest_component_shutdown",
+      "290:routertest_component_state_file",
+      "291:routertest_component_user_option",
+      "292:routertest_component_metadata_http_auth_backend",
+      "293:routertest_component_socket_close",
+      "296:routertest_component_routing_splicer",
+      "297:routertest_component_mock_server",
+      "298:routertest_integration_routing_direct",
+      "299:routertest_integration_routing_reuse",
+      "300:routertest_integration_routing_router_require",
+      "301:routertest_integration_routing_sharing",
+      "302:routertest_integration_routing_sharing_constrained_pools",
+      "303:routertest_integration_routing_sharing_restart",
+      "304:routertest_integration_routing_splitting",
+      "305:routertest_integration_routing_tracing"
+    ],
+    "full_suite_passed": false
+  },
+  "extended_innodb": {
+    "exit_code": 1,
+    "timeout_seconds": 1800,
+    "timed_out": false,
+    "passed": false,
+    "summary_lines": [
+      "[==========] Running 931 tests from 793 test suites.",
+      "[==========] 931 tests from 793 test suites ran. (505558 ms total)",
+      "[  PASSED  ] 898 tests.",
+      "[  SKIPPED ] 32 tests, listed below:",
+      "[  FAILED  ] 1 test, listed below:"
+    ],
+    "failed_individual_tests": [
+      "ut0rnd.hash_uint64_pair_distribution"
+    ]
+  },
+  "debug_timer": {
+    "status": "PASSED",
+    "tests": 5,
+    "execution_id": "exec-1c9ca37057974e0eafe82ac81ebc8bbf"
+  },
+  "post_package_gunit_rerun": {
+    "status": "NOT_RUN",
+    "reason": "Normal RPM clean/rmbuild removed compiled test tree; no post-package gunit success is claimed."
+  },
+  "interpretation": "Full CTest is not all passing. Original core failures were a filesystem-sensitive tempfile name assertion and an imposed300s InnoDB timeout. Extended InnoDB finishes898passed/32skipped/one hash distribution-quality failure. Actual final-image disk temporary tables, forced disk grouping, CET and CYCLE checks pass. Router is excluded from the image; full Router and NDB cluster integration not certified."
+}

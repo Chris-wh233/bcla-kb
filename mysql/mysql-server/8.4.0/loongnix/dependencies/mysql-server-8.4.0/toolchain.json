@@ -1,0 +1,30 @@
+{
+  "build_base": "lcr.loongnix.cn/loongnix-server/loongnix-server:23.3@sha256:54c61a0ca717f1688fa5a6252a7e36a6e55f429c4d4bf00b4c9a97964b0b8e4e",
+  "architecture": "loongarch64",
+  "libc": "glibc 2.38",
+  "packages": [
+    "gcc-12.3.0-13.lns23.loongarch64",
+    "gcc-c++-12.3.0-13.lns23.loongarch64",
+    "cmake-3.30.5-2.3.lns23.loongarch64",
+    "rpm-build-4.18.2-5.lns23.loongarch64",
+    "patchelf-0.18.0-3.lns23.loongarch64",
+    "openssl-devel-3.0.12-28.lns23.loongarch64",
+    "libfido2-devel-1.14.0-1.lns23.loongarch64",
+    "mecab-devel-0.996-3.lns23.loongarch64"
+  ],
+  "make_parallel": 64,
+  "rpm_defines": {
+    "_lto_cflags": "%{nil}",
+    "with_mecab": "system",
+    "with_unittests": 1,
+    "with_debuginfo": 1
+  },
+  "system_libraries": [
+    "OpenSSL3",
+    "libfido2",
+    "MeCab",
+    "libtirpc",
+    "curl"
+  ],
+  "default_build_configuration": "Native Debug plus RelWithDebInfo; RPM systemd/services maintained"
+}

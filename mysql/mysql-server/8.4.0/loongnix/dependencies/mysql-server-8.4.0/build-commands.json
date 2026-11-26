@@ -1,0 +1,22 @@
+{
+  "variables": {
+    "WORKSPACE": "absolute writable workspace mounted at the same path in the native build helper"
+  },
+  "clean_full_build": {
+    "command": "rpmbuild --define \"_topdir $WORKSPACE/rpmbuild\" --define '_smp_mflags -j64' --define '_lto_cflags %{nil}' --define 'with_mecab system' --define 'with_unittests 1' --define 'with_debuginfo 1' -ba \"$WORKSPACE/rpmbuild/SPECS/mysql.spec\"",
+    "validation": "Derived from final accepted SPEC and actual common rpmbuild flags; final SPEC was not rerun end-to-end from an empty build directory. Do not describe this fresh invocation as an independently passed execution."
+  },
+  "actual_compile_confirmation": {
+    "command": "for kind in debug release; do cmake -S \"$WORKSPACE/rpmbuild/BUILD/mysql-8.4.0/mysql-8.4.0\" -B \"$WORKSPACE/rpmbuild/BUILD/mysql-8.4.0/$kind\" -DPATCHELF_EXECUTABLE=/usr/bin/patchelf && cmake --build \"$WORKSPACE/rpmbuild/BUILD/mysql-8.4.0/$kind\" --parallel 64 || exit; done",
+    "execution_id": "exec-902489b44f74481d99a03d9b5614c24d",
+    "result": "passed; both config headers unchanged by patchelf-enabled reconfigure, all targets built"
+  },
+  "actual_effective_final_packaging": {
+    "command": "rpmbuild --define \"_topdir $WORKSPACE/rpmbuild\" --define '_smp_mflags -j64' --define '_lto_cflags %{nil}' --define 'with_mecab system' --define 'with_unittests 1' --define 'with_debuginfo 1' --define 'repack_only 1' --define 'with_unittests 0' --define 'reuse_staging 1' --define '__spec_install_pre %{___build_pre}' --define '__spec_install_post %{nil}' -ba \"$WORKSPACE/rpmbuild/SPECS/mysql.spec\"",
+    "execution_id": "exec-abba78b510634f1285d7896e7dbc08e5",
+    "effective_command_exit_code": 0,
+    "wrapper_status": "FAILED after successful rpmbuild clean/rmbuild because wrapper subsequently asserted that the removed BUILDROOT binary still existed",
+    "precondition": "Same accepted compiled trees and previously installed/stripped/debug-split staging. Strict RPM check-rpaths had already passed on these exact payloads; only the system-MeCab manifest item was removed. These reuse macros are not a clean-build recipe.",
+    "consumer_validation_execution_id": "exec-e8c6698088a247a692d465cb10a572c4"
+  }
+}

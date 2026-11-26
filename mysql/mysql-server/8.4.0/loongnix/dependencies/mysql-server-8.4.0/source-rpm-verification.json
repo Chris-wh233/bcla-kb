@@ -1,0 +1,13 @@
+{
+  "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+  "digests_passed": true,
+  "embedded_final_spec_and_adaptations_match": {
+    "mysql.spec": "77cb168e69bde217247204d195f95b07018f96cb90772024270b83e472f53795",
+    "loongarch-timer.patch": "051223afdee64147929ebc7c9bfba0645594492be998368aff3c33db04a180fd",
+    "csr-version.patch": "2f01035081a520967374fc9ed5936a0f5b4ffacf8dccf52a2d19892ed9bfdd5a",
+    "normalize-rpath.py": "7bed0e6d9af2451a18de1eb309bfefbdfc9b2332e54a284409080aa0cd2f551c",
+    "config.guess.loongarch": "e3d148130e9151735f8b9a8e69a70d06890ece51468a9762eb7ac0feddddcc2f",
+    "config.sub.loongarch": "11c54f55c3ac99e5d2c3dc2bb0bcccbf69f8223cc68f6b2438daa806cf0d16d8"
+  },
+  "default_recipe": "Full native compilation and normal RPM install/post checks; cache-reuse macros are opt-in and recorded separately in actual command evidence."
+}

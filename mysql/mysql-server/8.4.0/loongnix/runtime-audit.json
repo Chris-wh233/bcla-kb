@@ -1,0 +1,11 @@
+{
+  "image_id": "sha256:c9effc8c871fa926e696cad8ada2132cf296bb2d91bd90e16edc0a922b460382",
+  "base_version": "23.3",
+  "architecture": "loong64",
+  "mysqld_matches_native_rpm": true,
+  "official_entrypoint_sha256_verified": true,
+  "static_gosu_sha256_verified": true,
+  "runtime_library_closure_passed": true,
+  "system_fido_runtime_dependency_present": true,
+  "proxy_environment_absent": true
+}

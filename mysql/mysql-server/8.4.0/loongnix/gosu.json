@@ -1,0 +1,10 @@
+{
+  "source_image": "sha256:0d1f4915989e3ec4b55a4d81cb0442e63d044be767062b7606cd63baeff6ef79",
+  "path": "/usr/sbin/gosu",
+  "package": "Debian gosu 1.19-1+b1 loong64",
+  "sha256": "02a0431eaa5ca337ee728e0d1c32652484365bcf076b03cb39608e0e107ae383",
+  "consumer": "exec gosu --version and gosu nobody true under Loongnix23.3 passed",
+  "architecture": "loongarch64",
+  "abi": "statically linked native Go executable; exercised on Loongnix23.3",
+  "acquisition": "Extract /usr/sbin/gosu from source_image with docker create/docker cp; verify this SHA256 before COPY. No MySQL binaries from that image are reused."
+}

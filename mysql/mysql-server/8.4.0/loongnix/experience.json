@@ -1,0 +1,248 @@
+{
+  "schema_version": 3,
+  "producer": "bcla",
+  "status": "verified",
+  "repository": "https://github.com/mysql/mysql-server",
+  "requested_version": "8.4.0",
+  "resolved_commit": "dc86e412f18b36ce271f791026714e8caa0ec919",
+  "provenance": {
+    "task_id": "bcla-d1d59653e8aa4eb38b95667bda3b28d6",
+    "checkpoint_revision": 16,
+    "evidence_origin": "remote BCLA accepted files and execution records; immutable image inspected during generation",
+    "generation_destination": "local knowledge generation checkout/main"
+  },
+  "kind": "image",
+  "variant": "loongnix",
+  "targets": [
+    "mysql:8.4.0-loongnix23.3"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE",
+      "command": "docker build -t mysql:8.4.0-loongnix23.3 image",
+      "environment": {
+        "architecture": "loong64",
+        "IMAGE_CONTEXT": "$WORKSPACE/image",
+        "prepared_inputs": "Six checksum-matched runtime RPMs, native static gosu, exact accepted Dockerfile and entrypoint"
+      },
+      "execution_id": "exec-bff993abf06a4f45a32767ba85bad7b3"
+    }
+  ],
+  "tests": [
+    {
+      "command": "Fresh official-entrypoint initialization; independent bridge TCP/TLS client, transactions/JSON/UTF8, indexed joins, disk temporary tables, timezones, backup/restore, restart persistence, nonroot PID1 and graceful shutdown",
+      "execution_id": "exec-2625bb8b7d1845e7b3325f72c71448a3",
+      "result": "passed"
+    },
+    {
+      "command": "SELECT TIMER_NAME,TIMER_FREQUENCY,TIMER_RESOLUTION FROM performance_schema.performance_timers WHERE TIMER_NAME='CYCLE'; SELECT SLEEP(0.2); verify WAIT timing and no CYCLE warning",
+      "execution_id": "exec-2625bb8b7d1845e7b3325f72c71448a3",
+      "result": "passed"
+    },
+    {
+      "command": "Verify installed mysqld SHA against native RPM, official entrypoint/gosu SHA, RPM dependency closure and runtime ELF loaders; no proxy ENV",
+      "execution_id": "exec-b6407be5778a423b9e9af26d85919cb2",
+      "result": "passed"
+    },
+    {
+      "command": "gzip -t mysql-8.4.0-loongnix23.3.tar.gz; verify archive SHA and exact image ID",
+      "execution_id": "exec-2dd1626e4eac4c7c908f82cb162c368c",
+      "result": "passed"
+    }
+  ],
+  "images": [
+    {
+      "target": "mysql:8.4.0-loongnix23.3",
+      "id": "sha256:c9effc8c871fa926e696cad8ada2132cf296bb2d91bd90e16edc0a922b460382",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile",
+      "source": {
+        "repository": "https://github.com/docker-library/mysql",
+        "commit": "c05422492215b3f0602409288c868ee4fd606ac3",
+        "path": "8.4/Dockerfile.oracle",
+        "adaptation": "patches/dockerfile.patch; local native RPMs, Loongnix base, UID/GID27 and static gosu; official entrypoint preserved"
+      },
+      "runtime_base": {
+        "family": "loongnix",
+        "reference": "lcr.loongnix.cn/loongnix-server/loongnix-server:23.3@sha256:54c61a0ca717f1688fa5a6252a7e36a6e55f429c4d4bf00b4c9a97964b0b8e4e",
+        "distribution": "Loongnix Server",
+        "version": "23.3",
+        "libc": "glibc 2.38",
+        "architecture": "loong64",
+        "base_image_id": "sha256:109cc84dbd7ff481ff9987b199da5bb5d6d67abf37849660a62ea47943b96b90",
+        "evidence": "Exact accepted Dockerfile FROM and successful build ancestry; original rpm-q-glibc execution; final runtime os-release and loader audit. Final image inspected again during generation."
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "recipe": "dependencies/mysql-server-8.4.0",
+      "role": "Six native source-built runtime RPMs"
+    },
+    {
+      "resource": "gosu.json",
+      "role": "Existing native static gosu, independently validated on runtime base"
+    },
+    {
+      "source": "lcr.loongnix.cn/loongnix-server/loongnix-server:23.3@sha256:54c61a0ca717f1688fa5a6252a7e36a6e55f429c4d4bf00b4c9a97964b0b8e4e",
+      "role": "Exact runtime base; original native runtime repositories supply system dependencies"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Dockerfile",
+      "docker-entrypoint.sh",
+      "mysql-packages.json",
+      "RPM-SHA256SUMS",
+      "gosu.json",
+      "runtime-base.json",
+      "dependencies/mysql-server-8.4.0/experience.json"
+    ],
+    "build_entrypoints": [
+      "docker build -t mysql:8.4.0-loongnix23.3 image"
+    ],
+    "compatible_targets": [
+      "mysql:8.4.0-loongnix23.3"
+    ],
+    "prepared_artifacts": [
+      "Six RPMs from mysql-packages.json in image/rpms/",
+      "Checksum-matched static gosu in image/gosu"
+    ],
+    "assumptions": [
+      "Native Linux LoongArch64 Docker daemon",
+      "Pinned runtime base and native OS packages available",
+      "Do not substitute Debian-built MySQL or a newer upstream minor package",
+      "Passing SQL smoke is not full Router/NDB/production workload certification"
+    ]
+  },
+  "files": [
+    {
+      "path": "Dockerfile",
+      "sha256": "27f8a60565a2c83b4df9deba6df61c1cbdae71f10249f67046f3bbbc0e7c4694"
+    },
+    {
+      "path": "README.md",
+      "sha256": "400621d6ba1217aff5b8825be9e2597f6c2238638f10c25d40225c5c5f2093ca"
+    },
+    {
+      "path": "RPM-SHA256SUMS",
+      "sha256": "b85659b69a6dc0eb9f1cfa1ee8d945a22dee5a2cde4e2ba255991353188a8143"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "3ee0500ae7c72665ab67587c5fb9e9a4d345debbb1f7f2c416d19c0da28e6703"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/README.md",
+      "sha256": "fa64349276d7e6d75b195bfc21576b3c20110f0135cfd71df28abaf86a1b980a"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/SOURCES/config.guess.loongarch",
+      "sha256": "e3d148130e9151735f8b9a8e69a70d06890ece51468a9762eb7ac0feddddcc2f"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/SOURCES/config.sub.loongarch",
+      "sha256": "11c54f55c3ac99e5d2c3dc2bb0bcccbf69f8223cc68f6b2438daa806cf0d16d8"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/SOURCES/csr-version.patch",
+      "sha256": "2f01035081a520967374fc9ed5936a0f5b4ffacf8dccf52a2d19892ed9bfdd5a"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/SOURCES/loongarch-timer.patch",
+      "sha256": "051223afdee64147929ebc7c9bfba0645594492be998368aff3c33db04a180fd"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/SOURCES/normalize-rpath.py",
+      "sha256": "7bed0e6d9af2451a18de1eb309bfefbdfc9b2332e54a284409080aa0cd2f551c"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/adaptation.md",
+      "sha256": "3c23d877857ab62a1ee66105e2528bab747c3d3e367c03228b32a1af6c8dc48d"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/build-commands.json",
+      "sha256": "3e68762d0f683dcde8579181d5dfb0874fe89993e76e1a7c1fb08a25494f74ba"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/experience.json",
+      "sha256": "76a9f515080b53cb08bf2c1ad1c0f8b6c82ef4fb6e3dde2567c10305309dd7d6"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/mysql-packages.json",
+      "sha256": "33237054a1a14c9962505bc0ed59c1c1065dfbf01ffd7bb4d661366bb5a0e764"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/mysql.spec",
+      "sha256": "77cb168e69bde217247204d195f95b07018f96cb90772024270b83e472f53795"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/patches/loongarch.patch",
+      "sha256": "1aa81f38ae961b0f2202892cc50a170f8f05a00c5abbe27ad393f1beded471cf"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/patches/rpm-spec.patch",
+      "sha256": "567bf68c8e2412440a5414f537584ce8276fd58b8615cca0ee60a830ccd46713"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/source-rpm-verification.json",
+      "sha256": "63e2b4f7bbb7528b4082f575844cc86e5dd2271c5839c37e027a187ce360a632"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/source-rpms.json",
+      "sha256": "003cc06c26ebdfab2e2be3fee3eef7d96133581e8cf7036cb8eb664dc59f5df3"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/toolchain.json",
+      "sha256": "82933ac76801d282ea4812e6265b588377231e7615bad82403c4e7cc72b9d432"
+    },
+    {
+      "path": "dependencies/mysql-server-8.4.0/upstream/mysql.spec",
+      "sha256": "94eef98290f38acbf1eecbcdb7c1d9ea06a4018fc5964f00297166e8ce1452fe"
+    },
+    {
+      "path": "docker-entrypoint.sh",
+      "sha256": "75a06b67b9535d4ed47ca9a054eb5813c12549eae3b2eaa356bb75fde847ac9a"
+    },
+    {
+      "path": "gosu.json",
+      "sha256": "5790ea46d6d0b6788cda69f40c5f616c4dd313a08d10ae3dd85ad9c2f7e95c44"
+    },
+    {
+      "path": "image-archive.json",
+      "sha256": "fe6e38d7aad8981460232e11de4f809ce0e87daa2e219586d89adbf591aedfab"
+    },
+    {
+      "path": "mysql-packages.json",
+      "sha256": "33237054a1a14c9962505bc0ed59c1c1065dfbf01ffd7bb4d661366bb5a0e764"
+    },
+    {
+      "path": "patches/dockerfile.patch",
+      "sha256": "71b7fb287060b4d0be8f6cc1e43e29bda3a5517bfa572c4effbf10c0f984ab66"
+    },
+    {
+      "path": "runtime-audit.json",
+      "sha256": "dc4bdbe601a6644455172ca1043d12c3f537d9830533c49c3af77fa77c74f8ae"
+    },
+    {
+      "path": "runtime-base.json",
+      "sha256": "81a24ec00c1297e51bd0fb28ab8698a426ceccbe5eef95dee1a06976a974b64d"
+    },
+    {
+      "path": "source-provenance.json",
+      "sha256": "854acaab6617f722f2cb0372dedb942b9a9aafef93898aaa353b58df58aed2a8"
+    },
+    {
+      "path": "unit-results.json",
+      "sha256": "467f6bd36427ddeb50fc76dcbc45f24a325ded2729e1080ba295351c78674b3a"
+    },
+    {
+      "path": "upstream/Dockerfile.oracle",
+      "sha256": "76294c1002c9a1549a097b6daa54492562c67462092efcd936b72fee402b8fc9"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "d597ecc7c5ad25bcf341d3c2700ecdfcb25fa3a5c8ca0a2c3dee8c5567dd1fe9"
+    }
+  ]
+}

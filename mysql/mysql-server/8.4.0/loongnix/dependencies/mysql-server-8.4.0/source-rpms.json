@@ -1,0 +1,21 @@
+{
+  "original": {
+    "sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+    "signature": "official MySQL2023RSA/SHA256 signature verified",
+    "file": "mysql-community-8.4.0-1.el8.src.rpm",
+    "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm"
+  },
+  "adapted": [
+    {
+      "file": "mysql-community-8.4.0-1.lns23.src.rpm",
+      "sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+      "bytes": 409693942,
+      "source": "adapted official source RPM, rebuilt natively with retained patches/config/spec"
+    }
+  ],
+  "source_tarball": {
+    "file": "mysql-8.4.0.tar.gz",
+    "sha256": "47a5433fcdd639db836b99e1b5459c2b813cbdad23ff2b5dd4ad27f792ba918e",
+    "acquisition": "Source0 extracted by rpm-ivh from the verified official source RPM"
+  }
+}

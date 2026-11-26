@@ -1,0 +1,62 @@
+[
+  {
+    "package": "mysql-community-client",
+    "version": "8.4.0",
+    "release": "1.lns23",
+    "architecture": "loongarch64",
+    "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+    "file": "mysql-community-client-8.4.0-1.lns23.loongarch64.rpm",
+    "bytes": 4534593,
+    "sha256": "f45d00cd404ee441c4160f5205e998978813520cb2bc9e5b2e4ca5d0efb74fac"
+  },
+  {
+    "package": "mysql-community-client-plugins",
+    "version": "8.4.0",
+    "release": "1.lns23",
+    "architecture": "loongarch64",
+    "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+    "file": "mysql-community-client-plugins-8.4.0-1.lns23.loongarch64.rpm",
+    "bytes": 1668272,
+    "sha256": "a4b5b6589e48a99c1919356f60ae14c7ea04fd523184e7840cbee92f42ed52b1"
+  },
+  {
+    "package": "mysql-community-common",
+    "version": "8.4.0",
+    "release": "1.lns23",
+    "architecture": "loongarch64",
+    "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+    "file": "mysql-community-common-8.4.0-1.lns23.loongarch64.rpm",
+    "bytes": 590114,
+    "sha256": "52ac1a7f642a6c4db7c3d3f6d30413ea8ea169bcb043fc489ed89b053be303d0"
+  },
+  {
+    "package": "mysql-community-icu-data-files",
+    "version": "8.4.0",
+    "release": "1.lns23",
+    "architecture": "loongarch64",
+    "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+    "file": "mysql-community-icu-data-files-8.4.0-1.lns23.loongarch64.rpm",
+    "bytes": 2382617,
+    "sha256": "23b048e3ba093b250055c61ccf1bbd433a7f8bd9a059347966d7197f6416422f"
+  },
+  {
+    "package": "mysql-community-libs",
+    "version": "8.4.0",
+    "release": "1.lns23",
+    "architecture": "loongarch64",
+    "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+    "file": "mysql-community-libs-8.4.0-1.lns23.loongarch64.rpm",
+    "bytes": 1635649,
+    "sha256": "f2dd85b19b4b03a11255dba5bbfec8942755a069d18a33b5a2fdc451b1e8956c"
+  },
+  {
+    "package": "mysql-community-server",
+    "version": "8.4.0",
+    "release": "1.lns23",
+    "architecture": "loongarch64",
+    "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+    "file": "mysql-community-server-8.4.0-1.lns23.loongarch64.rpm",
+    "bytes": 23677412,
+    "sha256": "e2e06ef8bafaf5aa13670ad8963f2900282ddd804a423abec6c5121973a9fb2b"
+  }
+]

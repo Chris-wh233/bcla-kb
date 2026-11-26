@@ -1,0 +1,9 @@
+{
+  "image": "mysql:8.4.0-loongnix23.3",
+  "image_id": "sha256:c9effc8c871fa926e696cad8ada2132cf296bb2d91bd90e16edc0a922b460382",
+  "architecture": "loong64",
+  "file": "mysql-8.4.0-loongnix23.3.tar.gz",
+  "bytes": 225832288,
+  "sha256": "1ff47de24994d613852973dc87d2a476037311f1eb66cce3621afb1008bb36d7",
+  "validation": "gzip-t and exact verified image ID"
+}

@@ -1,0 +1,298 @@
+{
+  "schema_version": 3,
+  "producer": "bcla",
+  "status": "verified",
+  "repository": "https://github.com/mysql/mysql-server",
+  "requested_version": "8.4.0",
+  "resolved_commit": "dc86e412f18b36ce271f791026714e8caa0ec919",
+  "provenance": {
+    "task_id": "bcla-d1d59653e8aa4eb38b95667bda3b28d6",
+    "checkpoint_revision": 16,
+    "evidence_origin": "remote BCLA accepted files and execution records; immutable image inspected during generation",
+    "generation_destination": "local knowledge generation checkout/main"
+  },
+  "kind": "dependency",
+  "targets": [
+    "MySQL 8.4.0 runtime RPMs for Loongnix Server23.3"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE",
+      "command": "for kind in debug release; do cmake -S \"$WORKSPACE/rpmbuild/BUILD/mysql-8.4.0/mysql-8.4.0\" -B \"$WORKSPACE/rpmbuild/BUILD/mysql-8.4.0/$kind\" -DPATCHELF_EXECUTABLE=/usr/bin/patchelf && cmake --build \"$WORKSPACE/rpmbuild/BUILD/mysql-8.4.0/$kind\" --parallel 64 || exit; done",
+      "environment": {
+        "base_image": "lcr.loongnix.cn/loongnix-server/loongnix-server:23.3@sha256:54c61a0ca717f1688fa5a6252a7e36a6e55f429c4d4bf00b4c9a97964b0b8e4e",
+        "architecture": "loongarch64",
+        "toolchain": "toolchain.json",
+        "WORKSPACE": "same-path mounted writable absolute directory"
+      },
+      "execution_id": "exec-902489b44f74481d99a03d9b5614c24d",
+      "precondition": "Both native configs initially fully compiled using upstream RPM build with same recorded common flags; patchelf now installed. Reconfigure preserves compiled headers."
+    },
+    {
+      "cwd": "$WORKSPACE",
+      "command": "rpmbuild --define \"_topdir $WORKSPACE/rpmbuild\" --define '_smp_mflags -j64' --define '_lto_cflags %{nil}' --define 'with_mecab system' --define 'with_unittests 1' --define 'with_debuginfo 1' --define 'repack_only 1' --define 'with_unittests 0' --define 'reuse_staging 1' --define '__spec_install_pre %{___build_pre}' --define '__spec_install_post %{nil}' -ba \"$WORKSPACE/rpmbuild/SPECS/mysql.spec\"",
+      "environment": {
+        "base_image": "lcr.loongnix.cn/loongnix-server/loongnix-server:23.3@sha256:54c61a0ca717f1688fa5a6252a7e36a6e55f429c4d4bf00b4c9a97964b0b8e4e",
+        "architecture": "loongarch64",
+        "toolchain": "toolchain.json",
+        "WORKSPACE": "same-path mounted writable absolute directory"
+      },
+      "execution_id": "exec-abba78b510634f1285d7896e7dbc08e5",
+      "effective_command_exit_code": 0,
+      "wrapper_status": "FAILED only in subsequent assertion after normal clean/rmbuild",
+      "precondition": "Identical already-checked installed staging from actual compilation. See build-commands.json; never apply reuse flags to a fresh workspace."
+    }
+  ],
+  "tests": [
+    {
+      "command": "rpm -K $ARTIFACTS/rpms/*.rpm; verify native versions/architecture and exact server ELF, compare source-RPM embedded SPEC/patch bytes",
+      "execution_id": "exec-e8c6698088a247a692d465cb10a572c4",
+      "result": "passed"
+    },
+    {
+      "command": "cd \"$ARTIFACTS/rpms\" && sha256sum -c SHA256SUMS",
+      "execution_id": "exec-54acd36da1864ff5b6c1039af1bff35f",
+      "result": "passed"
+    },
+    {
+      "command": "Final-image real consumer: install six local RPMs, dnf check, TCP/TLS SQL, transactions, disk temporary tables, backup/restore and restart",
+      "execution_id": "exec-2625bb8b7d1845e7b3325f72c71448a3",
+      "result": "passed"
+    }
+  ],
+  "artifacts": [
+    {
+      "package": "mysql-community-client",
+      "version": "8.4.0-1.lns23",
+      "release": "1.lns23",
+      "architecture": "loongarch64",
+      "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+      "file": "mysql-community-client-8.4.0-1.lns23.loongarch64.rpm",
+      "bytes": 4534593,
+      "sha256": "f45d00cd404ee441c4160f5205e998978813520cb2bc9e5b2e4ca5d0efb74fac",
+      "name": "mysql-community-client",
+      "source": {
+        "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm",
+        "source_rpm_sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+        "adapted_source_rpm_sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+        "adaptations": "mysql.spec and SOURCES/"
+      },
+      "abi": "Native ELF64 LoongArch, Loongnix Server23.3/glibc2.38; real installed-image loader and SQL consumers passed",
+      "consumers": [
+        "mysql:8.4.0-loongnix23.3"
+      ]
+    },
+    {
+      "package": "mysql-community-client-plugins",
+      "version": "8.4.0-1.lns23",
+      "release": "1.lns23",
+      "architecture": "loongarch64",
+      "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+      "file": "mysql-community-client-plugins-8.4.0-1.lns23.loongarch64.rpm",
+      "bytes": 1668272,
+      "sha256": "a4b5b6589e48a99c1919356f60ae14c7ea04fd523184e7840cbee92f42ed52b1",
+      "name": "mysql-community-client-plugins",
+      "source": {
+        "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm",
+        "source_rpm_sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+        "adapted_source_rpm_sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+        "adaptations": "mysql.spec and SOURCES/"
+      },
+      "abi": "Native ELF64 LoongArch, Loongnix Server23.3/glibc2.38; real installed-image loader and SQL consumers passed",
+      "consumers": [
+        "mysql:8.4.0-loongnix23.3"
+      ]
+    },
+    {
+      "package": "mysql-community-common",
+      "version": "8.4.0-1.lns23",
+      "release": "1.lns23",
+      "architecture": "loongarch64",
+      "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+      "file": "mysql-community-common-8.4.0-1.lns23.loongarch64.rpm",
+      "bytes": 590114,
+      "sha256": "52ac1a7f642a6c4db7c3d3f6d30413ea8ea169bcb043fc489ed89b053be303d0",
+      "name": "mysql-community-common",
+      "source": {
+        "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm",
+        "source_rpm_sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+        "adapted_source_rpm_sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+        "adaptations": "mysql.spec and SOURCES/"
+      },
+      "abi": "Native ELF64 LoongArch, Loongnix Server23.3/glibc2.38; real installed-image loader and SQL consumers passed",
+      "consumers": [
+        "mysql:8.4.0-loongnix23.3"
+      ]
+    },
+    {
+      "package": "mysql-community-icu-data-files",
+      "version": "8.4.0-1.lns23",
+      "release": "1.lns23",
+      "architecture": "loongarch64",
+      "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+      "file": "mysql-community-icu-data-files-8.4.0-1.lns23.loongarch64.rpm",
+      "bytes": 2382617,
+      "sha256": "23b048e3ba093b250055c61ccf1bbd433a7f8bd9a059347966d7197f6416422f",
+      "name": "mysql-community-icu-data-files",
+      "source": {
+        "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm",
+        "source_rpm_sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+        "adapted_source_rpm_sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+        "adaptations": "mysql.spec and SOURCES/"
+      },
+      "abi": "Native ELF64 LoongArch, Loongnix Server23.3/glibc2.38; real installed-image loader and SQL consumers passed",
+      "consumers": [
+        "mysql:8.4.0-loongnix23.3"
+      ]
+    },
+    {
+      "package": "mysql-community-libs",
+      "version": "8.4.0-1.lns23",
+      "release": "1.lns23",
+      "architecture": "loongarch64",
+      "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+      "file": "mysql-community-libs-8.4.0-1.lns23.loongarch64.rpm",
+      "bytes": 1635649,
+      "sha256": "f2dd85b19b4b03a11255dba5bbfec8942755a069d18a33b5a2fdc451b1e8956c",
+      "name": "mysql-community-libs",
+      "source": {
+        "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm",
+        "source_rpm_sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+        "adapted_source_rpm_sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+        "adaptations": "mysql.spec and SOURCES/"
+      },
+      "abi": "Native ELF64 LoongArch, Loongnix Server23.3/glibc2.38; real installed-image loader and SQL consumers passed",
+      "consumers": [
+        "mysql:8.4.0-loongnix23.3"
+      ]
+    },
+    {
+      "package": "mysql-community-server",
+      "version": "8.4.0-1.lns23",
+      "release": "1.lns23",
+      "architecture": "loongarch64",
+      "source_rpm": "mysql-community-8.4.0-1.lns23.src.rpm",
+      "file": "mysql-community-server-8.4.0-1.lns23.loongarch64.rpm",
+      "bytes": 23677412,
+      "sha256": "e2e06ef8bafaf5aa13670ad8963f2900282ddd804a423abec6c5121973a9fb2b",
+      "name": "mysql-community-server",
+      "source": {
+        "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm",
+        "source_rpm_sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+        "adapted_source_rpm_sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+        "adaptations": "mysql.spec and SOURCES/"
+      },
+      "abi": "Native ELF64 LoongArch, Loongnix Server23.3/glibc2.38; real installed-image loader and SQL consumers passed",
+      "consumers": [
+        "mysql:8.4.0-loongnix23.3"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "source": {
+        "sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+        "signature": "official MySQL2023RSA/SHA256 signature verified",
+        "file": "mysql-community-8.4.0-1.el8.src.rpm",
+        "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm"
+      },
+      "role": "Official generic source RPM; Source0 and all original RPM packaging assets"
+    },
+    {
+      "source": "SOURCES/",
+      "role": "Exact accepted source adaptations, GNU config and normalization tool"
+    },
+    {
+      "source": "Loongnix23.3 native repositories",
+      "role": "Prebuilt system build libraries/tools; versions in toolchain.json"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "mysql.spec",
+      "SOURCES/loongarch-timer.patch",
+      "SOURCES/csr-version.patch",
+      "SOURCES/config.guess.loongarch",
+      "SOURCES/config.sub.loongarch",
+      "SOURCES/normalize-rpath.py",
+      "build-commands.json"
+    ],
+    "build_entrypoints": [
+      "rpmbuild -ba using accepted SPEC; see clean versus actual staged commands in build-commands.json"
+    ],
+    "compatible_targets": [
+      "mysql:8.4.0-loongnix23.3"
+    ],
+    "assumptions": [
+      "Native loongarch64 Linux helper and exact23.3 base",
+      "Official SRPM, declared BuildRequires and source assets available",
+      "Previously compiled/staged payloads needed only for historical reuse route; not available after normal RPM cleanup"
+    ]
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "fa64349276d7e6d75b195bfc21576b3c20110f0135cfd71df28abaf86a1b980a"
+    },
+    {
+      "path": "SOURCES/config.guess.loongarch",
+      "sha256": "e3d148130e9151735f8b9a8e69a70d06890ece51468a9762eb7ac0feddddcc2f"
+    },
+    {
+      "path": "SOURCES/config.sub.loongarch",
+      "sha256": "11c54f55c3ac99e5d2c3dc2bb0bcccbf69f8223cc68f6b2438daa806cf0d16d8"
+    },
+    {
+      "path": "SOURCES/csr-version.patch",
+      "sha256": "2f01035081a520967374fc9ed5936a0f5b4ffacf8dccf52a2d19892ed9bfdd5a"
+    },
+    {
+      "path": "SOURCES/loongarch-timer.patch",
+      "sha256": "051223afdee64147929ebc7c9bfba0645594492be998368aff3c33db04a180fd"
+    },
+    {
+      "path": "SOURCES/normalize-rpath.py",
+      "sha256": "7bed0e6d9af2451a18de1eb309bfefbdfc9b2332e54a284409080aa0cd2f551c"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "3c23d877857ab62a1ee66105e2528bab747c3d3e367c03228b32a1af6c8dc48d"
+    },
+    {
+      "path": "build-commands.json",
+      "sha256": "3e68762d0f683dcde8579181d5dfb0874fe89993e76e1a7c1fb08a25494f74ba"
+    },
+    {
+      "path": "mysql-packages.json",
+      "sha256": "33237054a1a14c9962505bc0ed59c1c1065dfbf01ffd7bb4d661366bb5a0e764"
+    },
+    {
+      "path": "mysql.spec",
+      "sha256": "77cb168e69bde217247204d195f95b07018f96cb90772024270b83e472f53795"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "1aa81f38ae961b0f2202892cc50a170f8f05a00c5abbe27ad393f1beded471cf"
+    },
+    {
+      "path": "patches/rpm-spec.patch",
+      "sha256": "567bf68c8e2412440a5414f537584ce8276fd58b8615cca0ee60a830ccd46713"
+    },
+    {
+      "path": "source-rpm-verification.json",
+      "sha256": "63e2b4f7bbb7528b4082f575844cc86e5dd2271c5839c37e027a187ce360a632"
+    },
+    {
+      "path": "source-rpms.json",
+      "sha256": "003cc06c26ebdfab2e2be3fee3eef7d96133581e8cf7036cb8eb664dc59f5df3"
+    },
+    {
+      "path": "toolchain.json",
+      "sha256": "82933ac76801d282ea4812e6265b588377231e7615bad82403c4e7cc72b9d432"
+    },
+    {
+      "path": "upstream/mysql.spec",
+      "sha256": "94eef98290f38acbf1eecbcdb7c1d9ea06a4018fc5964f00297166e8ce1452fe"
+    }
+  ]
+}

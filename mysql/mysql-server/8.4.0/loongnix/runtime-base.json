@@ -1,0 +1,10 @@
+{
+  "family": "loongnix",
+  "reference": "lcr.loongnix.cn/loongnix-server/loongnix-server:23.3@sha256:54c61a0ca717f1688fa5a6252a7e36a6e55f429c4d4bf00b4c9a97964b0b8e4e",
+  "distribution": "Loongnix Server",
+  "version": "23.3",
+  "libc": "glibc 2.38",
+  "architecture": "loong64",
+  "base_image_id": "sha256:109cc84dbd7ff481ff9987b199da5bb5d6d67abf37849660a62ea47943b96b90",
+  "evidence": "Exact accepted Dockerfile FROM and successful build ancestry; original rpm-q-glibc execution; final runtime os-release and loader audit. Final image inspected again during generation."
+}

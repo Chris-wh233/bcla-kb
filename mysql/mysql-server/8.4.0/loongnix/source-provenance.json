@@ -1,0 +1,46 @@
+{
+  "repository": "https://github.com/mysql/mysql-server",
+  "version": "8.4.0",
+  "tag": "mysql-8.4.0",
+  "resolved_commit": "dc86e412f18b36ce271f791026714e8caa0ec919",
+  "dockerfile": {
+    "repository": "https://github.com/docker-library/mysql",
+    "commit": "c05422492215b3f0602409288c868ee4fd606ac3",
+    "path": "8.4/Dockerfile.oracle",
+    "original_sha256": "76294c1002c9a1549a097b6daa54492562c67462092efcd936b72fee402b8fc9",
+    "accepted_sha256": "27f8a60565a2c83b4df9deba6df61c1cbdae71f10249f67046f3bbbc0e7c4694",
+    "entrypoint_path": "8.4/docker-entrypoint.sh",
+    "entrypoint_sha256": "75a06b67b9535d4ed47ca9a054eb5813c12549eae3b2eaa356bb75fde847ac9a"
+  },
+  "source_rpms": {
+    "original": {
+      "sha256": "1145e598121b2e96a81359c35d5cb7feab083971eb39d6c66b7c5dcf95456796",
+      "signature": "official MySQL2023RSA/SHA256 signature verified",
+      "file": "mysql-community-8.4.0-1.el8.src.rpm",
+      "url": "https://cdn.mysql.com/archives/mysql-8.4/mysql-community-8.4.0-1.el8.src.rpm"
+    },
+    "adapted": [
+      {
+        "file": "mysql-community-8.4.0-1.lns23.src.rpm",
+        "sha256": "1189890dc937c287a5c15b5db014e7be6b74f5a6a127b2126a31ff4de7f94849",
+        "bytes": 409693942,
+        "source": "adapted official source RPM, rebuilt natively with retained patches/config/spec"
+      }
+    ],
+    "source_tarball": {
+      "file": "mysql-8.4.0.tar.gz",
+      "sha256": "47a5433fcdd639db836b99e1b5459c2b813cbdad23ff2b5dd4ad27f792ba918e",
+      "acquisition": "Source0 extracted by rpm-ivh from the verified official source RPM"
+    }
+  },
+  "gosu": {
+    "source_image": "sha256:0d1f4915989e3ec4b55a4d81cb0442e63d044be767062b7606cd63baeff6ef79",
+    "path": "/usr/sbin/gosu",
+    "package": "Debian gosu 1.19-1+b1 loong64",
+    "sha256": "02a0431eaa5ca337ee728e0d1c32652484365bcf076b03cb39608e0e107ae383",
+    "consumer": "exec gosu --version and gosu nobody true under Loongnix23.3 passed",
+    "architecture": "loongarch64",
+    "abi": "statically linked native Go executable; exercised on Loongnix23.3",
+    "acquisition": "Extract /usr/sbin/gosu from source_image with docker create/docker cp; verify this SHA256 before COPY. No MySQL binaries from that image are reused."
+  }
+}
