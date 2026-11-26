@@ -1,0 +1,336 @@
+{
+  "schema_version": 3,
+  "producer": "bcla",
+  "status": "verified",
+  "repository": "https://github.com/mysql/mysql-server",
+  "requested_version": "8.4.0",
+  "resolved_commit": "dc86e412f18b36ce271f791026714e8caa0ec919",
+  "provenance": {
+    "task_id": "bcla-1e7c8928576a4f4293b8c339b66aa5f8",
+    "checkpoint_revision": 21
+  },
+  "kind": "dependency",
+  "targets": [
+    "MySQL 8.4.0 DEB packages for Debian forky loong64"
+  ],
+  "build": [
+    {
+      "cwd": "$WORKSPACE",
+      "command": "bash resume-debs.sh",
+      "environment": {
+        "architecture": "loong64",
+        "base_image": "lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "CC": "/usr/bin/gcc-14",
+        "CXX": "/usr/bin/g++-14",
+        "DEB_BUILD_OPTIONS": "parallel=32 nocheck noautodbgsym",
+        "MYSQL_BUILD_MAKE_JFLAG": "-j32"
+      },
+      "execution_id": "exec-4b76052d1cdd4114beb75dc7a2dfeab1"
+    },
+    {
+      "cwd": "$WORKSPACE/src/mysql-8.4.0",
+      "command": "make -f debian/rules override_dh_installinit; dh_installdebconf -pmysql-community-server; dh_installdeb -pmysql-community-server; dh_gencontrol -pmysql-community-server; dh_md5sums -pmysql-community-server; dh_builddeb -pmysql-community-server",
+      "environment": {
+        "DEB_BUILD_OPTIONS": "parallel=32 nocheck noautodbgsym",
+        "DH_OPTIONS": "-pmysql-community-server",
+        "precondition": "clean per-package DEBIAN/generated maintainer outputs and cleared override_dh_installinit stamp; upstream scripts retained"
+      },
+      "execution_id": "exec-a0a32d8e414a49dd8dc8b146f360108b"
+    }
+  ],
+  "tests": [
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/merge_small_tests-t\" \"$IMAGE_ID\" --gtest_filter=RDTimeStampCounter.*",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    },
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/merge_small_tests-t\" \"$IMAGE_ID\" --gtest_filter=Mysys.CreateTempFile",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    },
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/merge_large_tests-t\" \"$IMAGE_ID\" --gtest_filter=LogTimestampTest.iso8601",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    },
+    {
+      "command": "docker run --rm --network none --tmpfs /tmp:rw,exec,nosuid,size=512m --mount \"type=bind,src=$WORKSPACE,dst=$WORKSPACE,readonly\" --workdir /tmp --entrypoint \"$WORKSPACE/src/mysql-8.4.0/release/runtime_output_directory/NodeCertificate-t\" \"$IMAGE_ID\"",
+      "execution_id": "exec-2c6501003cf54567b5551ae557e1a51f",
+      "result": "passed"
+    }
+  ],
+  "artifacts": [
+    {
+      "package": "libmysqlclient-dev",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "libmysqlclient-dev_8.4.0-1debian14_loong64.deb",
+      "bytes": 2769528,
+      "sha256": "e65ea3cfe256a99870dd40f3a0fa46e53c0304149e5deda6c07b3a53289487cd",
+      "name": "libmysqlclient-dev",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "separate development/testsuite deliverable"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "libmysqlclient24",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "libmysqlclient24_8.4.0-1debian14_loong64.deb",
+      "bytes": 1363604,
+      "sha256": "74b5b5ab38130a5034e91c468abced54b722423ab1d35fe71a3f69c755654620",
+      "name": "libmysqlclient24",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-client",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-client_8.4.0-1debian14_loong64.deb",
+      "bytes": 66660,
+      "sha256": "269781afdea60fc59f18515de5292eb293893d8f21378a3e4b6f7429cb516f8c",
+      "name": "mysql-client",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-common",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-common_8.4.0-1debian14_loong64.deb",
+      "bytes": 67888,
+      "sha256": "19af9c0b3a2c56bef6ade8d780aa8a552c4aace1477e9da3a5507f17741a488e",
+      "name": "mysql-common",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-community-client-core",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-community-client-core_8.4.0-1debian14_loong64.deb",
+      "bytes": 1660148,
+      "sha256": "8e9568779970eb746eb01c32a8ac26be8349c8816ab7cf7dc376d367f2879676",
+      "name": "mysql-community-client-core",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-community-client-plugins",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-community-client-plugins_8.4.0-1debian14_loong64.deb",
+      "bytes": 1898396,
+      "sha256": "e89ea27a0c2bf934429b65efe1154918f96b13d7b376e33397ae527a11f57638",
+      "name": "mysql-community-client-plugins",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-community-client",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-community-client_8.4.0-1debian14_loong64.deb",
+      "bytes": 3522028,
+      "sha256": "eb1995aa36234991be21a33f56936b1729cce9cd26638fe688592df806890382",
+      "name": "mysql-community-client",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-community-server-core",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-community-server-core_8.4.0-1debian14_loong64.deb",
+      "bytes": 26685280,
+      "sha256": "490367027aa823762e0c4990cc947e343ec68c989a0fe6ee085e4108694361d4",
+      "name": "mysql-community-server-core",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-community-server",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-community-server_8.4.0-1debian14_loong64.deb",
+      "bytes": 75276,
+      "sha256": "e98227d9ae68a144497badf267c64b9bc6d232c359088dc1ee86d0daba184758",
+      "name": "mysql-community-server",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-community-test",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-community-test_8.4.0-1debian14_loong64.deb",
+      "bytes": 331610412,
+      "sha256": "3d1e7e4c4b8a1be54bae5d28b29d9f7504710f55c90a84f5db07577c9a6c3054",
+      "name": "mysql-community-test",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "separate development/testsuite deliverable"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-server",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-server_8.4.0-1debian14_loong64.deb",
+      "bytes": 66652,
+      "sha256": "9f9ec8abcd5c3dab370b83adc4aff02822e17980ab268177bb79422f6e298485",
+      "name": "mysql-server",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "mysql:8.4.0-loong64"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    },
+    {
+      "package": "mysql-testsuite",
+      "version": "8.4.0-1debian14",
+      "architecture": "loong64",
+      "file": "mysql-testsuite_8.4.0-1debian14_loong64.deb",
+      "bytes": 66672,
+      "sha256": "6f96cce8f79bd680e714fd7efec0f2b12b6f9db9ca4a1869904615a8d83b0bdb",
+      "name": "mysql-testsuite",
+      "source": "official MySQL 8.4.0 archive plus retained accepted patches and upstream Debian packaging",
+      "consumers": [
+        "separate development/testsuite deliverable"
+      ],
+      "abi": "native Debian forky loong64; extracted server ELF machine LoongArch; final image installation/ldd and SQL consumers passed"
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "lcr.loongnix.cn/library/debian:forky@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+      "role": "native helper base"
+    },
+    {
+      "source": "configured Debian forky APT repositories",
+      "role": "system development dependencies; see README and source-provenance.json"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "configure-deb.sh",
+      "build-debs.sh",
+      "packaging/",
+      "inputs/",
+      "patches/loongarch.patch"
+    ],
+    "build_entrypoints": [
+      "build-debs.sh",
+      "resume-debs.sh (existing tree only)"
+    ],
+    "compatible_targets": [
+      "loong64 Debian forky, MySQL 8.4.0"
+    ],
+    "assumptions": [
+      "native GCC14/CMake4 combination; 32 jobs; existing task used incremental rebuild plus clean service repack; fresh consolidated flow documented but not rerun during generation"
+    ]
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "e9a4d036a4f56e9b9544b4fbe894f063bc2006d0e5aea4d9a720def46db832d4"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "b4b3b1bb203d3feae1df41eec5e194dda9e5fe08bcabcf38c88c9471b0b4abdb"
+    },
+    {
+      "path": "build-debs.sh",
+      "sha256": "19989dc4eee42b276bbb034205ace2db62b7bd1670e8f533b1e93c02ef80862d"
+    },
+    {
+      "path": "configure-deb.sh",
+      "sha256": "701ba7e2cfe0a0093a620ceab6696cd63e2fd75786b8ed153bf7b9ad2c883014"
+    },
+    {
+      "path": "inputs/config.guess",
+      "sha256": "e3d148130e9151735f8b9a8e69a70d06890ece51468a9762eb7ac0feddddcc2f"
+    },
+    {
+      "path": "inputs/config.sub",
+      "sha256": "11c54f55c3ac99e5d2c3dc2bb0bcccbf69f8223cc68f6b2438daa806cf0d16d8"
+    },
+    {
+      "path": "mysql-packages.json",
+      "sha256": "cbc49e8068b58c75024011e45200f6939a91c9299b935cbb82f2be3634a07f32"
+    },
+    {
+      "path": "packaging/control",
+      "sha256": "196b8e1eee4feb120d8e0a36c05f33f6f8ea40da17414fb8ee35ef7fe22f63ea"
+    },
+    {
+      "path": "packaging/mysql-community-client-plugins.install",
+      "sha256": "1a4fd2715ddad8c729d3ad38fddb4d166ee4ec29967dac6b7f65dadb00ab1092"
+    },
+    {
+      "path": "packaging/mysql-community-server-core.install",
+      "sha256": "8414cffdebeffe03c1e3bf75fee714c68c1ed011e7384ec3dfe67c5becefd19e"
+    },
+    {
+      "path": "packaging/mysql-community-server.install",
+      "sha256": "cfb0ae213f9c33c1cd2e4fbde72b84d25c85ce56006d4868ee23faf12a6c3b0f"
+    },
+    {
+      "path": "packaging/not-installed",
+      "sha256": "8038293cd092fe7b6cb1baee067c15d519b798d6c3765d382d56995f711c692d"
+    },
+    {
+      "path": "packaging/rules",
+      "sha256": "fcbf1c212f7f03eb33b2900bdd3b4917b08c0d6a364a2cdcba6bb354ea562576"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "1aa81f38ae961b0f2202892cc50a170f8f05a00c5abbe27ad393f1beded471cf"
+    },
+    {
+      "path": "patches/packaging-forky.patch",
+      "sha256": "e8263ec49ac7a50b1340c3252914edea1f8234f79f02618d9e48ca840034554d"
+    },
+    {
+      "path": "resume-debs.sh",
+      "sha256": "6e8cf9c7538e65e15a1fc3bf145706b0839a8839655d27ac077f2d8d06c7634a"
+    },
+    {
+      "path": "source-provenance.json",
+      "sha256": "a4f8e105f62d13d42f4e76b62421ffb6dfaec0ebb41e2a9107dcfd39869a55ed"
+    },
+    {
+      "path": "timer-probe.cc",
+      "sha256": "e1e488ac28418f1d384826426483c5eaa4c0220be2526670c6c3573da1e27f73"
+    }
+  ]
+}

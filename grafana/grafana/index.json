@@ -1,15 +1,16 @@
 {
   "experiences": [
     {
-      "path": "v13.2.0",
+      "path": "v13.2.0/alpine",
       "status": "verified",
       "targets": [
         "grafana image"
       ],
       "validation": "structure_and_hashes_valid",
+      "variant": "alpine",
       "version": "v13.2.0"
     }
   ],
   "repository": "https://github.com/grafana/grafana.git",
-  "schema_version": 2
+  "schema_version": 3
 }

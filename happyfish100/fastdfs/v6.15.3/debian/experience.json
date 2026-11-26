@@ -1,0 +1,235 @@
+{
+  "schema_version": 3,
+  "producer": "bcla",
+  "kind": "image",
+  "status": "verified",
+  "repository": "https://github.com/happyfish100/fastdfs",
+  "requested_version": "v6.15.3",
+  "resolved_commit": "3aa443ce6b2a65b4f60986c6f3943b8b2bf25631",
+  "targets": [
+    "fastdfs:6.15.3-loong64",
+    "happyfish100/fastdfs:6.15.3-loong64"
+  ],
+  "provenance": {
+    "task_id": "bcla-3d2b5f53fe8f42b6af08bb81219d7569",
+    "checkpoint_revision": 9
+  },
+  "resolved_version": "V6.15.3",
+  "build": [
+    {
+      "cwd": "$WORKSPACE",
+      "command": "./build-native.sh",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "abi": "glibc 2.43, LP64D",
+        "helper_base": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "compiler": "GCC 16.2.0 (Debian 16.2.0-4)",
+        "make": "GNU Make 4.4.1"
+      },
+      "execution_id": "exec-cb3a5b08276544c591d6e3e666d951a0"
+    },
+    {
+      "cwd": "$WORKSPACE",
+      "command": "sed -i \"s/^thread_stack_size[[:space:]]*=.*/thread_stack_size=512KB/\" artifacts/rootfs/etc/fdfs/tracker.conf",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "abi": "glibc 2.43, LP64D",
+        "helper_base": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "compiler": "GCC 16.2.0 (Debian 16.2.0-4)",
+        "make": "GNU Make 4.4.1"
+      },
+      "execution_id": "exec-0fb26dd817684c5399b9826fa45a87b2"
+    },
+    {
+      "cwd": "$WORKSPACE",
+      "command": "DOCKER_BUILDKIT=0 docker build --network=none -t happyfish100/fastdfs:6.15.3-loong64 -t fastdfs:6.15.3-loong64 .",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "abi": "glibc 2.43, LP64D",
+        "helper_base": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "compiler": "GCC 16.2.0 (Debian 16.2.0-4)",
+        "make": "GNU Make 4.4.1"
+      },
+      "execution_id": "exec-0fb26dd817684c5399b9826fa45a87b2"
+    }
+  ],
+  "tests": [
+    {
+      "command": "artifacts/rootfs/usr/bin/fdfs_storaged -V; file artifacts/rootfs/usr/bin/fdfs_storaged",
+      "execution_id": "exec-cb3a5b08276544c591d6e3e666d951a0",
+      "result": "passed"
+    },
+    {
+      "command": "docker exec \"$SMOKE_CONTAINER\" sh -c '/usr/local/nginx/sbin/nginx -t; /usr/bin/fdfs_monitor /etc/fdfs/client.conf'",
+      "execution_id": "exec-0fb26dd817684c5399b9826fa45a87b2",
+      "result": "passed"
+    },
+    {
+      "command": "docker exec \"$SMOKE_CONTAINER\" sh /tmp/read-write.sh; cmp smoke/payload.txt smoke/http-downloaded.txt",
+      "execution_id": "exec-9f6bc1e1341c41a3ac569be64cb0a74e",
+      "result": "passed"
+    },
+    {
+      "command": "cmp artifacts/PROJECT-SHA256SUMS smoke/IMAGE-PROJECT-SHA256SUMS",
+      "execution_id": "exec-0bf4b21af99f48cfb4e3fde5133a2aea",
+      "result": "passed"
+    }
+  ],
+  "images": [
+    {
+      "target": "fastdfs:6.15.3-loong64",
+      "id": "sha256:54ff834850f7bb5790aed8260af9e44c362c7578d6342168208cded8b0fe9ad7",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile",
+      "source": {
+        "repository": "https://github.com/happyfish100/fastdfs",
+        "commit": "3aa443ce6b2a65b4f60986c6f3943b8b2bf25631",
+        "path": "docker/dockerfile_network/Dockerfile",
+        "original_file": "Dockerfile.upstream"
+      },
+      "runtime_base": {
+        "family": "debian",
+        "reference": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "libc": "glibc",
+        "digest": "sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b"
+      }
+    },
+    {
+      "target": "happyfish100/fastdfs:6.15.3-loong64",
+      "id": "sha256:54ff834850f7bb5790aed8260af9e44c362c7578d6342168208cded8b0fe9ad7",
+      "architecture": "loong64",
+      "dockerfile": "Dockerfile",
+      "source": {
+        "repository": "https://github.com/happyfish100/fastdfs",
+        "commit": "3aa443ce6b2a65b4f60986c6f3943b8b2bf25631",
+        "path": "docker/dockerfile_network/Dockerfile",
+        "original_file": "Dockerfile.upstream"
+      },
+      "runtime_base": {
+        "family": "debian",
+        "reference": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "libc": "glibc",
+        "digest": "sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b"
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "libfastcommon",
+      "version": "1.0.83",
+      "recipe": "dependencies/libfastcommon-1.0.83"
+    },
+    {
+      "name": "libserverframe",
+      "version": "1.2.11",
+      "recipe": "dependencies/libserverframe-1.2.11"
+    },
+    {
+      "name": "nginx",
+      "version": "1.22.1",
+      "recipe": "dependencies/nginx-1.22.1"
+    },
+    {
+      "name": "fastdfs-nginx-module",
+      "version": "e685b56bceb490c80368c57713686ebeb1729b55",
+      "recipe": "dependencies/fastdfs-nginx-module-e685b56bceb490c80368c57713686ebeb1729b55"
+    },
+    {
+      "name": "runtime base",
+      "source": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+      "architecture": "loong64"
+    }
+  ],
+  "applicability": {
+    "required_files": [
+      "Dockerfile",
+      "build-native.sh",
+      "source/",
+      "deps/libfastcommon/",
+      "deps/libserverframe/",
+      "deps/fastdfs-nginx-module/",
+      "deps/nginx-1.22.1/",
+      "artifacts/rootfs/ before packaging"
+    ],
+    "build_entrypoints": [
+      "./build-native.sh",
+      "DOCKER_BUILDKIT=0 docker build --network=none ."
+    ],
+    "compatible_targets": [
+      "linux/loong64"
+    ],
+    "environment_assumptions": [
+      "Native Debian helper and host Docker daemon",
+      "glibc2.43 and GCC16.2.0",
+      "approved dependency backport applied before native build",
+      "digest-pinned runtime base remains available",
+      "all project binaries retained in artifacts/rootfs"
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/fastdfs-6.15.3-linux-loong64.tar.gz",
+      "sha256": "a6096307ce81bdcd7334cfc6493db0e174b236f71056a47937e8a68f3b7e7d14"
+    },
+    {
+      "path": "artifacts/fastdfs-6.15.3-loong64.docker.tar.gz",
+      "sha256": "eb95290fdcca76b2b02dc05f9f523822e5bb4d17e022dea8285de9544179bbd5"
+    },
+    {
+      "path": "artifacts/rootfs",
+      "manifests": [
+        "artifacts/ROOTFS-SHA256SUMS",
+        "artifacts/PROJECT-SHA256SUMS"
+      ]
+    }
+  ],
+  "limitations": [
+    "Archive and native hashes identify accepted bytes, not a guarantee of bit-reproducibility across workspace paths or timestamps",
+    "Final saved build script consolidates native build and later accepted tracker configuration step",
+    "No independent binary is claimed for the statically embedded nginx addon"
+  ],
+  "optional_omissions": [],
+  "files": [
+    {
+      "path": ".dockerignore",
+      "sha256": "0844175f5a8e013fdec11ac8184d967e04a146bceac3483c90ac75c80643084a"
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "2abcc1b99dd67c37161ab38a0d0f1799fbde7addf4e4218e17ce00c58a24f538"
+    },
+    {
+      "path": "Dockerfile.upstream",
+      "sha256": "2d1daccd60af8a551283a91b309737c173725f9464218f2379cf1f69138d36ce"
+    },
+    {
+      "path": "README.md",
+      "sha256": "ef9a5a16dcc111c0917fb52a2cc4866507911cb36ecd5f7180bc74c2fb3e5666"
+    },
+    {
+      "path": "adaptation.md",
+      "sha256": "cc792c23c809d31263fa1c8ebe0a8c9ecab026d5665cbfbc4f0535b429849085"
+    },
+    {
+      "path": "build-native.sh",
+      "sha256": "a4901d6c56c8b53467f3e3bbcce79bf3f3a462d7241d7f90d64525124ca67059"
+    },
+    {
+      "path": "evidence/ARCHIVE-SHA256SUMS",
+      "sha256": "c0fa5547ae405d275c9c0aaba479a68d00952fdf694a10fe8b0f42fb30f57de4"
+    },
+    {
+      "path": "evidence/PROJECT-SHA256SUMS",
+      "sha256": "07bbf5be3f80da6c65834ea5e153fd73685ffec1a2eac624f1153a638ab0d858"
+    },
+    {
+      "path": "patches/loongarch.patch",
+      "sha256": "ef14e7f882f0bc037458a61e958edf209ed23cc4ea9ae735d48ea668369a93ff"
+    },
+    {
+      "path": "tests/read-write.sh",
+      "sha256": "41fce6022f49c3c033a0fd27e1eb6056694210f4b650e0e6c7171bb1f81d9d1c"
+    }
+  ],
+  "variant": "debian"
+}

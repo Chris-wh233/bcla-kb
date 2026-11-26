@@ -1,0 +1,99 @@
+{
+  "schema_version": 3,
+  "producer": "bcla",
+  "kind": "dependency",
+  "status": "verified",
+  "repository": "https://github.com/happyfish100/fastdfs-nginx-module",
+  "requested_version": "e685b56bceb490c80368c57713686ebeb1729b55",
+  "resolved_commit": "e685b56bceb490c80368c57713686ebeb1729b55",
+  "targets": [
+    "loong64"
+  ],
+  "provenance": {
+    "task_id": "bcla-3d2b5f53fe8f42b6af08bb81219d7569",
+    "checkpoint_revision": 9
+  },
+  "applicability": {
+    "required_files": [
+      "Pinned source",
+      "$WORKSPACE/artifacts/rootfs"
+    ],
+    "build_entrypoints": [
+      "../../build-native.sh"
+    ],
+    "compatible_targets": [
+      "loong64"
+    ],
+    "environment_assumptions": [
+      "native Debian/glibc helper",
+      "sources laid out as in parent README"
+    ]
+  },
+  "build": [
+    {
+      "cwd": "$WORKSPACE/deps/nginx-1.22.1",
+      "command": "./configure --add-module=\"$WORKSPACE/deps/fastdfs-nginx-module/src\" && make -j4 && make install && make DESTDIR=\"$ROOTFS\" install",
+      "environment": {
+        "architecture": "native linux/loong64",
+        "abi": "glibc 2.43, LP64D",
+        "helper_base": "lcr.loongnix.cn/library/debian@sha256:f5ef929388a56fb070c8c86cd572e70b0241f13a227c624c36260ef067f43d2b",
+        "compiler": "GCC 16.2.0 (Debian 16.2.0-4)",
+        "make": "GNU Make 4.4.1"
+      },
+      "execution_id": "exec-cb3a5b08276544c591d6e3e666d951a0"
+    }
+  ],
+  "tests": [
+    {
+      "command": "/usr/local/nginx/sbin/nginx -V",
+      "execution_id": "exec-cb3a5b08276544c591d6e3e666d951a0",
+      "result": "passed"
+    },
+    {
+      "command": "cmp smoke/payload.txt smoke/http-downloaded.txt",
+      "execution_id": "exec-9f6bc1e1341c41a3ac569be64cb0a74e",
+      "result": "passed"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "libfastcommon",
+      "recipe": "../libfastcommon-1.0.83"
+    },
+    {
+      "name": "libserverframe",
+      "recipe": "../libserverframe-1.2.11"
+    },
+    {
+      "name": "libfdfsclient",
+      "version": "6.15.3",
+      "source": "parent FastDFS native build before nginx",
+      "sha256": "477eed2e7fa67be463b1b2da91eec01391b7385f5091116fe6e748f453d85b3f"
+    },
+    {
+      "name": "PCRE2/zlib/libcrypt",
+      "source": "Debian system development packages in parent README"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "FastDFS module embedded in nginx",
+      "version": "e685b56bceb490c80368c57713686ebeb1729b55",
+      "source": "https://github.com/happyfish100/fastdfs-nginx-module/tree/e685b56bceb490c80368c57713686ebeb1729b55",
+      "content_identity": "sha256:2b76f3ef7b941569f82a777753d4923f27d54d91f0e7fa70f5ad105da32df026",
+      "architecture": "loong64",
+      "abi": "glibc / ELF64 LoongArch LP64D",
+      "consumers": [
+        "nginx 1.22.1 custom module"
+      ],
+      "installed_path": "usr/local/nginx/sbin/nginx",
+      "classification": "Native code built as part of the nginx executable; no standalone module .so is claimed"
+    }
+  ],
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "baa7e9d0038c833527073bffb1f3fa92be24a8b50869e8aa12681334979cc68a"
+    }
+  ]
+}

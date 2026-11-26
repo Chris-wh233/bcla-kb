@@ -1,24 +1,26 @@
 {
   "experiences": [
     {
-      "path": "2.440.1",
+      "path": "2.440.1/alpine",
       "status": "verified",
       "targets": [
         "alpine-loongarch64"
       ],
       "validation": "structure_and_hashes_valid",
+      "variant": "alpine",
       "version": "2.440.1"
     },
     {
-      "path": "2.583",
+      "path": "2.583/alpine",
       "status": "verified",
       "targets": [
         "alpine-loongarch64"
       ],
       "validation": "structure_and_hashes_valid",
+      "variant": "alpine",
       "version": "2.583"
     }
   ],
   "repository": "https://github.com/jenkinsci/docker",
-  "schema_version": 2
+  "schema_version": 3
 }

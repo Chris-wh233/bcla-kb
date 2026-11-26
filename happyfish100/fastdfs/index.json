@@ -1,16 +1,17 @@
 {
   "experiences": [
     {
-      "path": "v6.15.3",
+      "path": "v6.15.3/debian",
       "status": "verified",
       "targets": [
         "fastdfs:6.15.3-loong64",
         "happyfish100/fastdfs:6.15.3-loong64"
       ],
       "validation": "structure_and_hashes_valid",
+      "variant": "debian",
       "version": "v6.15.3"
     }
   ],
   "repository": "https://github.com/happyfish100/fastdfs",
-  "schema_version": 2
+  "schema_version": 3
 }

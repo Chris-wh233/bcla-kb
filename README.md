@@ -12,7 +12,7 @@ LoongArch64 BCLA 构建经验知识库
 
 ## 目录结构
 
-项目按代码托管来源、组织、仓库和版本组织。GitHub 项目通常使用以下形式：
+项目按代码托管来源、组织、仓库、版本和最终运行基础镜像家族组织。GitHub 项目使用以下形式：
 
 ```text
 bcla-kb/
@@ -21,35 +21,40 @@ bcla-kb/
     └── <repository>/
         ├── index.json
         └── <version>/
-            ├── experience.json
-            ├── README.md
-            ├── Dockerfile[.<target>]
-            ├── adaptation.md
-            ├── patches/
-            │   └── loongarch.patch
-            └── dependencies/
-                └── <dependency>-<version>/
-                    ├── experience.json
-                    ├── README.md
-                    ├── Dockerfile[.<target>]
-                    └── patches/
+            └── <variant>/
+                ├── experience.json
+                ├── README.md
+                ├── Dockerfile[.<target>]
+                ├── adaptation.md
+                ├── patches/
+                │   └── loongarch.patch
+                └── dependencies/
+                    └── <dependency>-<version>/
+                        ├── experience.json
+                        ├── README.md
+                        ├── Dockerfile[.<target>]
+                        └── patches/
 ```
 
 例如，EMQX 6.3.0 的经验位于：
 
 ```text
-emqx/emqx/6.3.0/
+emqx/emqx/v6.3.0/debian/
 ```
 
 这里的目录名来自规范化后的仓库身份和请求版本，不代表所有项目都使用相同的文件集合。没有源码适配时，不应创建空的 `adaptation.md` 或补丁文件；没有源码构建依赖时，也不应创建 `dependencies/`。
 
+`variant` 表示最终运行镜像家族，例如 `debian`、`alpine` 或 `scratch`，不包含仓库前缀和具体标签。它根据实际构建参数、阶段继承和运行环境判定，不按辅助容器或 builder 镜像命名。比如 Beszel 的 builder 使用 Alpine，但最终镜像是 `scratch`，因此经验放在 `scratch/`。精确基础镜像引用、已知 digest、libc 和已验证的发行版版本仍记录在元数据中。
+
+同项目、同版本的不同家族经验可以并存。版本目录仅用于归组，不直接保存经验或版本级索引；不同 Debian 标签也不会自动变成新的家族目录。请求版本中的 `v` 前缀保留；不适合作为目录名的字符替换为 `_`，元数据保留完整原始版本。
+
 对于非 GitHub 来源，目录需要包含主机名以避免不同代码托管服务发生同名冲突，例如：
 
 ```text
-<host>/<owner>/<repository>/<version>/
+<host>/<owner>/<repository>/<version>/<variant>/
 ```
 
-不要为每个构建任务创建独立 Git 分支，也不要同时保存一份按主机名开头、另一份按组织开头的重复经验。不同项目和版本通过目录区分，统一提交到知识库 `main` 分支。
+不要为每个构建任务创建独立 Git 分支，也不要同时保存一份按主机名开头、另一份按组织开头的重复经验。不同项目、版本和运行镜像家族通过目录区分，统一提交到知识库 `main` 分支。
 
 ## 根目录索引
 
@@ -57,7 +62,7 @@ emqx/emqx/6.3.0/
 
 ```json
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "projects": [
     {
       "path": "emqx/emqx",
@@ -71,17 +76,17 @@ emqx/emqx/6.3.0/
 
 ## 项目索引
 
-每个项目目录可以有自己的 `index.json`，用于快速列出该项目可用的版本和目标。例如：
+每个项目目录有自己的 `index.json`，统一列出该项目的版本、家族和目标。条目路径相对项目目录，例如：
 
 ```json
 {
-  "schema_version": 2,
-  "project": "emqx",
+  "schema_version": 3,
   "repository": "https://github.com/emqx/emqx",
   "experiences": [
     {
-      "version": "6.3.0",
-      "path": "6.3.0",
+      "version": "v6.3.0",
+      "variant": "debian",
+      "path": "v6.3.0/debian",
       "status": "verified",
       "targets": ["debian-14-slim"]
     }
@@ -89,9 +94,9 @@ emqx/emqx/6.3.0/
 }
 ```
 
-项目索引同样只是检索辅助。版本目录缺失、索引过期或索引内容不完整时，应扫描版本目录并检查其中的 `experience.json`。
+项目索引同样只是检索辅助。索引过期或内容不完整时，应扫描项目下 `<version>/<variant>/experience.json`，跳过依赖经验。全局索引仍指向项目目录，不把每个版本误当成独立项目。
 
-## 版本经验目录
+## 版本与家族经验目录
 
 ### `experience.json`
 
@@ -99,6 +104,7 @@ emqx/emqx/6.3.0/
 
 - 项目仓库、请求版本和实际解析到的提交；
 - 构建目标和验证状态；
+- `schema_version: 3`、镜像经验的 `variant`，以及每个最终镜像的 `runtime_base`（家族、实际基础镜像引用和 libc，另记录已知 digest 和发行版信息）；
 - 实际使用的构建命令、环境、构建参数和执行证据；
 - 最终镜像 ID、架构、Dockerfile 以及基础镜像来源；
 - 参与构建的第三方依赖及其来源、版本、架构和消费者；
@@ -123,7 +129,7 @@ emqx/emqx/6.3.0/
 
 ### `Dockerfile` 文件
 
-版本目录中的 Dockerfile 是最终成功构建所使用的精确文件。一个任务包含多个目标时，可以分别保存为：
+变体目录中的 Dockerfile 是最终成功构建所使用的精确文件。一个家族包含多个目标时，可以分别保存为：
 
 ```text
 Dockerfile.hub
@@ -131,6 +137,8 @@ Dockerfile.agent
 ```
 
 文件名应在 `experience.json` 中明确关联到目标镜像。Dockerfile 可以是官方 Dockerfile 的 LoongArch64 适配版本，但必须能追溯到官方或用户提供的源文件。知识库不应保存模型凭空推测的 Dockerfile。
+
+一个成功任务交付多个家族时，分别保存经验，每份只覆盖对应目标及必要的构建、测试和依赖证据。不同家族间必要的镜像依赖关系仍需如实记录。
 
 ### `adaptation.md`
 
@@ -144,11 +152,11 @@ Dockerfile.agent
 
 EMQX 6.3.0 的补丁只记录 Dockerfile 为 LoongArch64 增加静态 curl 选择和相关处理的修改。若任务没有保留的源码或构建逻辑修改，就不创建补丁目录或补丁文件。
 
-Dockerfile 可以单独保存为版本目录文件，不要求把 Dockerfile 的内容重复放进补丁说明。
+Dockerfile 可以单独保存为变体目录文件，不要求把 Dockerfile 的内容重复放进补丁说明。
 
 ## 第三方依赖经验
 
-当主项目依赖必须从源码构建的第三方组件时，在 `dependencies/` 下为该组件建立独立经验目录：
+当主项目依赖必须从源码构建的第三方组件时，在所属变体的 `dependencies/` 下为该组件建立独立经验目录：
 
 ```text
 dependencies/
@@ -158,6 +166,10 @@ dependencies/
 ```
 
 依赖目录采用平级结构，不把一个依赖嵌套到另一个依赖目录中。依赖之间的关系写在各自的 `experience.json` 中。
+
+`recipe` 引用相对当前 `experience.json` 所在目录：主经验可写 `dependencies/library-1.0`，依赖经验引用平级组件则写 `../library-1.0`，不得指向不存在的嵌套目录。
+
+依赖经验同样使用 schema 3，但 `kind` 为 `dependency`，不要求镜像专用的 `variant` 和 `runtime_base` 字段。依赖不进入项目级镜像候选索引，也不建立跨变体共享目录。
 
 只有实际参与最终成功构建的源码依赖才应生成依赖经验。直接从已有 LoongArch 资源获取、没有单独源码构建过程的普通包，不需要生成一份虚假的源码经验。
 
@@ -172,7 +184,9 @@ dependencies/
 - 经验适用于其它版本、架构、libc、基础镜像或功能组合；
 - 经验中的第三方资源可以跳过实际消费者验证。
 
-复用经验时，优先匹配同一仓库和版本，然后检查目标、基础镜像、工具链、必要文件、Dockerfile 入口和依赖兼容性。经验不可用或不适用时，应回到正常源码分析和资源获取，不应因为知识库条目损坏而阻断构建。
+复用经验时，先匹配仓库、目标及明确的最终运行环境约束，再比较版本接近程度。要求 Alpine 时不能因 Debian 经验版本更接近而直接执行 Debian 配方；指定辅助容器不等于指定最终运行环境。未指定家族时参考官方目标变体与实际兼容性，同等候选按项目相对路径稳定排序。家族相同仍需检查精确基础镜像、libc、工具链、必要文件和依赖兼容性。
+
+轻量适用性检查失败时可以继续下一个候选；正式尝试最佳适用经验后，若核心方案失效，则回到正常分析，不轮番尝试旧版或其它不兼容家族。知识库不可用或条目损坏也应尽可能回退，不阻断构建。
 
 ## 文件来源和证据
 
@@ -195,7 +209,7 @@ BCLA 任务成功
     ↓
 用户显式调用 gen-experience
     ↓
-从任务最终结果和执行证据生成版本目录
+从任务最终结果和执行证据生成版本／家族目录
     ↓
 检查 JSON、文件哈希和索引
     ↓
@@ -204,4 +218,4 @@ BCLA 任务成功
 按用户授权推送
 ```
 
-生成新经验前，应比较相同项目和版本是否已有条目。相同事实不重复写入；目标互补且不冲突时可以合并；命令、提交、补丁或产物冲突时应保留冲突信息，不应静默覆盖已验证经验。
+生成新经验前，应比较相同项目、版本和家族是否已有条目。不同家族直接并存；相同家族中相同事实不重复写入，目标互补且不冲突时可以合并，命令、提交、补丁或产物冲突时保留原经验并另存任务暂存包。不能自动追加基础镜像标签后缀来规避同家族冲突，也不能把归一化路径相同的不同原始版本合并。

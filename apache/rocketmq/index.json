@@ -1,15 +1,16 @@
 {
   "experiences": [
     {
-      "path": "release-4.8.0",
+      "path": "release-4.8.0/debian",
       "status": "verified",
       "targets": [
         "apache/rocketmq:4.8.0-debian"
       ],
       "validation": "structure_and_hashes_valid",
+      "variant": "debian",
       "version": "release-4.8.0"
     }
   ],
   "repository": "https://github.com/apache/rocketmq",
-  "schema_version": 2
+  "schema_version": 3
 }
