@@ -1,0 +1,63 @@
+{
+  "image": {
+    "target": "lcr.loongnix.cn/library/nginx:1.22.1-alpine",
+    "id": "sha256:06fdb06b2cfec3cfaf6166fc054b9fefc7fc6937b16afc8e02a270db1639859f",
+    "architecture": "loong64",
+    "os": "linux",
+    "size_bytes": 52311329,
+    "created": "2026-11-25T17:09:03.918718432+08:00",
+    "stop_signal": "SIGQUIT",
+    "environment": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "NGINX_VERSION=1.22.1",
+      "NJS_VERSION=0.7.7",
+      "PKG_RELEASE=1"
+    ]
+  },
+  "dockerfile_sha256": "79f392c313f3a1971bbd99d61a57e1d18e7e4f1457a16044e2ad2733f3cbcac6",
+  "image_history_run_matches_dockerfile": true,
+  "base_layer": "sha256:ff042ceafe7181b1b905481c5e0cea6e023554097a25ae24e037055c0c9e52c3",
+  "origin": {
+    "task_id": "bcla-542f7b6d2c704d9d9c5e97d8e2d6d3fb",
+    "task_revision": 12,
+    "updated_flow": "Subsequent user-built maker image and successful tests in the same Codex conversation; original task result remains unchanged."
+  },
+  "existing_successful_checks": [
+    {
+      "execution_id": "codex-output:f00aec/e9cddf/f2e299",
+      "result": "passed",
+      "checks": [
+        "nginx1.22.1",
+        "njs0.7.7",
+        "69 package names equal to original image",
+        "nginx configure arguments equal to original image"
+      ],
+      "inventory": "runtime-inventory.txt"
+    },
+    {
+      "execution_id": "codex-output:28feda",
+      "result": "passed",
+      "checks": [
+        "nginx -t with all six dynamic modules",
+        "WebCrypto AES-GCM",
+        "invalid key-format error"
+      ],
+      "output": "nginx: the configuration file /etc/nginx/modules-test.conf syntax is ok\nnginx: configuration file /etc/nginx/modules-test.conf test is successful\nPASS: WebCrypto AES-GCM and invalid key-format error\n"
+    },
+    {
+      "execution_id": "codex-output:eb8bbe/b3228b",
+      "result": "passed",
+      "checks": [
+        "default HTTP200 welcome page",
+        "envsubst generated configuration and HTTP200 expected body",
+        "both containers received SIGQUIT",
+        "graceful shutdown logged",
+        "both exit0",
+        "isolated network and no proxy environment"
+      ],
+      "output": "PASS default HTTP 200 / Welcome to nginx!\nPASS http SIGQUIT received / graceful shutdown / exit 0\nPASS template envsubst / HTTP 200 / expected body\nPASS template SIGQUIT received / graceful shutdown / exit 0\nPASS all requested tests; isolated network, no proxy environment\n"
+    }
+  ],
+  "execution_id_namespace": "codex-output IDs identify existing conversation tool outputs, not BCLA execution-table rows. image-history IDs identify an existing immutable image build history.",
+  "revision_scope": "Documentation and metadata update only; no compilation or runtime tests rerun."
+}

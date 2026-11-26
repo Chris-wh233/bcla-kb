@@ -35,6 +35,10 @@
     {
       "path": "mysql/mysql-server",
       "repository": "https://github.com/mysql/mysql-server"
+    },
+    {
+      "path": "nginx/docker-nginx",
+      "repository": "https://github.com/nginx/docker-nginx"
     }
   ],
   "schema_version": 2

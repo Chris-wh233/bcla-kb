@@ -1,0 +1,15 @@
+{
+  "experiences": [
+    {
+      "path": "1.22.1",
+      "status": "verified",
+      "targets": [
+        "lcr.loongnix.cn/library/nginx:1.22.1-alpine"
+      ],
+      "validation": "structure_and_hashes_valid",
+      "version": "1.22.1"
+    }
+  ],
+  "repository": "https://github.com/nginx/docker-nginx",
+  "schema_version": 2
+}

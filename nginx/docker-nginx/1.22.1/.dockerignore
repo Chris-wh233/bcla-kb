@@ -1,0 +1,8 @@
+*
+!Dockerfile
+!abuild-compat.conf
+!njs-webcrypto.patch
+!docker-entrypoint.sh
+!10-listen-on-ipv6-by-default.sh
+!20-envsubst-on-templates.sh
+!30-tune-worker-processes.sh
